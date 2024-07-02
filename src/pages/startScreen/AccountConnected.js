@@ -1,0 +1,41 @@
+import React, { useEffect } from "react";
+import { CardBody } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import LoginCard from "../../components/layout/LoginCard";
+
+export default function AccountConnected() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    setInterval(() => {
+      navigate("/");
+    }, 4000);
+  });
+
+  return (
+    <LoginCard height={"450px"} width={"450px"}>
+      <CardBody>
+        <div className="d-flex align-items-center flex-column mb-2 mt-5">
+          <div
+            className="mt-5"
+            style={{
+              fontWeight: 600,
+              fontSize: "13px",
+            }}
+          >
+            Bank of Melbourne
+          </div>
+          <div
+            style={{
+              color: "rgba(36, 204, 167, 1)",
+              fontWeight: 600,
+              fontSize: "12px",
+            }}
+          >
+            successfully connected
+          </div>
+        </div>
+      </CardBody>
+    </LoginCard>
+  );
+}
