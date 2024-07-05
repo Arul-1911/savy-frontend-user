@@ -21,10 +21,15 @@ const SearchField = ({
     <Form
       inline
       onSubmit={handleSubmit}
-      style={{ display: "inline-block" }}
+      style={{ display: "inline-block", borderRadius: "10px" }}
       className="w-100"
     >
-      <Form.Group style={{ backgroundColor: "rgba(245, 247, 248, 1)" }}>
+      <Form.Group
+        style={{
+          backgroundColor: "rgba(245, 247, 248, 1) ",
+          borderRadius: "40px",
+        }}
+      >
         {label && <Form.Label className="">{label}</Form.Label>}
         <InputGroup className="py-1 w-100">
           {/* <InputGroup.Prepend> */}
@@ -33,6 +38,7 @@ const SearchField = ({
           <FormControl
             style={{
               backgroundColor: "rgba(245, 247, 248, 1)",
+              borderRadius: "10px",
             }}
             type="text"
             placeholder={placeholder}

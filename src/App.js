@@ -61,7 +61,7 @@ import {
 import ResetPassword from "./pages/ResetPassword";
 
 function App() {
-  const { accessToken } = useSelector(selectAuth);
+  const accessToken = localStorage.getItem("accessToken");
   const dispatch = useDispatch();
 
   const pageLocation = useLocation();
@@ -94,7 +94,9 @@ function App() {
       comp: <AccountConnected />,
     },
 
-    { path: "/admin/dashboard", comp: <Dashboard /> },
+    { path: "/user/dashboard", comp: <Dashboard /> },
+
+    // { path: "/admin/dashboard", comp: <Dashboard /> },
     { path: "admin/view-profile", comp: <ViewProfile /> },
 
     { path: "/admin/users", comp: <Users /> },
@@ -149,7 +151,7 @@ function App() {
 
   return (
     <div className="main-wrapper">
-      {isExpanded && accessToken && (
+      {accessToken && isExpanded && (
         <div className="sidebar-overlay" onClick={sidebarHandler}></div>
       )}
       <div className="sidebar-wrapper">
@@ -224,11 +226,7 @@ function App() {
           />
 
           {routeList.map(({ path, comp }) => (
-            <Route
-              key={path}
-              path={path}
-              element={<UnprotectedRoute>{comp}</UnprotectedRoute>}
-            />
+            <Route key={path} path={path} element={<>{comp}</>} />
           ))}
 
           <Route path="*" element={<NotFound />} />

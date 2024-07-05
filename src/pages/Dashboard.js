@@ -1,134 +1,396 @@
-import React, { useContext, useEffect, useReducer, useState } from "react";
-import { Link } from "react-router-dom";
-import { Row, Col } from "react-bootstrap";
-import { ToastContainer, toast } from "react-toastify";
-// icons
-import { MdContactPhone } from "react-icons/md";
-import { BsShieldFillPlus } from "react-icons/bs";
-import { FaArrowCircleRight, FaGuitar, FaUsers } from "react-icons/fa";
-import { BiSolidShieldMinus, BiSolidShieldX } from "react-icons/bi";
-import { HiShieldCheck, HiShieldExclamation } from "react-icons/hi";
-
-
+import React, { useState } from "react";
+import {
+  Card,
+  CardBody,
+  Col,
+  Container,
+  Image,
+  ProgressBar,
+  Row,
+} from "react-bootstrap";
+import { FaGuitar, FaUsers } from "react-icons/fa";
 import Skeleton from "react-loading-skeleton";
-import axiosInstance from "../utils/axiosUtil";
 import { getError, toastOptions } from "../utils/error";
-import { MotionDiv, MessageBox } from "../components";
-import { useDispatch, useSelector } from "react-redux";
-import { hideLoading, showLoading } from "../features/loadingSlice";
-import CountUp from "../components/layout/CountUp";
-import { selectAuth } from "../features/authSlice";
-
-
-
-const card = [
-  {
-    key: "usersCount",
-    bg: "info",
-    icon: <FaUsers />,
-    text: "Users",
-    url: "/admin/users/"
-  },
-  {
-    key: "guitarsCount",
-    bg: "danger",
-    icon: <FaGuitar />,
-    text: "Guitars ",
-    url: "/admin/guitar/"
-  },
-
-  // {
-  //   key: "active",
-  //   bg: "success",
-  //   icon: <HiShieldCheck />,
-  //   text: "Active Warranties",
-  //   url: "/admin/warranty/?status=ACTIVE"
-  // },
-  // {
-  //   key: "rejected",
-  //   bg: "danger",
-  //   icon: <BiSolidShieldX />,
-  //   text: "Rejected Warranties",
-  //   url: "/admin/warranty/?status=REJECTED"
-  // },
-  
-  
-  // {
-  //   key: "enquiry",
-  //   bg: "info",
-  //   icon: <MdContactPhone />,
-  //   text: "Enquiry",
-  //   url: "/admin/enquiry"
-  // }
-];
-
-const ViewCard = ({ loading, data, bg, icon, text, url }) => {
-  return (
-    <div>
-      {loading ? (
-        <Skeleton count={5} />
-      ) : (
-        <div className={`small-box bg-${bg}`}>
-          {/* <div className="inner p-sm-1 p-md-2 p-lg-3"> */}
-          <div className="inner">
-            <CountUp start={0} end={data} duration={2} />
-            {/* <h1>
-              {data && data[0] ? data[0].total : 0}
-            </h1> */}
-            <h5 style={{
-              overflow: 'hidden',
-              whiteSpace: 'nowrap', 
-              textOverflow: 'ellipsis'
-            }}>{text}</h5>
-          </div>
-          <div className="icon">
-            {icon}
-          </div>
-          <Link to={url} className="small-box-footer">
-            More info {<FaArrowCircleRight />}
-          </Link>
-        </div>
-      )}
-    </div>
-  )
-}
+import { MotionDiv } from "../components";
+import DashboardCard from "../components/layout/DasboardCard";
+import "./Dashboard.css";
+import SearchField from "../components/layout/SearchField";
 
 export default function Dashboard() {
-  
-  const {accessToken} = useSelector(selectAuth);
-
-const dispatch = useDispatch();
-const [summary, setSummary] = useState("");
- 
-
+  const [accountPortfolioActive, setAccountPortfolioActive] = useState(1);
+  const [expenseActive, setExpenseActive] = useState(1);
 
   return (
     <MotionDiv>
-      {/* {error ? (
-        <MessageBox variant="danger">{error}</MessageBox>
-      ) : (
-        <>
-          <Row
-            className="my-3 pb-2"
-            style={{ borderBottom: "1px solid rgba(0,0,0,0.2)" }}
-          >
-            <Col md={6}>
-              <h3>Dashboard</h3>
+      <div className="w-100">
+        <h2>
+          Hello! <span style={{ color: "rgba(55, 73, 87, 0.6)" }}>Krishna</span>
+        </h2>
+
+        <Container fluid>
+          <Row>
+            <Col>
+              <DashboardCard height="300px">
+                <h4 style={{ fontWeight: 600, color: "rgba(0, 39, 91, 1)" }}>
+                  Account Portfolio
+                </h4>
+                <ul className="account_portfolio_active">
+                  <li
+                    onClick={() => setAccountPortfolioActive(1)}
+                    style={{
+                      borderBottom:
+                        accountPortfolioActive === 1
+                          ? "2px solid rgba(0, 74, 173, 1)"
+                          : "none",
+                      color:
+                        accountPortfolioActive === 1
+                          ? "rgba(0, 74, 173, 1)"
+                          : "rgba(55, 73, 87, 0.7)",
+                      cursor: "pointer",
+                      fontWeight: 600,
+                    }}
+                  >
+                    Saving account
+                  </li>
+                  <li
+                    onClick={() => setAccountPortfolioActive(2)}
+                    style={{
+                      borderBottom:
+                        accountPortfolioActive === 2
+                          ? "2px solid rgba(0, 74, 173, 1)"
+                          : "none",
+                      color:
+                        accountPortfolioActive === 2
+                          ? "rgba(0, 74, 173, 1)"
+                          : "rgba(55, 73, 87, 0.7)",
+                      cursor: "pointer",
+                      fontWeight: 600,
+                    }}
+                  >
+                    Credit Cards
+                  </li>
+                  <li
+                    onClick={() => setAccountPortfolioActive(3)}
+                    style={{
+                      borderBottom:
+                        accountPortfolioActive === 3
+                          ? "2px solid rgba(0, 74, 173, 1)"
+                          : "none",
+                      color:
+                        accountPortfolioActive === 3
+                          ? "rgba(0, 74, 173, 1)"
+                          : "rgba(55, 73, 87, 0.7)",
+                      cursor: "pointer",
+                      fontWeight: 600,
+                    }}
+                  >
+                    Money In vs Out
+                  </li>
+                  <li
+                    onClick={() => setAccountPortfolioActive(4)}
+                    style={{
+                      borderBottom:
+                        accountPortfolioActive === 4
+                          ? "2px solid rgba(0, 74, 173, 1)"
+                          : "none",
+                      color:
+                        accountPortfolioActive === 4
+                          ? "rgba(0, 74, 173, 1)"
+                          : "rgba(55, 73, 87, 0.7)",
+                      cursor: "pointer",
+                      fontWeight: 600,
+                    }}
+                  >
+                    Monthly money out
+                  </li>
+                </ul>
+
+                {accountPortfolioActive === 1 && (
+                  <div
+                    className="mt-2"
+                    style={{
+                      backgroundColor: "rgba(245, 247, 248, 1)",
+                      height: "200px",
+                      borderRadius: "10px",
+                      padding: "20px",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      <div>
+                        <div
+                          style={{
+                            color: "rgba(0, 74, 173, 0.7)",
+                            fontSize: "12px",
+                          }}
+                        >
+                          Total amount
+                        </div>
+                        <div
+                          style={{
+                            color: "var(--primary-color",
+                            fontWeight: 700,
+                            fontSize: "30px",
+                          }}
+                        >
+                          $ 4000
+                        </div>
+                      </div>
+
+                      <Image
+                        width={"100px"}
+                        height={"100px"}
+                        src="/images/money.png"
+                        alt="..."
+                      />
+                    </div>
+                    <div className="w-75">
+                      <ProgressBar now={60} label={`${60}%`} visuallyHidden />
+                    </div>
+                  </div>
+                )}
+              </DashboardCard>
             </Col>
-            <Col md={6}></Col>
+
+            <Col>
+              <DashboardCard height="300px">
+                <div className="d-flex align-items-center justify-content-between">
+                  <h4 style={{ fontWeight: 600, color: "rgba(0, 39, 91, 1)" }}>
+                    Expenses
+                  </h4>
+                  <p
+                    style={{
+                      color: "rgba(92, 182, 249, 1)",
+                      fontWeight: 600,
+                      fontSize: "12px",
+                    }}
+                  >
+                    See more
+                  </p>
+                </div>
+                <ul className="account_portfolio_active px-5">
+                  <li
+                    onClick={() => setExpenseActive(1)}
+                    style={{
+                      borderBottom:
+                        expenseActive === 1
+                          ? "2px solid rgba(0, 74, 173, 1)"
+                          : "none",
+                      color:
+                        expenseActive === 1
+                          ? "rgba(0, 74, 173, 1)"
+                          : "rgba(55, 73, 87, 0.7)",
+                      cursor: "pointer",
+                      fontWeight: 600,
+                    }}
+                  >
+                    Money out
+                  </li>
+                  <li
+                    onClick={() => setExpenseActive(2)}
+                    style={{
+                      borderBottom:
+                        expenseActive === 2
+                          ? "2px solid rgba(0, 74, 173, 1)"
+                          : "none",
+                      color:
+                        expenseActive === 2
+                          ? "rgba(0, 74, 173, 1)"
+                          : "rgba(55, 73, 87, 0.7)",
+                      cursor: "pointer",
+                      fontWeight: 600,
+                    }}
+                  >
+                    Upcoming payments
+                  </li>
+                  <li
+                    onClick={() => setExpenseActive(3)}
+                    style={{
+                      borderBottom:
+                        expenseActive === 3
+                          ? "2px solid rgba(0, 74, 173, 1)"
+                          : "none",
+                      color:
+                        expenseActive === 3
+                          ? "rgba(0, 74, 173, 1)"
+                          : "rgba(55, 73, 87, 0.7)",
+                      cursor: "pointer",
+                      fontWeight: 600,
+                    }}
+                  >
+                    Money In
+                  </li>
+                </ul>
+              </DashboardCard>
+            </Col>
           </Row>
 
-          <Row className="m-0 mb-3">
-            {card.map(({ key, bg, icon, text, url }) => (
-              <Col key={url} lg={4} md={6} sm={12} className="p-sm-1 p-md-2 p-lg-3">
-                <ViewCard loading={isLoading} data={summary && summary[key]} bg={bg} icon={icon} text={text} url={url} />
-              </Col>
-            ))}
+          <Row className="mt-4">
+            <Col>
+              <DashboardCard height="300px">
+                <div className="d-flex align-items-center justify-content-between">
+                  <h4 style={{ fontWeight: 600, color: "rgba(0, 39, 91, 1)" }}>
+                    Net worth
+                  </h4>
+                  <p
+                    style={{
+                      color: "var(--primary-color)",
+                      fontWeight: 600,
+                      fontSize: "16px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    View
+                  </p>
+                </div>
+
+                <div className="mt-4">
+                  <div
+                    style={{
+                      color: "var(--primary-color)",
+                      fontWeight: 600,
+                      fontSize: "16px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Net Worth
+                  </div>
+
+                  <div
+                    className="mt-2"
+                    style={{
+                      color: "var(--primary-color)",
+                      fontWeight: 600,
+                      fontSize: "30px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    $ 1,220.00
+                  </div>
+                </div>
+
+                <div className="mt-5 d-flex justify-content-between">
+                  <div
+                    style={{
+                      color: "rgba(121, 144, 176, 1)",
+                      fontSize: "16px",
+                    }}
+                  >
+                    Assets
+                  </div>{" "}
+                  <div
+                    style={{
+                      fontWeight: 600,
+                      fontSize: "16px",
+                    }}
+                  >
+                    $1219.92
+                  </div>
+                </div>
+
+                <div className="mt-4 d-flex justify-content-between">
+                  <div
+                    style={{
+                      color: "rgba(121, 144, 176, 1)",
+                      fontSize: "16px",
+                    }}
+                  >
+                    Liabilities
+                  </div>{" "}
+                  <div
+                    style={{
+                      fontWeight: 600,
+                      fontSize: "16px",
+                    }}
+                  >
+                    $0.8
+                  </div>
+                </div>
+              </DashboardCard>
+            </Col>
+
+            <Col>
+              <DashboardCard height="300px">
+                <h4 style={{ fontWeight: 600, color: "rgba(0, 39, 91, 1)" }}>
+                  Budget
+                </h4>
+
+                <div className="mt-5 d-flex justify-content-between align-items-center">
+                  <div>
+                    <h3
+                      style={{
+                        fontWeight: 600,
+                        color: "var(--primary-color)",
+                        borderRadius: "20px",
+                      }}
+                    >
+                      5 days
+                    </h3>
+                    <p
+                      style={{
+                        fontWeight: 600,
+                        color: "rgba(159, 175, 198, 1)",
+                        fontSize: "12px",
+                      }}
+                    >
+                      Left for this week’s budget
+                    </p>
+                  </div>
+                  <div
+                    style={{
+                      backgroundColor: "rgba(92, 182, 249, 0.08)",
+                      color: "rgba(92, 182, 249, 1)",
+                      fontSize: "12px",
+                      padding: "8px",
+                      borderRadius: "20px",
+                    }}
+                  >
+                    1 active budget
+                  </div>
+                </div>
+              </DashboardCard>
+            </Col>
+
+            <Col>
+              <DashboardCard height="300px">
+                <h4 style={{ fontWeight: 600, color: "rgba(0, 39, 91, 1)" }}>
+                  Upcoming Bills
+                </h4>
+              </DashboardCard>
+            </Col>
           </Row>
-          <ToastContainer />
-        </>
-      )} */}
-      <h1>Dashboard</h1>
-    </MotionDiv >
+
+          <Row className="mt-4">
+            <Col>
+              <DashboardCard height="300px">
+                <div className="d-flex align-items-center justify-content-between">
+                  <div className="w-25">
+                    <SearchField />
+                  </div>
+                  <p
+                    style={{
+                      color: "rgba(92, 182, 249, 1)",
+                      fontWeight: 600,
+                      fontSize: "12px",
+                      backgroundColor: "rgba(242, 249, 255, 1)",
+                      padding: "10px",
+                      borderRadius: "20px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    View all
+                  </p>
+                </div>
+              </DashboardCard>
+            </Col>
+          </Row>
+        </Container>
+      </div>
+    </MotionDiv>
   );
 }
