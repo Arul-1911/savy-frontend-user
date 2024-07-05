@@ -42,6 +42,7 @@ export default function SideNavbar({ isExpanded }) {
   const [activeLink, setActiveLink] = useState("Dashboard");
   // const { accessToken } = useSelector(selectAuth);
   const accessToken = localStorage.getItem("accessToken");
+  const bankToken = localStorage.getItem("bankToken");
 
   const activeLinkHandler = (url) => {
     return pathname.includes(url);
@@ -56,7 +57,7 @@ export default function SideNavbar({ isExpanded }) {
   // console.log({ userInfo });
   return (
     <>
-      {accessToken ? (
+      {accessToken && bankToken ? (
         <div
           className={
             isExpanded

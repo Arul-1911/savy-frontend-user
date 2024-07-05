@@ -12,9 +12,11 @@ import { RxCross2 } from "react-icons/rx";
 export default function Header({ sidebarHandler }) {
   // const { user, accessToken } = useSelector(selectAuth);
   const accessToken = localStorage.getItem("accessToken");
+  const bankToken = localStorage.getItem("bankToken");
+
   return (
     <>
-      {accessToken ? (
+      {accessToken && bankToken ? (
         <Container className="header">
           <Row>
             <Col md={4}>

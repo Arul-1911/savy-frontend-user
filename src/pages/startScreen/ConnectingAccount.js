@@ -7,10 +7,13 @@ export default function ConnectingAccount() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    setInterval(() => {
+    const intervalId = setInterval(() => {
       navigate("/user/account-successfully-connected");
     }, 4000);
-  });
+
+    // Cleanup function to clear the interval
+    return () => clearInterval(intervalId);
+  }, [navigate]);
 
   return (
     <LoginCard height={"450px"} width={"450px"}>

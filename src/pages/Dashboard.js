@@ -167,7 +167,8 @@ export default function Dashboard() {
                     style={{
                       color: "rgba(92, 182, 249, 1)",
                       fontWeight: 600,
-                      fontSize: "12px",
+                      fontSize: "16px",
+                      cursor: "pointer",
                     }}
                   >
                     See more
@@ -376,7 +377,7 @@ export default function Dashboard() {
                     style={{
                       color: "rgba(92, 182, 249, 1)",
                       fontWeight: 600,
-                      fontSize: "12px",
+                      fontSize: "16px",
                       backgroundColor: "rgba(242, 249, 255, 1)",
                       padding: "10px",
                       borderRadius: "20px",

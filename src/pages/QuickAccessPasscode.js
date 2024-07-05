@@ -35,6 +35,8 @@ export default function QuickAccessPasscode() {
   const handlePasscode = async () => {
     try {
       localStorage.setItem("accessToken", true);
+      localStorage.setItem("user", true);
+      localStorage.setItem("bankToken", true);
       navigate("/user/dashboard");
     } catch (error) {
       getError(error);

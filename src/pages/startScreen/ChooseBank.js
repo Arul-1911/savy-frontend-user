@@ -84,9 +84,12 @@ export default function ChooseBank() {
 
       <div className="bank-list px-4">
         <ul className="p-0">
-          {banks?.map((bank) => {
+          {banks?.map((bank, idx) => {
             return (
-              <div className="d-flex align-items-center gap-2 banks-name">
+              <div
+                key={idx}
+                className="d-flex align-items-center gap-2 banks-name"
+              >
                 <img
                   style={{ width: "30px", height: "30px" }}
                   src={bank?.img}

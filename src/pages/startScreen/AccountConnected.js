@@ -7,10 +7,14 @@ export default function AccountConnected() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    setInterval(() => {
-      navigate("/");
+    const intervalId = setInterval(() => {
+      localStorage.setItem("bankToken", true);
+      navigate("/user/dashboard");
     }, 4000);
-  });
+
+    // Cleanup function to clear the interval
+    return () => clearInterval(intervalId);
+  }, [navigate]);
 
   return (
     <LoginCard height={"450px"} width={"450px"}>
@@ -20,7 +24,7 @@ export default function AccountConnected() {
             className="mt-5"
             style={{
               fontWeight: 600,
-              fontSize: "13px",
+              fontSize: "14px",
             }}
           >
             Bank of Melbourne
@@ -29,7 +33,7 @@ export default function AccountConnected() {
             style={{
               color: "rgba(36, 204, 167, 1)",
               fontWeight: 600,
-              fontSize: "12px",
+              fontSize: "16px",
             }}
           >
             successfully connected

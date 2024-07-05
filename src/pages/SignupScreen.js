@@ -15,7 +15,7 @@ export default function SignupScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginAdmin, { isLoading }] = useLoginAdminMutation();
-  const { accessToken } = useSelector(selectAuth);
+  // const { accessToken } = useSelector(selectAuth);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -27,13 +27,6 @@ export default function SignupScreen() {
     }
   };
 
-  useEffect(() => {
-    if (accessToken) {
-      navigate("/admin/dashboard");
-    }
-  }, [accessToken]);
-
-  useTitle("Login");
   return (
     <LoginCard height={"500px"} width={"450px"}>
       <div className="d-flex align-items-center flex-column">

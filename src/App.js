@@ -62,6 +62,7 @@ import ResetPassword from "./pages/ResetPassword";
 
 function App() {
   const accessToken = localStorage.getItem("accessToken");
+  const bankToken = localStorage.getItem("bankToken");
   const dispatch = useDispatch();
 
   const pageLocation = useLocation();
@@ -159,7 +160,7 @@ function App() {
       </div>
       <div
         className={`body-wrapper ${isExpanded ? "mini-body" : "full-body"} 
-        ${accessToken ? "" : "m-0"} d-flex flex-column`}
+        ${accessToken && bankToken ? "" : "m-0"} d-flex flex-column`}
       >
         <Header sidebarHandler={sidebarHandler} />
         <Routes location={pageLocation} key={pageLocation.pathname}>
@@ -226,7 +227,11 @@ function App() {
           />
 
           {routeList.map(({ path, comp }) => (
-            <Route key={path} path={path} element={<>{comp}</>} />
+            <Route
+              key={path}
+              path={path}
+              element={<AdminProtectedRoute>{comp}</AdminProtectedRoute>}
+            />
           ))}
 
           <Route path="*" element={<NotFound />} />
