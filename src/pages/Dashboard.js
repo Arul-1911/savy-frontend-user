@@ -8,13 +8,21 @@ import {
   ProgressBar,
   Row,
 } from "react-bootstrap";
-import { FaGuitar, FaUsers } from "react-icons/fa";
-import Skeleton from "react-loading-skeleton";
-import { getError, toastOptions } from "../utils/error";
+// import Skeleton from "react-loading-skeleton";
+// import { getError, toastOptions } from "../utils/error";
 import { MotionDiv } from "../components";
 import DashboardCard from "../components/layout/DasboardCard";
 import "./Dashboard.css";
 import SearchField from "../components/layout/SearchField";
+import Stack from "@mui/material/Stack";
+import { PieChart } from "@mui/x-charts/PieChart";
+
+const data = [
+  { label: "Group A", value: 400 },
+  { label: "Group B", value: 300 },
+  { label: "Group C", value: 300 },
+  { label: "Group D", value: 200 },
+];
 
 export default function Dashboard() {
   const [accountPortfolioActive, setAccountPortfolioActive] = useState(1);
@@ -227,6 +235,25 @@ export default function Dashboard() {
                     Money In
                   </li>
                 </ul>
+
+                <div className="mt-2">
+                  <Stack direction="row">
+                    <PieChart
+                      series={[
+                        {
+                          paddingAngle: 2,
+                          innerRadius: 60,
+                          outerRadius: 100,
+                          data,
+                        },
+                      ]}
+                      margin={{ right: 5 }}
+                      width={200}
+                      height={200}
+                      legend={{ hidden: true }}
+                    />
+                  </Stack>
+                </div>
               </DashboardCard>
             </Col>
           </Row>
