@@ -59,6 +59,9 @@ import {
   QuickAccessPasscode,
 } from "./pages/startScreen";
 import ResetPassword from "./pages/ResetPassword";
+import { MyAccount } from "./pages/MyAccount";
+import { Transactions } from "./pages/Transactions";
+import CashFlow from "./pages/Cashflow/CashFlow";
 
 function App() {
   const accessToken = localStorage.getItem("accessToken");
@@ -96,6 +99,9 @@ function App() {
     },
 
     { path: "/user/dashboard", comp: <Dashboard /> },
+    { path: "/user/my-account", comp: <MyAccount /> },
+    { path: "/user/transactions", comp: <Transactions /> },
+    { path: "/user/cashflow", comp: <CashFlow /> },
 
     // { path: "/admin/dashboard", comp: <Dashboard /> },
     { path: "admin/view-profile", comp: <ViewProfile /> },

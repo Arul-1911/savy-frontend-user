@@ -12,3 +12,18 @@
   padding: 0;
   margin: 0;
 }
+
+.--bs-progress-bar-bg {
+  color: black !important;
+}
+
+.market {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.market > li {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+  margin-top: 10px;
+}
