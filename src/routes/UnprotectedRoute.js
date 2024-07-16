@@ -4,11 +4,8 @@ import { useSelector } from "react-redux";
 import { selectAuth } from "../features/authSlice";
 
 export default function UnprotectedRoute({ children }) {
-  const { user } = useSelector(selectAuth);
+  // const { user } = useSelector(selectAuth);
+  const user = localStorage.getItem("user");
 
-  return user && user?.role === "admin" ? (
-    <Navigate to="/user/dashboard" />
-  ) : (
-    children
-  );
+  return user ? <Navigate to="/user/dashboard" /> : children;
 }

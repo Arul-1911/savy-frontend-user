@@ -93,9 +93,14 @@ a {
 }
 
 .form-field::placeholder {
-  color: rgba(217, 217, 217, 1);
+  /* color: rgba(217, 217, 217, 1); */
   font-weight: 700;
   font-size: 12px;
+}
+
+.grp_input {
+  border-left: none;
+  background-color: white;
 }
 
 #msg-container {

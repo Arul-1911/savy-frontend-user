@@ -1,7 +1,7 @@
 .net_worth {
-  border: 1px solid black;
   border-radius: 10px;
   padding: 20px;
+  background: linear-gradient(to right, rgb(137, 209, 193), rgb(142, 150, 235));
 }
 
 .my_account_portfolio {

@@ -1,18 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
-import { GiHamburgerMenu } from "react-icons/gi";
-import { useSelector } from "react-redux";
-import { selectAuth } from "../../features/authSlice";
 import { IoIosSettings } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
 import { IoMdNotifications } from "react-icons/io";
 import { FaUserCircle } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
 
+import GoalComponent from "../HeaderComponents/GoalComponent";
+import PayDayComponent from "../HeaderComponents/PayDayComponent";
+
 export default function Header({ sidebarHandler }) {
   // const { user, accessToken } = useSelector(selectAuth);
   const accessToken = localStorage.getItem("accessToken");
   const bankToken = localStorage.getItem("bankToken");
+
+  const [goalBackLink, setGoalBackLink] = useState(1);
+  const [goalModal, setGoalModal] = useState(false);
+
+  const [payDaysLink, setPayDaysLink] = useState(1);
+  const [payDays, setPayDays] = useState(false);
 
   return (
     <>
@@ -68,8 +74,13 @@ export default function Header({ sidebarHandler }) {
                   }}
                 >
                   <div
+                    onClick={() => {
+                      setGoalModal(true);
+                      setGoalBackLink(1);
+                    }}
                     className="d-flex align-items-center"
                     style={{
+                      cursor: "pointer",
                       padding: "26px",
                       backgroundColor: "rgba(235, 241, 248, 1)",
                       height: "50px",
@@ -112,7 +123,12 @@ export default function Header({ sidebarHandler }) {
 
                 <div
                   className="d-flex align-items-center"
+                  onClick={() => {
+                    setPayDays(true);
+                    setPayDaysLink(1);
+                  }}
                   style={{
+                    cursor: "pointer",
                     padding: "26px",
                     backgroundColor: "rgba(235, 241, 248, 1)",
                     height: "50px",
@@ -190,120 +206,24 @@ export default function Header({ sidebarHandler }) {
           /> */}
         </Container>
       ) : (
-        // <Container fluid className="ps-0 header">
-        //   <div className="header-inside">
-        //     {/* <Navbar className=" header-inside"> */}
-        //     <Row>
-        //       <Col md={3} style={{ border: "1px solid black" }}>
-        //         <div className="d-flex justify-content-between gap-5">
-        //           <div
-        //             className="p-2"
-        //             style={{
-        //               backgroundColor: "rgba(245, 247, 248, 1)",
-        //               borderRadius: "100%",
-        //               height: "40px",
-        //               width: "40px",
-        //             }}
-        //           >
-        //             <IoIosSettings
-        //               size={25}
-        //               cursor={"pointer"}
-        //               color="rgba(92, 182, 249, 1)"
-        //             />
-        //           </div>
-        //           <div
-        //             className="p-2"
-        //             style={{
-        //               backgroundColor: "rgba(245, 247, 248, 1)",
-        //               height: "40px",
-        //               width: "80px",
-        //             }}
-        //           >
-        //             <IoIosSettings
-        //               size={25}
-        //               cursor={"pointer"}
-        //               color="rgba(92, 182, 249, 1)"
-        //             />
-        //           </div>
-        //         </div>
-        //       </Col>
-
-        //       <Col style={{ border: "1px solid black" }}>
-        //         <div className="d-flex justify-content-end gap-5">
-        //           <div
-        //             className="p-2"
-        //             style={{
-        //               backgroundColor: "rgba(245, 247, 248, 1)",
-        //               borderRadius: "100%",
-        //               height: "40px",
-        //               width: "40px",
-        //             }}
-        //           >
-        //             <IoIosSettings
-        //               size={25}
-        //               cursor={"pointer"}
-        //               color="rgba(92, 182, 249, 1)"
-        //             />
-        //           </div>
-        //           <div
-        //             className="p-2"
-        //             style={{
-        //               backgroundColor: "rgba(245, 247, 248, 1)",
-        //               borderRadius: "100%",
-        //               height: "40px",
-        //               width: "40px",
-        //             }}
-        //           >
-        //             <IoIosSettings
-        //               size={25}
-        //               cursor={"pointer"}
-        //               color="rgba(92, 182, 249, 1)"
-        //             />
-        //           </div>
-        //         </div>
-        //       </Col>
-        //     </Row>
-        //     {/* <GiHamburgerMenu
-        //     style={{
-        //       fontSize: "1.5rem",
-        //       color: "rgba(0, 0, 139, 1)",
-        //       marginLeft: "1rem",
-        //       cursor: "pointer",
-        //     }}
-        //     onClick={() => sidebarHandler()}
-        //   /> */}
-
-        //     {/* <Nav className="ms-auto">
-        //       <Dropdown align="end">
-        //         <Dropdown.Toggle
-        //           id="user_profile"
-        //           className="right-profile-logo "
-        //           variant="light"
-        //         >
-        //           <FaUserCircle size={"25px"} color="rgba(0, 0, 139, 1)" />
-        //         </Dropdown.Toggle>
-
-        //         <Dropdown.Menu>
-        //           <Dropdown.Header>
-        //             Signed in as
-        //             <br />
-        //             <b>{user?.name}</b>
-        //           </Dropdown.Header>
-
-        //           <Dropdown.Divider />
-        //           <Dropdown.Item>
-        //             <Link to="admin/view-profile/" className="dropdown-item">
-        //               <FaUser className="me-2" /> Profile
-        //             </Link>
-        //           </Dropdown.Item>
-        //         </Dropdown.Menu>
-        //       </Dropdown>
-        //     </Nav> */}
-        //     {/* </Navbar> */}
-        //   </div>
-        // </Container>
         <></>
       )}
+
+      {/* Goal  */}
+      <GoalComponent
+        show={goalModal}
+        hide={setGoalModal}
+        active={goalBackLink}
+        activeLink={setGoalBackLink}
+      />
+
+      {/* Paydays */}
+      <PayDayComponent
+        show={payDays}
+        hide={setPayDays}
+        active={payDaysLink}
+        activeLink={setPayDaysLink}
+      />
     </>
   );
 }
