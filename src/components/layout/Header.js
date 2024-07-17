@@ -8,8 +8,10 @@ import { RxCross2 } from "react-icons/rx";
 
 import GoalComponent from "../HeaderComponents/GoalComponent";
 import PayDayComponent from "../HeaderComponents/PayDayComponent";
+import { useNavigate } from "react-router-dom";
 
 export default function Header({ sidebarHandler }) {
+  const navigate = useNavigate();
   // const { user, accessToken } = useSelector(selectAuth);
   const accessToken = localStorage.getItem("accessToken");
   const bankToken = localStorage.getItem("bankToken");
@@ -19,6 +21,13 @@ export default function Header({ sidebarHandler }) {
 
   const [payDaysLink, setPayDaysLink] = useState(1);
   const [payDays, setPayDays] = useState(false);
+
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("bankToken");
+    localStorage.removeItem("user");
+    navigate("/");
+  };
 
   return (
     <>
@@ -178,11 +187,13 @@ export default function Header({ sidebarHandler }) {
 
                 <div
                   className="p-2"
+                  onClick={handleLogout}
                   style={{
                     backgroundColor: "rgba(245, 247, 248, 1)",
                     borderRadius: "100%",
                     height: "40px",
                     width: "40px",
+                    cursor: "pointer",
                   }}
                 >
                   <FaUserCircle
