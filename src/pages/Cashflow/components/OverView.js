@@ -142,10 +142,11 @@ const OverView = () => {
                 <ChartContainer
                   width={200}
                   height={250}
+                  colors={["rgba(58, 195, 172, 1)"]}
                   series={[{ data: uData, label: "uv", type: "bar" }]}
                   xAxis={[{ scaleType: "band", data: xLabels }]}
                 >
-                  <BarPlot />
+                  <BarPlot borderRadius={10} />
                 </ChartContainer>
               </div>
             </Col>
@@ -183,10 +184,11 @@ const OverView = () => {
                 <ChartContainer
                   width={200}
                   height={250}
+                  colors={["rgba(58, 195, 172, 1)"]}
                   series={[{ data: uData, label: "uv", type: "bar" }]}
                   xAxis={[{ scaleType: "band", data: xLabels }]}
                 >
-                  <BarPlot />
+                  <BarPlot borderRadius={10} />
                 </ChartContainer>
               </div>
             </Col>
@@ -232,11 +234,11 @@ const OverView = () => {
                 <ChartContainer
                   width={200}
                   height={250}
-                  colors={"#8884d8"}
+                  colors={["rgba(58, 195, 172, 1)"]}
                   series={[{ data: uData, label: "uv", type: "bar" }]}
                   xAxis={[{ scaleType: "band", data: xLabels }]}
                 >
-                  <BarPlot />
+                  <BarPlot borderRadius={10} />
                 </ChartContainer>
               </div>
             </Col>

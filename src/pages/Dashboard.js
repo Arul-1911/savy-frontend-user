@@ -1,13 +1,5 @@
 import React, { useState } from "react";
-import {
-  Card,
-  CardBody,
-  Col,
-  Container,
-  Image,
-  ProgressBar,
-  Row,
-} from "react-bootstrap";
+import { Col, Container, Image, ProgressBar, Row } from "react-bootstrap";
 // import Skeleton from "react-loading-skeleton";
 // import { getError, toastOptions } from "../utils/error";
 import { MotionDiv } from "../components";
@@ -16,17 +8,61 @@ import "./Dashboard.css";
 import SearchField from "../components/layout/SearchField";
 import Stack from "@mui/material/Stack";
 import { PieChart } from "@mui/x-charts/PieChart";
+import { BarPlot, ChartContainer } from "@mui/x-charts";
+import { Link } from "react-router-dom";
 
 const data = [
-  { label: "Group A", value: 400, color: "#0088FE" },
-  { label: "Group B", value: 300, color: "#00C49F" },
-  { label: "Group C", value: 300, color: "#FFBB28" },
-  { label: "Group D", value: 200, color: "#FF8042" },
+  { label: "Group A", value: 550, color: "rgba(74, 86, 226, 1)" },
+  { label: "Group B", value: 450, color: "rgba(36, 204, 167, 1)" },
+  { label: "Group C", value: 350, color: "rgba(36, 204, 167, 0.7)" },
+  { label: "Group D", value: 350, color: "rgba(36, 204, 167, 0.4)" },
+  { label: "Group E", value: 250, color: "rgba(36, 204, 167, 0.2)" },
+];
+
+const uData = [4000, 3000];
+const xLabels = ["Page A", "Page B"];
+
+const Data = [
+  82000, 30000, 44545, 78344, 93885, 64587, 54589, 47477, 34393, 56409, 84934,
+];
+const Labels = [
+  "Page A",
+  "Page B",
+  "Page C",
+  "Page D",
+  "Page E",
+  "Page F",
+  "Page G",
+  "Page H",
+  "Page I",
+  "Page J",
+  "Page K",
 ];
 
 export default function Dashboard() {
   const [accountPortfolioActive, setAccountPortfolioActive] = useState(1);
   const [expenseActive, setExpenseActive] = useState(1);
+
+  const upcomingPayments = [
+    {
+      icons: "/icons/disnep.png",
+      text: "Disney+",
+      subText: "5th of every month",
+      amount: "-$30.00",
+    },
+    {
+      icons: "/icons/spotify.png",
+      text: "Spotify",
+      subText: "18th of every month",
+      amount: "-$30.00",
+    },
+    {
+      icons: "/icons/amazon.png",
+      text: "Amazon",
+      subText: "10th of May, every year",
+      amount: "-$30.00",
+    },
+  ];
 
   return (
     <MotionDiv>
@@ -39,7 +75,7 @@ export default function Dashboard() {
         >
           Hello! <span style={{ color: "rgba(55, 73, 87, 0.6)" }}>Krishna</span>
         </h2>
-        <Row>
+        <Row className="g-3">
           <Col>
             <DashboardCard height="300px">
               <h4 style={{ fontWeight: 600, color: "rgba(0, 39, 91, 1)" }}>
@@ -165,6 +201,187 @@ export default function Dashboard() {
                   </div>
                 </div>
               )}
+
+              {accountPortfolioActive === 2 && (
+                <div
+                  className="mt-2"
+                  style={{
+                    backgroundColor: "rgba(245, 247, 248, 1)",
+                    height: "200px",
+                    borderRadius: "10px",
+                    padding: "20px",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <div>
+                      <div
+                        style={{
+                          color: "rgba(0, 74, 173, 0.7)",
+                          fontSize: "12px",
+                        }}
+                      >
+                        Total amount
+                      </div>
+                      <div
+                        style={{
+                          color: "var(--primary-color",
+                          fontWeight: 700,
+                          fontSize: "30px",
+                        }}
+                      >
+                        $6,770
+                      </div>
+                    </div>
+
+                    <Image
+                      width={"100px"}
+                      height={"100px"}
+                      src="/images/money.png"
+                      alt="..."
+                    />
+                  </div>
+                </div>
+              )}
+
+              {accountPortfolioActive === 3 && (
+                <div
+                  className="mt-2"
+                  style={{
+                    backgroundColor: "rgba(245, 247, 248, 1)",
+                    height: "200px",
+                    borderRadius: "10px",
+                    padding: "20px",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <div>
+                      <div
+                        style={{
+                          color: "var(--primary-color)",
+                          fontWeight: 600,
+                          fontSize: "16px",
+                        }}
+                      >
+                        This time
+                      </div>
+                      <ChartContainer
+                        width={200}
+                        height={200}
+                        colors={["rgba(0, 74, 173, 1)"]}
+                        series={[{ data: uData, label: "uv", type: "bar" }]}
+                        xAxis={[{ scaleType: "band", data: xLabels }]}
+                      >
+                        <BarPlot borderRadius={10} />
+                      </ChartContainer>
+                    </div>
+                    <div>
+                      <div
+                        className="px-4 py-2 mb-3"
+                        style={{
+                          backgroundColor: "rgba(249, 252, 255, 1)",
+                          border: "2px solid rgba(226, 242, 255, 1)",
+                          borderRadius: "10px",
+                        }}
+                      >
+                        <div
+                          style={{
+                            fontSize: "10px",
+                            color: "var(--primary-color)",
+                            textAlign: "end",
+                          }}
+                        >
+                          Total Money In:
+                        </div>
+                        <div
+                          style={{
+                            backgroundImage:
+                              "linear-gradient(270deg, #5CB6F9 0%, #004AAD 100%)",
+                            WebkitBackgroundClip: "text",
+                            color: "transparent",
+                          }}
+                        >
+                          30.000,00$
+                        </div>
+                      </div>
+
+                      <div
+                        className="px-4 py-2 mb-3"
+                        style={{
+                          backgroundColor: "rgba(249, 252, 255, 1)",
+                          border: "2px solid rgba(226, 242, 255, 1)",
+                          borderRadius: "10px",
+                        }}
+                      >
+                        <div
+                          style={{
+                            fontSize: "10px",
+                            color: "var(--primary-color)",
+                            textAlign: "end",
+                          }}
+                        >
+                          Money Out:
+                        </div>
+                        <div
+                          style={{
+                            backgroundImage:
+                              "linear-gradient(270deg, #DC5A5B -4.02%, #004AAD 105.17%)",
+                            WebkitBackgroundClip: "text",
+                            color: "transparent",
+                          }}
+                        >
+                          20.000,00$
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {accountPortfolioActive === 4 && (
+                <div
+                  className="mt-2"
+                  style={{
+                    backgroundColor: "rgba(245, 247, 248, 1)",
+                    height: "200px",
+                    borderRadius: "10px",
+                    padding: "20px",
+                  }}
+                >
+                  <div
+                    style={{
+                      color: "var(--primary-color)",
+                      fontWeight: 600,
+                      fontSize: "16px",
+                    }}
+                  >
+                    This Year
+                  </div>
+
+                  <div className="d-flex justify-content-center">
+                    <ChartContainer
+                      width={500}
+                      height={200}
+                      colors={["rgba(74, 86, 226, 1)"]}
+                      series={[{ data: Data, label: "uv", type: "bar" }]}
+                      xAxis={[{ scaleType: "band", data: Labels }]}
+                    >
+                      <BarPlot borderRadius={10} />
+                    </ChartContainer>
+                  </div>
+                </div>
+              )}
             </DashboardCard>
           </Col>
 
@@ -240,29 +457,102 @@ export default function Dashboard() {
               </ul>
 
               <div className="mt-2">
-                <Stack direction="row">
-                  <PieChart
-                    series={[
-                      {
-                        paddingAngle: 2,
-                        innerRadius: 45,
-                        outerRadius: 100,
-                        cornerRadius: 10,
-                        data,
-                      },
-                    ]}
-                    margin={{ right: 5 }}
-                    width={200}
-                    height={200}
-                    legend={{ hidden: true }}
-                  />
-                </Stack>
+                {expenseActive === 1 && (
+                  <Stack direction="row">
+                    <PieChart
+                      series={[
+                        {
+                          paddingAngle: 2,
+                          innerRadius: 45,
+                          outerRadius: 100,
+                          cornerRadius: 10,
+                          data,
+                        },
+                      ]}
+                      margin={{ right: 5 }}
+                      width={200}
+                      height={200}
+                      legend={{ hidden: true }}
+                    />
+                  </Stack>
+                )}
+
+                {expenseActive === 2 && (
+                  <>
+                    {upcomingPayments.map((paymt) => {
+                      return (
+                        <div
+                          className="d-flex align-items-center justify-content-between mt-2"
+                          style={{
+                            borderRadius: "10px",
+                            backgroundColor: "rgba(245, 247, 248, 1)",
+                            padding: "10px",
+                          }}
+                        >
+                          <div className="d-flex align-items-center gap-2">
+                            <Image
+                              style={{
+                                objectFit: "contain",
+                                width: "40px",
+                                height: "40px",
+                                borderRadius: "50%",
+                              }}
+                              src={paymt?.icons}
+                              alt="..."
+                            />
+                            <div>
+                              <div
+                                style={{
+                                  fontSize: "12px",
+                                  color: "rgba(55, 73, 87, 1)",
+                                }}
+                              >
+                                {paymt?.text}
+                              </div>
+                              <div
+                                style={{
+                                  fontSize: "10px",
+                                  color: "rgba(55, 73, 87, 0.8)",
+                                }}
+                              >
+                                {paymt?.subText}
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            style={{
+                              fontSize: "14px",
+                              color: "var(--primary-color)",
+                              fontWeight: 600,
+                            }}
+                          >
+                            {paymt?.amount}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </>
+                )}
+
+                {expenseActive === 3 && (
+                  <div className="d-flex justify-content-center ">
+                    <ChartContainer
+                      width={500}
+                      height={250}
+                      colors={["rgba(74, 86, 226, 1)"]}
+                      series={[{ data: Data, label: "uv", type: "bar" }]}
+                      xAxis={[{ scaleType: "band", data: Labels }]}
+                    >
+                      <BarPlot borderRadius={10} />
+                    </ChartContainer>
+                  </div>
+                )}
               </div>
             </DashboardCard>
           </Col>
         </Row>
 
-        <Row className="mt-4">
+        <Row className="g-3 mt-2">
           <Col>
             <DashboardCard height="300px">
               <div className="d-flex align-items-center justify-content-between">
@@ -441,6 +731,20 @@ export default function Dashboard() {
                 <div className="mt-1">
                   <ProgressBar now={60} label={`${60}%`} visuallyHidden />
                 </div>
+              </div>
+
+              <div className="mt-3 text-center">
+                <Link
+                  style={{
+                    color: "var(--primary-color)",
+                    fontSize: "14px",
+                    fontWeight: 400,
+                    textDecoration: "underline",
+                  }}
+                  to=""
+                >
+                  View budget
+                </Link>
               </div>
             </DashboardCard>
           </Col>

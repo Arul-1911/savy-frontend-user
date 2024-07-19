@@ -9,6 +9,8 @@ import { RxCross2 } from "react-icons/rx";
 import GoalComponent from "../HeaderComponents/GoalComponent";
 import PayDayComponent from "../HeaderComponents/PayDayComponent";
 import { useNavigate } from "react-router-dom";
+import Notification from "../HeaderComponents/Notification";
+import SettingsComponent from "../HeaderComponents/SettingsComponent";
 
 export default function Header({ sidebarHandler }) {
   const navigate = useNavigate();
@@ -21,6 +23,10 @@ export default function Header({ sidebarHandler }) {
 
   const [payDaysLink, setPayDaysLink] = useState(1);
   const [payDays, setPayDays] = useState(false);
+
+  const [notificationModal, setNotificationModal] = useState(false);
+
+  const [settings, setSettings] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
@@ -37,6 +43,7 @@ export default function Header({ sidebarHandler }) {
             <Col md={4}>
               <div className="d-flex gap-5 align-items-center">
                 <div
+                  onClick={() => setSettings(true)}
                   style={{
                     backgroundColor: "rgba(245, 247, 248, 1)",
                     borderRadius: "100%",
@@ -170,12 +177,14 @@ export default function Header({ sidebarHandler }) {
                 </div>
 
                 <div
+                  onClick={() => setNotificationModal(true)}
                   className="p-2"
                   style={{
                     backgroundColor: "rgba(245, 247, 248, 1)",
                     borderRadius: "100%",
                     height: "40px",
                     width: "40px",
+                    cursor: "pointer",
                   }}
                 >
                   <IoMdNotifications
@@ -220,6 +229,9 @@ export default function Header({ sidebarHandler }) {
         <></>
       )}
 
+      {/* Settings */}
+      <SettingsComponent show={settings} hide={setSettings} />
+
       {/* Goal  */}
       <GoalComponent
         show={goalModal}
@@ -235,6 +247,9 @@ export default function Header({ sidebarHandler }) {
         active={payDaysLink}
         activeLink={setPayDaysLink}
       />
+
+      {/* Notification */}
+      <Notification show={notificationModal} hide={setNotificationModal} />
     </>
   );
 }

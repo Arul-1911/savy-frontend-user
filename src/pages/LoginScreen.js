@@ -27,11 +27,11 @@ export default function LoginScreen() {
     }
   };
 
-  useEffect(() => {
-    if (accessToken) {
-      navigate("/admin/dashboard");
-    }
-  }, [accessToken]);
+  // useEffect(() => {
+  //   if (accessToken) {
+  //     navigate("/admin/dashboard");
+  //   }
+  // }, [accessToken]);
 
   useTitle("Login");
   return (

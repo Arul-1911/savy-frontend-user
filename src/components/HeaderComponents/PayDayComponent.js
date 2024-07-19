@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import ModalWindow from "../modals/ModalWindow";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { Card, Form, Image, InputGroup, ProgressBar } from "react-bootstrap";
@@ -6,8 +6,30 @@ import FormField from "../layout/FormField";
 import { CalendarSVG } from "../svg/CalendarSVG";
 import { FilterSVG } from "../svg/FilterSVG";
 import { Filter2SVG } from "../svg/Filter2SVG";
+import { FaRegCheckCircle } from "react-icons/fa";
 
 const PayDayComponent = ({ show, hide, active, activeLink }) => {
+  const [selectActivePeriod, setSelectActivePeriod] = useState(0);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    hide(false);
+  };
+
+  const periods = [
+    "Next 7 days",
+    "Next 14 days",
+    "Next 30 days",
+    "This month",
+    "This pay cycle",
+    "Next pay cycle",
+    "Calendar fortnight",
+  ];
+
+  const activePeriods = (index) => {
+    setSelectActivePeriod(index);
+  };
+
   return (
     <>
       <ModalWindow show={show} onHide={hide}>
@@ -141,6 +163,7 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
 
                 <div className="d-flex justify-content-center gap-3 mt-2">
                   <button
+                    onClick={() => activeLink(2)}
                     className="px-3 py-2"
                     style={{
                       fontWeight: 600,
@@ -212,7 +235,7 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
               </div>
             </div>
 
-            <Form className="mt-3">
+            <Form onSubmit={handleSubmit} className="mt-3">
               <Form.Label
                 style={{
                   fontSize: "18px",
@@ -252,7 +275,12 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
                   aria-label="Username"
                   aria-describedby="basic-addon1"
                 />
-                <InputGroup.Text id="basic-addon1" className="grp_input">
+                <InputGroup.Text
+                  onClick={() => activeLink(4)}
+                  style={{ cursor: "pointer" }}
+                  id="basic-addon1"
+                  className="grp_input"
+                >
                   <FilterSVG />
                 </InputGroup.Text>
               </InputGroup>
@@ -270,7 +298,6 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
 
               <div className="d-flex justify-content-center mt-3">
                 <button
-                  onClick={() => activeLink(2)}
                   className=" py-2 w-75"
                   style={{
                     fontWeight: 600,
@@ -295,7 +322,7 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
                 color="rgba(92, 182, 249, 1)"
                 cursor={"pointer"}
                 size={28}
-                onClick={() => hide(false)}
+                onClick={() => activeLink(1)}
               />
               <div
                 style={{
@@ -311,15 +338,33 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
             </div>
 
             <div
+              className="payday-list"
               style={{
-                backgroundColor: "var(--primary-color)",
-                color: "white",
+                color: "rgba(254, 254, 254, 1)",
                 textAlign: "center",
+                padding: "10px",
+                borderRadius: "20px",
+                marginTop: "10px",
               }}
             >
-              <h2> 5 days </h2>
-              <p>left for this week budget</p>
-              <p>
+              <h2
+                style={{
+                  fontWeight: 700,
+                }}
+              >
+                5 days
+              </h2>
+              <p
+                style={{
+                  fontWeight: 700,
+                  padding: 0,
+                  margin: 0,
+                  fontSize: "12px",
+                }}
+              >
+                left for this week budget
+              </p>
+              <p className="payday-list-amount">
                 <span>Total Amount: </span> $50.00
               </p>
             </div>
@@ -335,7 +380,7 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
                 Budget lists
               </div>
 
-              <div>
+              <div style={{ cursor: "pointer" }} onClick={() => activeLink(4)}>
                 <Filter2SVG />
               </div>
             </div>
@@ -536,6 +581,78 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
               >
                 Edit
               </button>
+            </div>
+          </>
+        )}
+
+        {active === 4 && (
+          <>
+            <div className="d-flex">
+              <IoArrowBackCircleOutline
+                color="rgba(92, 182, 249, 1)"
+                cursor={"pointer"}
+                size={28}
+                onClick={() => activeLink(1)}
+              />
+              <div
+                style={{
+                  margin: "auto",
+                  fontWeight: 600,
+                  fontSize: "18px",
+                  color: "rgba(55, 73, 87, 1)",
+                }}
+                className="text-center"
+              >
+                Payday
+              </div>
+            </div>
+
+            <div
+              style={{
+                fontSize: "14px",
+                fontWeight: 600,
+                color: "var(--primary-color)",
+                textAlign: "center",
+                marginTop: "10px",
+              }}
+            >
+              Select period
+            </div>
+
+            <div className="mt-2">
+              {periods?.map((prd, idx) => {
+                return (
+                  <div key={idx}>
+                    <div className="d-flex align-items-center justify-content-between">
+                      <div
+                        style={
+                          selectActivePeriod === idx
+                            ? {
+                                color: "rgba(92, 182, 249, 1)",
+                                fontWeight: 600,
+                                cursor: "pointer",
+                              }
+                            : {
+                                color: "var(--primary-color)",
+                                fontWeight: 600,
+                                cursor: "pointer",
+                              }
+                        }
+                        onClick={() => activePeriods(idx)}
+                      >
+                        {prd}
+                      </div>
+                      {selectActivePeriod === idx && (
+                        <FaRegCheckCircle
+                          color="rgba(92, 182, 249, 1)"
+                          size={22}
+                        />
+                      )}
+                    </div>
+                    <hr />
+                  </div>
+                );
+              })}
             </div>
           </>
         )}

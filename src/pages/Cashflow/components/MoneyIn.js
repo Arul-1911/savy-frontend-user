@@ -10,7 +10,7 @@ import SearchField from "../../../components/layout/SearchField";
 
 const data = [
   { label: "Group A", value: 400, color: "#0088FE", label: "A" },
-  { label: "Group B", value: 300, color: "#00C49F", label: "B" },
+  { label: "Group B", value: 300, color: "rgba(58, 195, 172, 1)", label: "B" },
 ];
 
 const MoneyIn = () => {
