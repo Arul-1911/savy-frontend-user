@@ -33,6 +33,71 @@ a {
   font-weight: 800;
 }
 
+/*main offcanvas*/
+
+.main-offcanvas-body .accordion-button:not(.collapsed){
+  background-color: #E2F2FF !important;
+}
+
+
+.main-offcanvas-body .accordion-button::after{
+  background-image: url('/public/icons/accordion-arrow.png') !important;
+
+}
+
+
+
+
+h1,h2,h3,h4,h5,h6{
+  font-weight: 600;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: rgb(203, 201, 201,0.5);
+  /* background: transparent; */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #9d9c9c;
+}
+
+.plan-card{
+  transition: all 0.3s;
+}
+.plan-card:hover{
+  transform: scale(1.05);
+  box-shadow: 0px 0px 15px #000;
+}
+
+.plan-card-div{
+  transform: translateY(0);
+  transition: all 0.3s;
+}
+.selected-card-div{
+  transition: all 0.5s;
+ 
+}
+.non-selected-card-div{
+  transform: translateY(100vh);
+  height: 0;
+  width: 0;
+  
+  overflow: hidden;
+  transition: all 0.3s;
+}
+
+
+
 /* ================= start and authentication ============= */
 
 .login-page {
@@ -52,6 +117,8 @@ a {
   width: 90%;
   border-radius: 20px;
 }
+
+
 
 .bank-list {
   height: 230px;
