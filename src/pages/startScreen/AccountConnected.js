@@ -3,13 +3,13 @@ import { CardBody } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import LoginCard from "../../components/layout/LoginCard";
 
-export default function AccountConnected() {
+export default function AccountConnected({goBack,next,containerDiv}) {
   const navigate = useNavigate();
 
   useEffect(() => {
     const intervalId = setInterval(() => {
       localStorage.setItem("bankToken", true);
-      navigate("/user/dashboard");
+     next?next(): navigate("/user/dashboard");
     }, 4000);
 
     // Cleanup function to clear the interval
@@ -17,7 +17,7 @@ export default function AccountConnected() {
   }, [navigate]);
 
   return (
-    <LoginCard height={"450px"} width={"450px"}>
+    <LoginCard height={"450px"} width={"450px"} containerDiv={containerDiv}>
       <CardBody>
         <div className="d-flex align-items-center flex-column mb-2 mt-5">
           <div

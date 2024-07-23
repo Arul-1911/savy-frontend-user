@@ -1,11 +1,21 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Accordion, Button, Col, Image, Offcanvas, Row } from 'react-bootstrap'
 import { FaUserCircle } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import { LuLogOut } from 'react-icons/lu'
 import { IoArrowBackCircleOutline } from 'react-icons/io5';
+import DataSharing from '../../pages/DataSharing/DataSharing';
 
 function OffcanvasAccount({show,handleClose}) {
+
+  const [datasharingShow,setDatasharingShow] = useState(false);
+  const [dataActiveLink,setDataActiveLink] = useState(1)
+
+
+  const handleShowDataSharing = ()=>{
+     setDatasharingShow(true);
+     handleClose();
+  }
 
     const navigate = useNavigate();
     const handleLogout = () => {
@@ -16,12 +26,13 @@ function OffcanvasAccount({show,handleClose}) {
         handleClose();
       };
 
+      
 
 const accordionItems = [
     {
       header: "Account",
       body: [
-        { path: "/data", label: "Data Sharing" },
+        { onClick: handleShowDataSharing, label: "Data Sharing" },
         { path: "/user/subscription", label: "Subscription Plans" },
       ],
     },
@@ -53,6 +64,7 @@ const accordionItems = [
   
 
   return (
+    <>
     
     <Offcanvas  placement='end'  show={show} onHide={handleClose}>
         
@@ -87,7 +99,7 @@ const accordionItems = [
         <Accordion.Body className=' border-0 py-0'>
             {item?.body?.map((link,i)=>(
 
-         <p className='my-0 py-1' style={{borderBottom:'1px solid #E2F2FF',fontWeight:'500'}}><Link to={link?.path} className='' style={{color:'#374957'}}>{link?.label}</Link></p>
+         <p className='my-0 py-1' style={{borderBottom:'1px solid #E2F2FF',fontWeight:'500'}}><Link to={link?.path} onClick={link?.onClick} className='' style={{color:'#374957'}}>{link?.label}</Link></p>
             ))}
 
         </Accordion.Body>
@@ -123,7 +135,9 @@ const accordionItems = [
         </Offcanvas.Body>
         
       </Offcanvas>
-    
+      
+        <DataSharing show={datasharingShow} hide={setDatasharingShow}  active={dataActiveLink} activeLink={setDataActiveLink}/>
+    </>
 
   )
 }

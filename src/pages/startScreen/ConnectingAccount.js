@@ -3,12 +3,12 @@ import { CardBody, Image } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import LoginCard from "../../components/layout/LoginCard";
 
-export default function ConnectingAccount() {
+export default function ConnectingAccount({containerDiv,next,goBack}) {
   const navigate = useNavigate();
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      navigate("/user/account-successfully-connected");
+     next?next(): navigate("/user/account-successfully-connected");
     }, 4000);
 
     // Cleanup function to clear the interval
@@ -16,7 +16,7 @@ export default function ConnectingAccount() {
   }, [navigate]);
 
   return (
-    <LoginCard height={"450px"} width={"450px"}>
+    <LoginCard height={"450px"} width={"450px"} containerDiv={containerDiv}>
       <CardBody>
         <div className="d-flex align-items-center flex-column mb-2 mt-5">
           <Image className="mt-4" src="/images/PFM.png" alt="..." />

@@ -7,27 +7,27 @@ import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { RxCrossCircled } from "react-icons/rx";
 import { getError } from "../../utils/error";
 
-export default function ConfirmDetails() {
+export default function ConfirmDetails({containerDiv,next,goBack}) {
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     try {
-      navigate("/user/account-connected");
+      next?next(): navigate("/user/account-connected");
     } catch (error) {
       getError(error);
     }
   };
 
   return (
-    <LoginCard height={"300px"} width={"400px"} bankDetails={true}>
+    <LoginCard height={"300px"} width={"400px"} bankDetails={true} containerDiv={containerDiv}>
       <div className="d-flex align-items-center justify-content-between">
         <div>
           <IoArrowBackCircleOutline
             color="rgba(92, 182, 249, 1)"
             cursor={"pointer"}
             size={23}
-            onClick={() => navigate("/user/confirm-account")}
+            onClick={() =>goBack?goBack(): navigate("/user/confirm-account")}
           />
         </div>
 

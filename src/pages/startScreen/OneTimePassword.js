@@ -8,27 +8,31 @@ import { RxCrossCircled } from "react-icons/rx";
 import FormField from "../../components/layout/FormField";
 import { getError } from "../../utils/error";
 
-export default function OneTimePassword() {
+export default function OneTimePassword({goBack,next,containerDiv}) {
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     try {
-      navigate("/user/available-bank");
+     
+        
+      next?next(): navigate("/user/available-bank");
+      
+      
     } catch (error) {
       getError(error);
     }
   };
 
   return (
-    <LoginCard height={"500px"} width={"450px"} bankDetails={true}>
+    <LoginCard height={"500px"} width={"450px"} bankDetails={true} containerDiv={containerDiv}>
       <div className="d-flex align-items-center justify-content-between">
         <div>
           <IoArrowBackCircleOutline
             color="rgba(92, 182, 249, 1)"
             cursor={"pointer"}
             size={23}
-            onClick={() => navigate("/user/internet-banking")}
+            onClick={() => goBack?goBack(): navigate("/user/internet-banking")}
           />
         </div>
 
