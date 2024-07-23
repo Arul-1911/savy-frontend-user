@@ -6,9 +6,13 @@ import OverView from "./components/OverView";
 import MoneyIn from "./components/MoneyIn";
 import MoneyOut from "./components/MoneyOut";
 import NetWorth from "./components/NetWorth";
+import ModalWindow from "../../components/modals/ModalWindow";
+import CashFlowSettings from "./components/SubComponents/CashFlowSettings";
 
 const CashFlow = () => {
   const [accountPortfolioActive, setAccountPortfolioActive] = useState(1);
+
+  const [settingModal, setSettingModal] = useState(false);
 
   return (
     <MotionDiv>
@@ -22,6 +26,7 @@ const CashFlow = () => {
             Cashflow
           </h3>
           <button
+            onClick={() => setSettingModal(true)}
             style={{
               padding: "10px",
               fontSize: "12px",
@@ -112,6 +117,9 @@ const CashFlow = () => {
         {accountPortfolioActive === 2 && <MoneyIn />}
         {accountPortfolioActive === 3 && <MoneyOut />}
         {accountPortfolioActive === 4 && <NetWorth />}
+
+        {/* Settings  */}
+        <CashFlowSettings show={settingModal} hide={setSettingModal} />
       </Container>
     </MotionDiv>
   );

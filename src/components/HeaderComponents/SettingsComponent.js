@@ -3,7 +3,7 @@ import ModalWindow from "../modals/ModalWindow";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { FaRegCheckCircle } from "react-icons/fa";
 
-const SettingsComponent = ({ show, hide, activeLink }) => {
+const SettingsComponent = ({ show, hide }) => {
   const [selectActivePeriod, setSelectActivePeriod] = useState(0);
 
   const periods = [
@@ -27,7 +27,7 @@ const SettingsComponent = ({ show, hide, activeLink }) => {
           color="rgba(92, 182, 249, 1)"
           cursor={"pointer"}
           size={28}
-          onClick={() => activeLink(1)}
+          onClick={() => hide(false)}
         />
         <div
           style={{

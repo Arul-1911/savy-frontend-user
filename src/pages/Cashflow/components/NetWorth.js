@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import DashboardCard from "../../../components/layout/DasboardCard";
 import { IoIosArrowUp } from "react-icons/io";
 import { Col, Row, Image } from "react-bootstrap";
@@ -6,6 +6,7 @@ import { CiCalendar } from "react-icons/ci";
 import { IoInformationCircleOutline } from "react-icons/io5";
 import SearchField from "../../../components/layout/SearchField";
 import { BarChart } from "@mui/x-charts/BarChart";
+import ExcludeTransaction from "./SubComponents/ExcludeTransaction";
 
 // const pData = [2400, 1398, -9800, 3908, 4800, -3800, 4300];
 const uData = [4000, -3000, -2000, 2780, -1890, 2390, 3490];
@@ -21,6 +22,8 @@ const xLabels = [
 ];
 
 const NetWorth = () => {
+  const [excludeTransactionModal, setExcludeTransactionModal] = useState(false);
+
   const recentTransactions = [
     {
       icon: "/icons/Merchant 1.png",
@@ -271,8 +274,10 @@ const NetWorth = () => {
                 from your Cashflow.
               </div>
               <div
+                onClick={() => setExcludeTransactionModal(true)}
                 className="mt-4"
                 style={{
+                  cursor: "pointer",
                   color: "rgba(92, 182, 249, 1)",
                   fontSize: "12px",
                   fontWeight: 600,
@@ -288,6 +293,12 @@ const NetWorth = () => {
           </DashboardCard>
         </Col>
       </Row>
+
+      {/* Bucket  */}
+      <ExcludeTransaction
+        show={excludeTransactionModal}
+        hide={setExcludeTransactionModal}
+      />
     </div>
   );
 };
