@@ -17,27 +17,27 @@ import { RxCrossCircled } from "react-icons/rx";
 import { getError } from "../../utils/error";
 import { FaRegCheckCircle } from "react-icons/fa";
 
-export default function ConfirmAccount() {
+export default function ConfirmAccount({containerDiv,goBack,next}) {
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     try {
-      navigate("/user/confirm-account-details");
+     next?next(): navigate("/user/confirm-account-details");
     } catch (error) {
       getError(error);
     }
   };
 
   return (
-    <LoginCard width={"450px"} bankDetails={true}>
+    <LoginCard width={"450px"} bankDetails={true} containerDiv={containerDiv}>
       <div className="d-flex align-items-center justify-content-between">
         <div>
           <IoArrowBackCircleOutline
             color="rgba(92, 182, 249, 1)"
             cursor={"pointer"}
             size={23}
-            onClick={() => navigate("/user/available-bank")}
+            onClick={() =>goBack?goBack(): navigate("/user/available-bank")}
           />
         </div>
 

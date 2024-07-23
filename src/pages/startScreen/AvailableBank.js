@@ -8,27 +8,27 @@ import { RxCrossCircled } from "react-icons/rx";
 import FormField from "../../components/layout/FormField";
 import { getError } from "../../utils/error";
 
-export default function AvailableBank() {
+export default function AvailableBank({goBack,containerDiv,infoNext,next}) {
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     try {
-      navigate("/user/confirm-account");
+      next?next(): navigate("/user/confirm-account");
     } catch (error) {
       getError(error);
     }
   };
 
   return (
-    <LoginCard height={"500px"} width={"450px"} bankDetails={true}>
+    <LoginCard height={"500px"} width={"450px"} bankDetails={true} containerDiv={containerDiv} > 
       <div className="d-flex align-items-center justify-content-between">
         <div>
           <IoArrowBackCircleOutline
             color="rgba(92, 182, 249, 1)"
             cursor={"pointer"}
             size={23}
-            onClick={() => navigate("/user/one-time-password")}
+            onClick={() => goBack?goBack():navigate("/user/one-time-password")}
           />
         </div>
 
@@ -167,7 +167,7 @@ export default function AvailableBank() {
                   color: "rgba(92, 182, 249, 1)",
                   cursor: "pointer",
                 }}
-                onClick={() => navigate("/user/all-my-account")}
+                onClick={() =>infoNext?infoNext(): navigate("/user/all-my-account")}
               >
                 Why i can’t see all my accounts?
               </span>

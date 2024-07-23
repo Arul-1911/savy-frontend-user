@@ -46,6 +46,10 @@ a {
 }
 
 
+.offcanvas-modal.modal{
+   --bs-modal-bg: none !important;
+   --bs-modal-border-width: none !important;
+}
 
 
 h1,h2,h3,h4,h5,h6{
