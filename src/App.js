@@ -62,6 +62,7 @@ import ResetPassword from "./pages/ResetPassword";
 import { MyAccount } from "./pages/MyAccount";
 import { Transactions } from "./pages/Transactions";
 import CashFlow from "./pages/Cashflow/CashFlow";
+import SubscriptionPage from "./pages/Subscription/SubscriptionPage";
 
 function App() {
   const accessToken = localStorage.getItem("accessToken");
@@ -93,6 +94,7 @@ function App() {
     { path: "/user/confirm-account-details", comp: <ConfirmDetails /> },
     { path: "/user/all-my-account", comp: <AllMyAccount /> },
     { path: "/user/account-connected", comp: <ConnectingAccount /> },
+    { path: "/user/subscription", comp: <SubscriptionPage /> },
     {
       path: "/user/account-successfully-connected",
       comp: <AccountConnected />,
@@ -231,6 +233,7 @@ function App() {
               </UnprotectedRoute>
             }
           />
+         
 
           {routeList.map(({ path, comp }) => (
             <Route

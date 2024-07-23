@@ -11,10 +11,16 @@ import PayDayComponent from "../HeaderComponents/PayDayComponent";
 import { useNavigate } from "react-router-dom";
 import Notification from "../HeaderComponents/Notification";
 import SettingsComponent from "../HeaderComponents/SettingsComponent";
+import OffcanvasAccount from "../HeaderComponents/OffcanvasAccount";
 
 export default function Header({ sidebarHandler }) {
   const navigate = useNavigate();
   // const { user, accessToken } = useSelector(selectAuth);
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const toggleShow = () => setShow((s) => !s);
+  
   const accessToken = localStorage.getItem("accessToken");
   const bankToken = localStorage.getItem("bankToken");
 
@@ -38,6 +44,7 @@ export default function Header({ sidebarHandler }) {
   return (
     <>
       {accessToken && bankToken ? (
+        <>
         <Container className="header">
           <Row>
             <Col md={4}>
@@ -196,7 +203,7 @@ export default function Header({ sidebarHandler }) {
 
                 <div
                   className="p-2"
-                  onClick={handleLogout}
+                  onClick={toggleShow}
                   style={{
                     backgroundColor: "rgba(245, 247, 248, 1)",
                     borderRadius: "100%",
@@ -225,31 +232,37 @@ export default function Header({ sidebarHandler }) {
             onClick={() => sidebarHandler()}
           /> */}
         </Container>
+
+         {/* Settings */}
+      <SettingsComponent show={settings} hide={setSettings} />
+
+{/* Goal  */}
+<GoalComponent
+  show={goalModal}
+  hide={setGoalModal}
+  active={goalBackLink}
+  activeLink={setGoalBackLink}
+/>
+
+{/* Paydays */}
+<PayDayComponent
+  show={payDays}
+  hide={setPayDays}
+  active={payDaysLink}
+  activeLink={setPayDaysLink}
+/>
+
+{/* Notification */}
+<Notification show={notificationModal} hide={setNotificationModal} />
+
+{/*Account Offcanvas */}
+<OffcanvasAccount show={show} handleClose={handleClose}/>
+            </>
       ) : (
         <></>
       )}
 
-      {/* Settings */}
-      <SettingsComponent show={settings} hide={setSettings} />
-
-      {/* Goal  */}
-      <GoalComponent
-        show={goalModal}
-        hide={setGoalModal}
-        active={goalBackLink}
-        activeLink={setGoalBackLink}
-      />
-
-      {/* Paydays */}
-      <PayDayComponent
-        show={payDays}
-        hide={setPayDays}
-        active={payDaysLink}
-        activeLink={setPayDaysLink}
-      />
-
-      {/* Notification */}
-      <Notification show={notificationModal} hide={setNotificationModal} />
+     
     </>
   );
 }
