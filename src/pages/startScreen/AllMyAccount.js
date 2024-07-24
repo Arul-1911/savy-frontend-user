@@ -5,18 +5,18 @@ import LoginCard from "../../components/layout/LoginCard";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { RxCrossCircled } from "react-icons/rx";
 
-export default function AllMyAccount() {
+export default function AllMyAccount({goBack,containerDiv}) {
   const navigate = useNavigate();
 
   return (
-    <LoginCard height={"350px"} width={"450px"} bankDetails={true}>
+    <LoginCard height={"350px"} width={"450px"} bankDetails={true} containerDiv={containerDiv}>
       <div className="d-flex align-items-center justify-content-between">
         <div>
           <IoArrowBackCircleOutline
             color="rgba(92, 182, 249, 1)"
             cursor={"pointer"}
             size={23}
-            onClick={() => navigate("/user/available-bank")}
+            onClick={() =>goBack?goBack(): navigate("/user/available-bank")}
           />
         </div>
 
@@ -94,7 +94,7 @@ export default function AllMyAccount() {
           <Row className="px-5">
             <Col>
               <Button
-                onClick={() => navigate("/user/available-bank")}
+                onClick={() => goBack?goBack() : navigate("/user/available-bank")}
                 className="float-sm-end w-100 "
                 style={{
                   background: "var(--primary-color)",

@@ -7,7 +7,7 @@ import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { RxCrossCircled } from "react-icons/rx";
 import SearchField from "../../components/layout/SearchField";
 
-export default function ChooseBank() {
+export default function ChooseBank({goBack,containerDiv,next}) {
   const navigate = useNavigate();
 
   const banks = [
@@ -20,14 +20,14 @@ export default function ChooseBank() {
   ];
 
   return (
-    <LoginCard height={"500px"} width={"450px"} bankDetails={true}>
+    <LoginCard height={"500px"} width={"450px"} bankDetails={true} containerDiv={containerDiv}>
       <div className="d-flex align-items-center justify-content-between">
         <div>
           <IoArrowBackCircleOutline
             color="rgba(92, 182, 249, 1)"
             cursor={"pointer"}
             size={23}
-            onClick={() => navigate("/user/financial-policy")}
+            onClick={() => goBack?goBack(): navigate("/user/financial-policy")}
           />
         </div>
 
@@ -112,7 +112,7 @@ export default function ChooseBank() {
               fontSize: "12px",
               padding: "10px",
             }}
-            onClick={() => navigate("/user/internet-banking")}
+            onClick={() =>next?next(): navigate("/user/internet-banking")}
           >
             Select
           </Button>
