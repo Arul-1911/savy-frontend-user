@@ -10,6 +10,7 @@ import Stack from "@mui/material/Stack";
 import { PieChart } from "@mui/x-charts/PieChart";
 import { BarPlot, ChartContainer } from "@mui/x-charts";
 import { Link } from "react-router-dom";
+import BudgetComponents from "./DashboardComponents/BudgetComponents";
 
 const data = [
   { label: "Group A", value: 550, color: "rgba(74, 86, 226, 1)" },
@@ -42,6 +43,9 @@ const Labels = [
 export default function Dashboard() {
   const [accountPortfolioActive, setAccountPortfolioActive] = useState(1);
   const [expenseActive, setExpenseActive] = useState(1);
+
+  const [showBudget, setShowBudget] = useState(false);
+  const [showActiveBudget, setShowActiveBudget] = useState(1);
 
   const upcomingPayments = [
     {
@@ -735,6 +739,7 @@ export default function Dashboard() {
 
               <div className="mt-3 text-center">
                 <Link
+                  onClick={() => setShowBudget(true)}
                   style={{
                     color: "var(--primary-color)",
                     fontSize: "14px",
@@ -995,6 +1000,14 @@ export default function Dashboard() {
           </Col>
         </Row>
       </Container>
+
+      {/* Budget */}
+      <BudgetComponents
+        show={showBudget}
+        hide={setShowBudget}
+        active={showActiveBudget}
+        activeLink={setShowActiveBudget}
+      />
     </MotionDiv>
   );
 }
