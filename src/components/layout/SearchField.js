@@ -53,10 +53,11 @@ const SearchField = ({
               backgroundColor: "rgba(92, 182, 249, 1)",
               color: "white",
               borderRadius: "50%",
+              zIndex:2
             }}
             className="border-0"
           >
-            <FaSearch size={14} />
+            <FaSearch size={14}  />
           </InputGroup.Text>
           {/* <Button variant="outline-success" type="submit">Search</Button> */}
         </InputGroup>

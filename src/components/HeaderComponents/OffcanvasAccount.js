@@ -5,15 +5,37 @@ import { Link, useNavigate } from 'react-router-dom';
 import { LuLogOut } from 'react-icons/lu'
 import { IoArrowBackCircleOutline } from 'react-icons/io5';
 import DataSharing from '../../pages/DataSharing/DataSharing';
+import FinancialPassport from './FinancialPassport';
+import BucketCategory from './Bucket&Category';
+import DashboardSettings from './DashboardSettings';
 
 function OffcanvasAccount({show,handleClose}) {
 
   const [datasharingShow,setDatasharingShow] = useState(false);
   const [dataActiveLink,setDataActiveLink] = useState(1)
+  const [financialReportShow,setFinancialReportShow] = useState(false);
+  const [financialReportActiveLink,setfinancialReportActiveLink] = useState(1)
+  const [bucketCategoryShow,setBucketCategoryShow] = useState(false);
+  const [bucketCategoryActiveLink,setBucketCategoryActiveLink] = useState(1)
+  const [dashboardSettingsShow,setDashboardSettingsShow] = useState(false);
+  const [dashboardSettingsActiveLink,setDashboardSettingsActiveLink] = useState(1)
 
 
   const handleShowDataSharing = ()=>{
      setDatasharingShow(true);
+     handleClose();
+  }
+
+  const handleShowFinancialReport = ()=>{
+     setFinancialReportShow(true);
+     handleClose();
+  }
+  const handleShowBucketCategory = ()=>{
+     setBucketCategoryShow(true);
+     handleClose();
+  }
+  const handleShowDashboardSettings = ()=>{
+     setDashboardSettingsShow(true);
      handleClose();
   }
 
@@ -39,7 +61,7 @@ const accordionItems = [
     {
       header: "Reports",
       body: [
-        { path: "/financial-passport", label: "Financial Passport" },
+        { onClick: handleShowFinancialReport, label: "Financial Passport" },
       ],
     },
     {
@@ -51,8 +73,8 @@ const accordionItems = [
     {
       header: "App Settings",
       body: [
-        { path: "/", label: "Dashboard Settings" },
-        { path: "/", label: "Bucket & Category" },
+        { onClick: handleShowDashboardSettings, label: "Dashboard Settings" },
+        { onClick: handleShowBucketCategory, label: "Bucket & Category" },
         { path: "/", label: "Security" },
         { path: "/", label: "Notifications" },
         { path: "/", label: "About" },
@@ -137,6 +159,9 @@ const accordionItems = [
       </Offcanvas>
       
         <DataSharing show={datasharingShow} hide={setDatasharingShow}  active={dataActiveLink} activeLink={setDataActiveLink}/>
+        <FinancialPassport show={financialReportShow} hide={setFinancialReportShow}  active={financialReportActiveLink} activeLink={setfinancialReportActiveLink}/>
+        <BucketCategory show={bucketCategoryShow} hide={setBucketCategoryShow}  active={bucketCategoryActiveLink} activeLink={setBucketCategoryActiveLink}/>
+        <DashboardSettings show={dashboardSettingsShow} hide={setDashboardSettingsShow}  active={dashboardSettingsActiveLink} activeLink={setDashboardSettingsActiveLink}/>
     </>
 
   )
