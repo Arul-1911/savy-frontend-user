@@ -55,7 +55,7 @@ export default function ConfirmAccount({containerDiv,goBack,next}) {
             color="rgba(92, 182, 249, 1)"
             cursor={"pointer"}
             size={23}
-            onClick={() => navigate("/")}
+            onClick={() =>goBack?goBack(): navigate("/")}
           />
         </div>
       </div>
