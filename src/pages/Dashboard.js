@@ -11,6 +11,7 @@ import { PieChart } from "@mui/x-charts/PieChart";
 import { BarPlot, ChartContainer } from "@mui/x-charts";
 import { Link } from "react-router-dom";
 import BudgetComponents from "./DashboardComponents/BudgetComponents";
+import UpcomingBillComponents from "./DashboardComponents/UpcomingBillComponent";
 
 const data = [
   { label: "Group A", value: 550, color: "rgba(74, 86, 226, 1)" },
@@ -47,6 +48,9 @@ export default function Dashboard() {
   const [showBudget, setShowBudget] = useState(false);
   const [showActiveBudget, setShowActiveBudget] = useState(1);
 
+  const [showBills, setShowBills] = useState(false);
+  const [showActiveBills, setShowActiveBills] = useState(1);
+
   const upcomingPayments = [
     {
       icons: "/icons/disnep.png",
@@ -81,7 +85,7 @@ export default function Dashboard() {
         </h2>
         <Row className="g-3">
           <Col>
-            <DashboardCard height="300px">
+            <DashboardCard>
               <h4 style={{ fontWeight: 600, color: "rgba(0, 39, 91, 1)" }}>
                 Account Portfolio
               </h4>
@@ -390,7 +394,7 @@ export default function Dashboard() {
           </Col>
 
           <Col>
-            <DashboardCard height="300px">
+            <DashboardCard>
               <div className="d-flex align-items-center justify-content-between">
                 <h4 style={{ fontWeight: 600, color: "rgba(0, 39, 91, 1)" }}>
                   Expenses
@@ -754,7 +758,7 @@ export default function Dashboard() {
             </DashboardCard>
           </Col>
 
-          <Col>
+          <Col style={{ cursor: "pointer" }} onClick={() => setShowBills(true)}>
             <DashboardCard height="300px">
               <h4 style={{ fontWeight: 600, color: "rgba(0, 39, 91, 1)" }}>
                 Upcoming Bills
@@ -801,7 +805,7 @@ export default function Dashboard() {
 
         <Row className="mt-4">
           <Col>
-            <DashboardCard height="350px">
+            <DashboardCard>
               <div className="d-flex align-items-center justify-content-between">
                 <div className="w-25">
                   <SearchField />
@@ -1007,6 +1011,14 @@ export default function Dashboard() {
         hide={setShowBudget}
         active={showActiveBudget}
         activeLink={setShowActiveBudget}
+      />
+
+      {/* Upcoming bills */}
+      <UpcomingBillComponents
+        show={showBills}
+        hide={setShowBills}
+        active={showActiveBills}
+        activeLink={setShowActiveBills}
       />
     </MotionDiv>
   );

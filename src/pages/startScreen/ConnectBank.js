@@ -3,12 +3,69 @@ import { useNavigate } from "react-router-dom";
 import { Button, Col, Image, Row } from "react-bootstrap";
 import { ToastContainer } from "react-toastify";
 import LoginCard from "../../components/layout/LoginCard";
+import { getError } from "../../utils/error";
+import { IoArrowBackCircleOutline } from "react-icons/io5";
+import { RxCrossCircled } from "react-icons/rx";
 
-export default function ConnectBank() {
+export default function ConnectBank({
+  startScreen,
+  goBack,
+  containerDiv,
+  infoNext,
+  next,
+  bankDetails,
+}) {
   const navigate = useNavigate();
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    try {
+      next ? next() : navigate("/user/financial-policy");
+    } catch (error) {
+      getError(error);
+    }
+  };
+
   return (
-    <LoginCard height={"500px"} width={"450px"}>
+    <LoginCard
+      height={"500px"}
+      width={"450px"}
+      containerDiv={containerDiv}
+      bankDetails={bankDetails}
+    >
+      {startScreen && (
+        <div className="d-flex align-items-center justify-content-between mb-3">
+          <div>
+            <IoArrowBackCircleOutline
+              color="rgba(92, 182, 249, 1)"
+              cursor={"pointer"}
+              size={23}
+              onClick={() =>
+                goBack ? goBack() : navigate("/user/choose-bank")
+              }
+            />
+          </div>
+
+          <div>
+            <Image
+              height={"35px"}
+              width={"35px"}
+              src="/logo/LoginLogo.png"
+              alt="..."
+            />
+          </div>
+
+          <div>
+            <RxCrossCircled
+              color="rgba(92, 182, 249, 1)"
+              cursor={"pointer"}
+              size={23}
+              onClick={() => (goBack ? goBack() : navigate("/"))}
+            />
+          </div>
+        </div>
+      )}
+
       <div className="d-flex align-items-center flex-column">
         <Image
           height={"35px"}
@@ -63,7 +120,7 @@ export default function ConnectBank() {
               fontSize: "12px",
               padding: "10px",
             }}
-            onClick={() => navigate("/user/financial-policy")}
+            onClick={handleSubmit}
           >
             Continue
           </Button>
@@ -81,7 +138,7 @@ export default function ConnectBank() {
               fontWeight: 700,
               fontSize: "12px",
             }}
-            onClick={() => navigate("/")}
+            onClick={() => (infoNext ? infoNext() : navigate("/"))}
           >
             Cancel
           </Button>

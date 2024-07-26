@@ -3,10 +3,21 @@ import { useNavigate } from "react-router-dom";
 import { Button, Col, Form, Image, Row } from "react-bootstrap";
 import { ToastContainer } from "react-toastify";
 import LoginCard from "../../components/layout/LoginCard";
-import { IoInformationCircleOutline } from "react-icons/io5";
+import {
+  IoArrowBackCircleOutline,
+  IoInformationCircleOutline,
+} from "react-icons/io5";
 import ModalTemplate from "../../components/modals/ModalTemplate";
+import { getError } from "../../utils/error";
+import { RxCrossCircled } from "react-icons/rx";
 
-export default function FinancialPolicy() {
+export default function FinancialPolicy({
+  goBack,
+  containerDiv,
+  infoNext,
+  next,
+  bankDetails,
+}) {
   const navigate = useNavigate();
   const [showSecure, setSecureModal] = useState(false);
   const [showSupportParties, setSupportPartiesModal] = useState(false);
@@ -21,35 +32,82 @@ export default function FinancialPolicy() {
   const handleGoal = () => setGoalModal(true);
   const handleCloseGoal = () => setGoalModal(false);
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    try {
+      next ? next() : navigate("/user/internet-banking");
+    } catch (error) {
+      getError(error);
+    }
+  };
+
   return (
-    <LoginCard height={"500px"} width={"450px"} bankDetails={true}>
-      <div className="d-flex align-items-center flex-column">
-        <Image
-          height={"50px"}
-          width={"50px"}
-          src="/logo/LoginLogo.png"
-          alt="..."
-        />
-        <div
-          style={{
-            color: "var(--primary-color)",
-            fontWeight: 800,
-            fontSize: "16px",
-          }}
-        >
-          Share your financial data
+    <LoginCard
+      height={"500px"}
+      width={"450px"}
+      bankDetails={true}
+      containerDiv={containerDiv}
+    >
+      {!containerDiv ? (
+        <div className="d-flex align-items-center justify-content-between mb-5">
+          <div>
+            <IoArrowBackCircleOutline
+              color="rgba(92, 182, 249, 1)"
+              cursor={"pointer"}
+              size={23}
+              onClick={() =>
+                goBack ? goBack() : navigate("/user/connect-bank")
+              }
+            />
+          </div>
+
+          <div>
+            <Image
+              height={"35px"}
+              width={"35px"}
+              src="/logo/LoginLogo.png"
+              alt="..."
+            />
+          </div>
+
+          <div>
+            <RxCrossCircled
+              color="rgba(92, 182, 249, 1)"
+              cursor={"pointer"}
+              size={23}
+              onClick={() => (goBack ? goBack() : navigate("/"))}
+            />
+          </div>
         </div>
-        <div
-          style={{
-            color: "rgba(55, 73, 87, 1)",
-            fontWeight: 600,
-            fontSize: "9px",
-          }}
-        >
-          We need to connect to your bank to collect some information about your
-          finances
+      ) : (
+        <div className="d-flex align-items-center flex-column">
+          <Image
+            height={"50px"}
+            width={"50px"}
+            src="/logo/LoginLogo.png"
+            alt="..."
+          />
+          <div
+            style={{
+              color: "var(--primary-color)",
+              fontWeight: 800,
+              fontSize: "16px",
+            }}
+          >
+            Share your financial data
+          </div>
+          <div
+            style={{
+              color: "rgba(55, 73, 87, 1)",
+              fontWeight: 600,
+              fontSize: "9px",
+            }}
+          >
+            We need to connect to your bank to collect some information about
+            your finances
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="mt-2 px-4">
         <div className="d-flex align-items-center justify-content-between">
@@ -171,7 +229,7 @@ export default function FinancialPolicy() {
               fontSize: "12px",
               padding: "10px",
             }}
-            onClick={() => navigate("/user/choose-bank")}
+            onClick={handleSubmit}
           >
             Continue
           </Button>
@@ -189,7 +247,7 @@ export default function FinancialPolicy() {
               fontWeight: 700,
               fontSize: "12px",
             }}
-            onClick={() => navigate("/")}
+            onClick={() => (infoNext ? infoNext() : navigate("/"))}
           >
             Cancel
           </Button>
