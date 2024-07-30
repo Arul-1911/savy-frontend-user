@@ -3,13 +3,14 @@ import ModalWindow from "../../components/modals/ModalWindow";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { Filter2SVG } from "../../components/svg/Filter2SVG";
 import { Card, Form, Image, InputGroup, ProgressBar } from "react-bootstrap";
-import { FaRegCheckCircle } from "react-icons/fa";
-import { FilterSVG } from "../../components/svg/FilterSVG";
 import { CalendarSVG } from "../../components/svg/CalendarSVG";
 import FormField from "../../components/layout/FormField";
+import Calendar from "../../components/Calendar/Calendar";
+import Filter from "../../components/Filter/Filter";
 
 const BudgetComponents = ({ show, hide, active, activeLink }) => {
-  //   const [selectActivePeriod, setSelectActivePeriod] = useState(1);
+  const [openCalendar, setOpenCalendar] = useState(false);
+  const [openFilter, setOpenFilter] = useState(false);
 
   const popularCat = [
     {
@@ -77,7 +78,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
               }}
               className="text-center"
             >
-              Payday
+              Budget Setup
             </div>
           </div>
 
@@ -124,7 +125,10 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
               Budget lists
             </div>
 
-            <div style={{ cursor: "pointer" }} onClick={() => activeLink(4)}>
+            <div
+              onClick={() => setOpenFilter(true)}
+              style={{ cursor: "pointer" }}
+            >
               <Filter2SVG />
             </div>
           </div>
@@ -664,7 +668,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                 aria-describedby="basic-addon1"
               />
               <InputGroup.Text
-                //   onClick={() => activeLink(4)}
+                onClick={() => setOpenCalendar(true)}
                 style={{ cursor: "pointer" }}
                 id="basic-addon1"
                 className="grp_input"
@@ -1266,6 +1270,9 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
           </div>
         </>
       )}
+
+      <Calendar show={openCalendar} hide={setOpenCalendar} />
+      <Filter show={openFilter} hide={setOpenFilter} />
     </ModalWindow>
   );
 };

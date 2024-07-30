@@ -1,9 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { Col, Image, Row } from "react-bootstrap";
 import DashboardCard from "../../../components/layout/DasboardCard";
 import SearchField from "../../../components/layout/SearchField";
+import Calendar from "../../../components/Calendar/Calendar";
+import Filter from "../../../components/Filter/Filter";
 
 const TransactionsComponent = () => {
+  const [openCalendar, setOpenCalendar] = useState(false);
+  const [openFilter, setOpenFilter] = useState(false);
+
   const todayyesterdayTransaction = [
     {
       text: "Trader Jane’s market",
@@ -40,6 +45,7 @@ const TransactionsComponent = () => {
               <SearchField />
             </div>
             <Image
+              onClick={() => setOpenCalendar(true)}
               style={{
                 color: "rgba(92, 182, 249, 1)",
                 fontWeight: 600,
@@ -53,6 +59,7 @@ const TransactionsComponent = () => {
               alt="..."
             />
             <Image
+              onClick={() => setOpenFilter(true)}
               style={{
                 color: "rgba(92, 182, 249, 1)",
                 fontWeight: 600,
@@ -187,6 +194,9 @@ const TransactionsComponent = () => {
               );
             })}
           </ul>
+
+          <Calendar show={openCalendar} hide={setOpenCalendar} />
+          <Filter show={openFilter} hide={setOpenFilter} />
         </DashboardCard>
       </Col>
     </Row>

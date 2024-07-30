@@ -7,10 +7,13 @@ import FormField from "../../components/layout/FormField";
 import { IoIosArrowDown } from "react-icons/io";
 import { FaRegCheckCircle } from "react-icons/fa";
 import "../Dashboard.css";
+import Calendar from "../../components/Calendar/Calendar";
 
 const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
   const [selectActivePeriod, setSelectActivePeriod] = useState(0);
   const [activePopularCat, setActivePopularCat] = useState(0);
+
+  const [openCalendar, setOpenCalendar] = useState(false);
 
   const periods = [
     "Next 7 days",
@@ -925,7 +928,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                 aria-describedby="basic-addon1"
               />
               <InputGroup.Text
-                //   onClick={() => activeLink(4)}
+                onClick={() => setOpenCalendar(false)}
                 style={{ cursor: "pointer" }}
                 id="basic-addon1"
                 className="grp_input"
@@ -1287,6 +1290,8 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
           </div>
         </>
       )}
+
+      <Calendar show={openCalendar} hide={setOpenCalendar} />
     </ModalWindow>
   );
 };

@@ -7,9 +7,11 @@ import { CalendarSVG } from "../svg/CalendarSVG";
 import { FilterSVG } from "../svg/FilterSVG";
 import { Filter2SVG } from "../svg/Filter2SVG";
 import { FaRegCheckCircle } from "react-icons/fa";
+import Calendar from "../Calendar/Calendar";
 
 const PayDayComponent = ({ show, hide, active, activeLink }) => {
   const [selectActivePeriod, setSelectActivePeriod] = useState(0);
+  const [openCalendar, setOpenCalendar] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -253,7 +255,12 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
                   aria-label="Username"
                   aria-describedby="basic-addon1"
                 />
-                <InputGroup.Text id="basic-addon1" className="grp_input">
+                <InputGroup.Text
+                  onClick={() => setOpenCalendar(true)}
+                  style={{ cursor: "pointer" }}
+                  id="basic-addon1"
+                  className="grp_input"
+                >
                   <CalendarSVG />
                 </InputGroup.Text>
               </InputGroup>
@@ -657,6 +664,8 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
           </>
         )}
       </ModalWindow>
+
+      <Calendar show={openCalendar} hide={setOpenCalendar} />
     </>
   );
 };
