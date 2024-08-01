@@ -783,7 +783,7 @@ export default function Dashboard() {
           </Col>
 
           <Col>
-            <DashboardCard height="300px">
+            <DashboardCard>
               <h4 style={{ fontWeight: 600, color: "rgba(0, 39, 91, 1)" }}>
                 Budget
               </h4>
@@ -897,7 +897,7 @@ export default function Dashboard() {
           </Col>
 
           <Col style={{ cursor: "pointer" }} onClick={() => setShowBills(true)}>
-            <DashboardCard height="300px">
+            <DashboardCard>
               <h4 style={{ fontWeight: 600, color: "rgba(0, 39, 91, 1)" }}>
                 Upcoming Bills
               </h4>
