@@ -21,13 +21,10 @@ const MyAccount = () => {
             My Account
           </h3>
           <button
-            className="d-flex align-items-center"
+            className="px-5 d-flex align-items-center"
             style={{
-              paddingLeft: "120px",
               backgroundColor: "rgba(242, 249, 255, 1)",
-              height: "40px",
-              width: "25%",
-              borderRadius: "22px",
+              borderRadius: "20px",
               fontSize: "12px",
               color: "var(--primary-color)",
               fontWeight: 600,

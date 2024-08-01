@@ -34,24 +34,25 @@ a {
 
 /*main offcanvas*/
 
-.main-offcanvas-body .accordion-button:not(.collapsed){
-  background-color: #E2F2FF !important;
+.main-offcanvas-body .accordion-button:not(.collapsed) {
+  background-color: #e2f2ff !important;
 }
 
-
-.main-offcanvas-body .accordion-button::after{
-  background-image: url('/public/icons/accordion-arrow.png') !important;
-
+.main-offcanvas-body .accordion-button::after {
+  background-image: url("/public/icons/accordion-arrow.png") !important;
 }
 
-
-.offcanvas-modal.modal{
-   --bs-modal-bg: none !important;
-   --bs-modal-border-width: none !important;
+.offcanvas-modal.modal {
+  --bs-modal-bg: none !important;
+  --bs-modal-border-width: none !important;
 }
 
-
-h1,h2,h3,h4,h5,h6{
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-weight: 600;
 }
 
@@ -61,7 +62,7 @@ h1,h2,h3,h4,h5,h6{
 }
 
 ::-webkit-scrollbar-track {
-  background-color: rgb(203, 201, 201,0.5);
+  background-color: rgb(203, 201, 201, 0.5);
   /* background: transparent; */
 }
 
@@ -74,32 +75,29 @@ h1,h2,h3,h4,h5,h6{
   background-color: #9d9c9c;
 }
 
-.plan-card{
+.plan-card {
   transition: all 0.3s;
 }
-.plan-card:hover{
+.plan-card:hover {
   transform: scale(1.05);
   box-shadow: 0px 0px 15px #000;
 }
 
-.plan-card-div{
+.plan-card-div {
   transform: translateY(0);
   transition: all 0.3s;
 }
-.selected-card-div{
+.selected-card-div {
   transition: all 0.5s;
- 
 }
-.non-selected-card-div{
+.non-selected-card-div {
   transform: translateY(100vh);
   height: 0;
   width: 0;
-  
+
   overflow: hidden;
   transition: all 0.3s;
 }
-
-
 
 /* ================= start and authentication ============= */
 
@@ -120,8 +118,6 @@ h1,h2,h3,h4,h5,h6{
   width: 90%;
   border-radius: 20px;
 }
-
-
 
 .bank-list {
   height: 230px;

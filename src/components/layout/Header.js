@@ -5,7 +5,7 @@ import { IoIosArrowForward } from "react-icons/io";
 import { IoMdNotifications } from "react-icons/io";
 import { FaUserCircle } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
-
+import { GiHamburgerMenu } from "react-icons/gi";
 import GoalComponent from "../HeaderComponents/GoalComponent";
 import PayDayComponent from "../HeaderComponents/PayDayComponent";
 import { useNavigate } from "react-router-dom";
@@ -13,6 +13,7 @@ import Notification from "../HeaderComponents/Notification";
 import SettingsComponent from "../HeaderComponents/SettingsComponent";
 import OffcanvasAccount from "../HeaderComponents/OffcanvasAccount";
 import AddAccount from "../HeaderComponents/AddAccount";
+import "./Header.css";
 
 export default function Header({ sidebarHandler }) {
   const navigate = useNavigate();
@@ -51,7 +52,7 @@ export default function Header({ sidebarHandler }) {
         <>
           <Container className="header">
             <Row>
-              <Col md={4}>
+              <Col className="customize-dashboard" md={4}>
                 <div className="d-flex gap-5 align-items-center">
                   <div
                     onClick={() => setSettings(true)}
@@ -90,7 +91,18 @@ export default function Header({ sidebarHandler }) {
               </Col>
 
               <Col>
-                <div className="d-flex gap-4 align-items-center justify-content-end">
+                <div className="gap-4 mobile-responsive">
+                  <GiHamburgerMenu
+                    className="hamburger"
+                    style={{
+                      fontSize: "1.5rem",
+                      color: "rgba(0, 0, 139, 1)",
+                      marginLeft: "1rem",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => sidebarHandler()}
+                  />
+
                   <div
                     className="d-flex align-items-center gap-3"
                     style={{
@@ -150,7 +162,7 @@ export default function Header({ sidebarHandler }) {
                   </div>
 
                   <div
-                    className="d-flex align-items-center"
+                    className="customize-dashboard"
                     onClick={() => {
                       setPayDays(true);
                       setPayDaysLink(1);
@@ -173,7 +185,7 @@ export default function Header({ sidebarHandler }) {
                   </div>
 
                   <div
-                    className="d-flex align-items-center"
+                    className="customize-dashboard"
                     onClick={() => setAddAccountModal(true)}
                     style={{
                       padding: "26px",
@@ -192,7 +204,7 @@ export default function Header({ sidebarHandler }) {
 
                   <div
                     onClick={() => setNotificationModal(true)}
-                    className="p-2"
+                    className="p-2 customize-dashboard"
                     style={{
                       backgroundColor: "rgba(245, 247, 248, 1)",
                       borderRadius: "100%",
@@ -228,16 +240,6 @@ export default function Header({ sidebarHandler }) {
                 </div>
               </Col>
             </Row>
-
-            {/* <GiHamburgerMenu
-            style={{
-              fontSize: "1.5rem",
-              color: "rgba(0, 0, 139, 1)",
-              marginLeft: "1rem",
-              cursor: "pointer",
-            }}
-            onClick={() => sidebarHandler()}
-          /> */}
           </Container>
 
           {/* Settings */}

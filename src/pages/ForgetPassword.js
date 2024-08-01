@@ -67,6 +67,7 @@ export default function ForgetPassword() {
   const handleForget = async (e) => {
     e.preventDefault();
     setCheck(true);
+    navigate("/user/reset-password");
     // if (!check && !otpCheck) {
     //   try {
     //     await forgetPassword({ email }).unwrap();

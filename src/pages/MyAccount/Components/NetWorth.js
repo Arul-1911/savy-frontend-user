@@ -51,9 +51,9 @@ const NetWorth = () => {
         </div>
       </div>
 
-      <Row className="mt-3">
+      <Row className="mt-3 g-3">
         <Col>
-          <DashboardCard height="400px">
+          <DashboardCard>
             <div className="d-flex align-items-center justify-content-between">
               <h5 style={{ fontWeight: 600, color: "rgba(0, 39, 91, 1)" }}>
                 Liabilities
@@ -145,7 +145,7 @@ const NetWorth = () => {
         </Col>
 
         <Col>
-          <DashboardCard height="400px">
+          <DashboardCard>
             <div className="d-flex align-items-center justify-content-between">
               <h4 style={{ fontWeight: 600, color: "rgba(0, 39, 91, 1)" }}>
                 Liabilities

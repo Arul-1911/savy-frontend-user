@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Col, Container, Image, ProgressBar, Row } from "react-bootstrap";
+import {
+  Carousel,
+  Col,
+  Container,
+  Image,
+  ProgressBar,
+  Row,
+} from "react-bootstrap";
 // import Skeleton from "react-loading-skeleton";
 // import { getError, toastOptions } from "../utils/error";
 import { MotionDiv } from "../components";
@@ -543,17 +550,148 @@ export default function Dashboard() {
                 )}
 
                 {expenseActive === 3 && (
-                  <div className="d-flex justify-content-center ">
-                    <ChartContainer
-                      width={500}
-                      height={250}
-                      colors={["rgba(74, 86, 226, 1)"]}
-                      series={[{ data: Data, label: "uv", type: "bar" }]}
-                      xAxis={[{ scaleType: "band", data: Labels }]}
-                    >
-                      <BarPlot borderRadius={10} />
-                    </ChartContainer>
-                  </div>
+                  <Carousel>
+                    <Carousel.Item>
+                      <div className="d-flex justify-content-center ">
+                        <ChartContainer
+                          width={500}
+                          height={250}
+                          colors={["rgba(74, 86, 226, 1)"]}
+                          series={[{ data: Data, label: "uv", type: "bar" }]}
+                          xAxis={[{ scaleType: "band", data: Labels }]}
+                        >
+                          <BarPlot borderRadius={10} />
+                        </ChartContainer>
+                      </div>
+                    </Carousel.Item>
+                    <Carousel.Item>
+                      <Row className="d-flex justify-content-between gap-3">
+                        <Col
+                          className="p-3"
+                          style={{
+                            backgroundColor: "rgba(245, 247, 248, 1)",
+                            borderRadius: "10px",
+                          }}
+                        >
+                          <div
+                            style={{
+                              color: "#4A7EC4",
+                              fontSize: "12px",
+                              fontWeight: 700,
+                            }}
+                          >
+                            Bank
+                          </div>
+                          <div
+                            style={{
+                              color: "var(--primary-color)",
+                              fontSize: "18px",
+                              fontWeight: 700,
+                            }}
+                          >
+                            $20,000.00
+                          </div>
+                        </Col>
+
+                        <Col
+                          className="p-3"
+                          style={{
+                            backgroundColor: "rgba(245, 247, 248, 1)",
+                            borderRadius: "10px",
+                          }}
+                        >
+                          <div
+                            style={{
+                              backgroundColor: "#F5F7F8",
+                              color: "rgba(92, 182, 249, 0.8)",
+                              fontSize: "12px",
+                              fontWeight: 700,
+                            }}
+                          >
+                            Net worth
+                          </div>
+                          <div
+                            style={{
+                              backgroundColor: "#F5F7F8",
+                              color: "#5CB6F9",
+                              fontSize: "18px",
+                              fontWeight: 700,
+                            }}
+                          >
+                            $20,000.00
+                          </div>
+                        </Col>
+                      </Row>
+
+                      <Row className="d-flex justify-content-between gap-3">
+                        <div className="d-flex align-items-center justify-content-between">
+                          <div
+                            style={{
+                              fontWeight: 600,
+                              fontSize: "14px",
+                              color: "var(--primary-color)",
+                            }}
+                          >
+                            Cashflow
+                          </div>
+                          <div
+                            style={{
+                              fontWeight: 600,
+                              fontSize: "12px",
+                              color: "rgba(92, 182, 249, 1)",
+                            }}
+                          >
+                            View
+                          </div>
+                        </div>
+
+                        <div
+                          style={{
+                            backgroundColor: "#F5F7F8",
+                            borderRadius: "20px",
+                          }}
+                          className="d-flex justify-content-around align-items-center"
+                        >
+                          <div style={{ color: "#3AC3AC" }}>
+                            <div style={{ fontSize: "12px", fontWeight: 400 }}>
+                              Money in
+                            </div>
+                            <div style={{ fontSize: "14px", fontWeight: 600 }}>
+                              $1,900
+                            </div>
+                            <div style={{ fontSize: "12px", fontWeight: 400 }}>
+                              53.8%
+                            </div>
+                          </div>
+
+                          <div>
+                            <div style={{ fontSize: "12px", fontWeight: 400 }}>
+                              Money out
+                            </div>
+                            <div style={{ fontSize: "14px", fontWeight: 600 }}>
+                              -$3,286
+                            </div>
+                            <div style={{ fontSize: "12px", fontWeight: 400 }}>
+                              53.8%
+                            </div>
+                          </div>
+
+                          <div
+                            style={{
+                              color: "var(--primary-color)",
+                            }}
+                          >
+                            <div style={{ fontSize: "12px", fontWeight: 400 }}>
+                              Over spent
+                            </div>
+                            <div style={{ fontSize: "14px", fontWeight: 600 }}>
+                              $1,386
+                            </div>
+                          </div>
+                        </div>
+                      </Row>
+                    </Carousel.Item>
+                  </Carousel>
                 )}
               </div>
             </DashboardCard>

@@ -1,0 +1,33 @@
+.customize-dashboard {
+  display: flex;
+  align-items: center;
+}
+
+.hamburger {
+  display: none;
+}
+
+.mobile-responsive {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+}
+
+@media only screen and (max-width: 1250px) {
+  .customize-dashboard {
+    display: none;
+  }
+  .hamburger {
+    display: block;
+  }
+  .mobile-responsive {
+    justify-content: space-between;
+  }
+}
+.accounts {
+  display: block;
+  padding-left: 20px;
+  color: var(--primary-color);
+  font-weight: 600;
+  margin-top: 10px;
+}

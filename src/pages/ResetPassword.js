@@ -1,28 +1,23 @@
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button, Col, Form, Image, Row, Spinner } from "react-bootstrap";
 import { ToastContainer } from "react-toastify";
-import { useTitle } from "../components";
 import { getError } from "../utils/error";
-import { useSelector } from "react-redux";
-import { selectAuth, setAccessToken, setUser } from "../features/authSlice";
 import FormField from "../components/layout/FormField";
 import { useLoginAdminMutation } from "../features/apiSlice";
 import LoginCard from "../components/layout/LoginCard";
 
 export default function ResetPassword() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [loginAdmin, { isLoading }] = useLoginAdminMutation();
-  const { accessToken } = useSelector(selectAuth);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       navigate("/user/login");
     } catch (error) {
-      console.log(error);
       getError(error);
     }
   };
@@ -63,15 +58,15 @@ export default function ResetPassword() {
         <FormField
           placeholder={"Password"}
           type={"password"}
-          onChange={(e) => setEmail(e.target.value)}
-          value={email}
+          onChange={(e) => setPassword(e.target.value)}
+          value={password}
         />
 
         <FormField
           type={"password"}
-          placeholder={"Password"}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          placeholder={"Confirm password"}
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
         />
 
         <Row className="mt-5">
