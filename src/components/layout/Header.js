@@ -4,6 +4,7 @@ import { IoIosSettings } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
 import { IoMdNotifications } from "react-icons/io";
 import { FaUserCircle } from "react-icons/fa";
+import { GoPlus } from "react-icons/go";
 import { RxCross2 } from "react-icons/rx";
 import { GiHamburgerMenu } from "react-icons/gi";
 import GoalComponent from "../HeaderComponents/GoalComponent";
@@ -52,8 +53,8 @@ export default function Header({ sidebarHandler }) {
         <>
           <Container className="header">
             <Row>
-              <Col className="customize-dashboard" md={4}>
-                <div className="d-flex gap-5 align-items-center">
+              <Col className="customize-dashboard" md={3}>
+                <div className="d-flex gap-3 align-items-center">
                   <div
                     onClick={() => setSettings(true)}
                     style={{
@@ -75,12 +76,10 @@ export default function Header({ sidebarHandler }) {
                     className="p-3 d-flex align-items-center"
                     style={{
                       backgroundColor: "rgba(235, 241, 248, 1)",
-                      height: "50px",
-                      width: "200px",
                       borderRadius: "22px",
                       fontSize: "12px",
                       color: "var(--primary-color)",
-                      fontWeight: 600,
+                      fontWeight: 400,
                     }}
                   >
                     <img src="/images/badge.png" alt="..." />{" "}
@@ -117,17 +116,14 @@ export default function Header({ sidebarHandler }) {
                         setGoalModal(true);
                         setGoalBackLink(1);
                       }}
-                      className="d-flex align-items-center"
+                      className="d-flex align-items-center py-3 px-3"
                       style={{
                         cursor: "pointer",
-                        padding: "26px",
                         backgroundColor: "rgba(235, 241, 248, 1)",
-                        height: "50px",
-                        width: "110px",
                         borderRadius: "22px",
                         fontSize: "12px",
                         color: "var(--primary-color)",
-                        fontWeight: 600,
+                        fontWeight: 400,
                       }}
                     >
                       <img src="/images/badge.png" alt="..." />{" "}
@@ -135,14 +131,17 @@ export default function Header({ sidebarHandler }) {
                       <IoIosArrowForward size={16} />
                     </div>
 
-                    <div
-                      style={{
-                        fontSize: "8px",
-                        color: "var(--primary-color)",
-                        fontWeight: 600,
-                      }}
-                    >
-                      Goals on target ?
+                    <div>
+                      <div
+                        style={{
+                          fontSize: "11px",
+                          color: "var(--primary-color)",
+                          fontWeight: 400,
+                          marginLeft: "-10px",
+                        }}
+                      >
+                        Goals on target ?
+                      </div>
                       <div
                         className="d-flex align-items-center mt-1"
                         style={{
@@ -153,7 +152,7 @@ export default function Header({ sidebarHandler }) {
                           borderRadius: "22px",
                           fontSize: "12px",
                           color: "rgba(255, 1, 9, 1)",
-                          fontWeight: 600,
+                          fontWeight: 400,
                         }}
                       >
                         <RxCross2 /> <span>No</span>
@@ -176,7 +175,7 @@ export default function Header({ sidebarHandler }) {
                       borderRadius: "22px",
                       fontSize: "12px",
                       color: "var(--primary-color)",
-                      fontWeight: 600,
+                      fontWeight: 500,
                     }}
                   >
                     <img src="/images/badge.png" alt="..." />{" "}
@@ -185,21 +184,18 @@ export default function Header({ sidebarHandler }) {
                   </div>
 
                   <div
-                    className="customize-dashboard"
+                    className="customize-dashboard py-3 px-4"
                     onClick={() => setAddAccountModal(true)}
                     style={{
-                      padding: "26px",
                       backgroundColor: "var(--primary-color)",
-                      height: "40px",
-                      width: "160px",
                       borderRadius: "22px",
                       fontSize: "12px",
                       color: "white",
-                      fontWeight: 600,
+                      fontWeight: 400,
                       cursor: "pointer",
                     }}
                   >
-                    + Add account
+                    <GoPlus size={16} /> Add account
                   </div>
 
                   <div

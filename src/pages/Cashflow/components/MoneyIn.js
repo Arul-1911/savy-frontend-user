@@ -10,22 +10,65 @@ import SearchField from "../../../components/layout/SearchField";
 import BucketComponet from "./SubComponents/BucketComponet";
 import { BarPlot, ChartContainer } from "@mui/x-charts";
 import ExcludeTransaction from "./SubComponents/ExcludeTransaction";
-
-const data = [
-  { label: "Group A", value: 400, color: "#0088FE", label: "A" },
-  { label: "Group B", value: 300, color: "rgba(58, 195, 172, 1)", label: "B" },
-];
-
-const data2 = [
-  { label: "Group A", value: 550, color: "rgba(74, 86, 226, 1)" },
-  { label: "Group B", value: 450, color: "rgba(36, 204, 167, 1)" },
-  { label: "Group C", value: 350, color: "rgba(36, 204, 167, 0.7)" },
-  { label: "Group D", value: 350, color: "rgba(36, 204, 167, 0.4)" },
-  { label: "Group E", value: 250, color: "rgba(36, 204, 167, 0.2)" },
-];
+import PieCharts from "../../../components/Charts/PieChart";
+import BarsChart from "../../../components/Charts/BarsChart";
 
 const Data = [82000, 30000, 44545, 78344];
 const Labels = ["Page A", "Page B", "Page C", "Page D"];
+
+const data1 = [
+  {
+    name: "More than last period",
+    value: 7000,
+  },
+  {
+    name: "Last period",
+    value: 4567,
+  },
+];
+
+const data3 = [
+  {
+    name: "Shopping",
+    value: 7000,
+  },
+  {
+    name: "Food",
+    value: 4567,
+  },
+  {
+    name: "Bills",
+    value: 2398,
+  },
+  {
+    name: "Benzin",
+    value: 3908,
+  },
+  {
+    name: "Others",
+    value: 4800,
+  },
+];
+
+const COLORS1 = [
+  { start: "rgba(36, 204, 167, 1)", end: "rgba(74, 86, 226, 1)" },
+  { start: "rgba(36, 204, 167, 1)", end: "rgba(36, 204, 167, 1)" },
+  { start: "rgba(36, 204, 167, 0.7)", end: "rgba(36, 204, 167, 0.7)" },
+  { start: "rgba(36, 204, 167, 0.4)", end: "rgba(36, 204, 167, 0.4)" },
+  { start: "rgba(36, 204, 167, 0.2)", end: "rgba(36, 204, 167, 0.2)" },
+];
+
+const COLORS = [
+  { start: "rgba(92, 182, 249, 1)", end: "rgba(0, 74, 173, 1)" },
+  { start: "rgba(58, 195, 172, 1)", end: "rgba(58, 195, 172, 1)" },
+];
+
+const MoneyInvsOutData = [
+  { name: "Money In", uv: 4000 },
+  { name: "Money Out", uv: 3000 },
+  { name: "Money Out", uv: 2000 },
+  { name: "Money Out", uv: 1000 },
+];
 
 const MoneyIn = () => {
   const [bucketOpen, setBucketOpen] = useState(false);
@@ -162,80 +205,58 @@ const MoneyIn = () => {
               {selectBucketName !== "Tags" ? (
                 <>
                   {selectBucketName === "Bucket" && (
-                    <div className="mt-2">
-                      <Stack direction="row">
-                        <PieChart
-                          series={[
-                            {
-                              paddingAngle: 2,
-                              innerRadius: 45,
-                              outerRadius: 100,
-                              cornerRadius: 10,
-                              data,
-                            },
-                          ]}
-                          margin={{ right: 5 }}
-                          width={200}
-                          height={200}
-                          legend={{ hidden: true }}
-                        />
-                      </Stack>
+                    <div className="d-flex justify-content-center mt-2">
+                      <PieCharts
+                        COLORS={COLORS}
+                        data={data1}
+                        cornerRadius={2}
+                        In={true}
+                        width={420}
+                        height={200}
+                      />
                     </div>
                   )}
 
                   {selectBucketName === "Categories" && (
-                    <div className="mt-2">
-                      <Stack direction="row">
-                        <PieChart
-                          series={[
-                            {
-                              paddingAngle: 2,
-                              innerRadius: 45,
-                              outerRadius: 100,
-                              cornerRadius: 10,
-                              data: data2,
-                            },
-                          ]}
-                          margin={{ right: 5 }}
-                          width={200}
-                          height={200}
-                          legend={{ hidden: true }}
-                        />
-                      </Stack>
+                    <div className="d-flex justify-content-center mt-2">
+                      <PieCharts
+                        COLORS={COLORS1}
+                        data={data3}
+                        cornerRadius={2}
+                        In={true}
+                        width={420}
+                        height={200}
+                      />
                     </div>
                   )}
 
                   {selectBucketName === "Transactions" && (
-                    <ChartContainer
-                      width={500}
-                      height={250}
-                      colors={["rgba(74, 86, 226, 1)"]}
-                      series={[{ data: Data, label: "uv", type: "bar" }]}
-                      xAxis={[{ scaleType: "band", data: Labels }]}
-                    >
-                      <BarPlot borderRadius={10} />
-                    </ChartContainer>
+                    <div className="d-flex justify-content-center">
+                      <BarsChart
+                        data={MoneyInvsOutData}
+                        width={450}
+                        height={220}
+                        barWidth={70}
+                        gradient={true}
+                        gradientNumber={4}
+                        barGrad1={"rgba(226, 242, 255, 1)"}
+                        barGrad2={"rgba(226, 242, 255, 1)"}
+                        barGrad3={"rgba(226, 242, 255, 1)"}
+                        barGrad4={"rgba(0, 74, 173, 1)"}
+                      />
+                    </div>
                   )}
 
                   {selectBucketName === "Merchant" && (
-                    <div className="mt-2">
-                      <Stack direction="row">
-                        <PieChart
-                          series={[
-                            {
-                              paddingAngle: 2,
-                              innerRadius: 45,
-                              outerRadius: 100,
-                              cornerRadius: 10,
-                              data: data2,
-                            },
-                          ]}
-                          margin={{ right: 5 }}
-                          width={200}
-                          height={200}
-                          legend={{ hidden: true }}
-                        />
-                      </Stack>
+                    <div className="d-flex justify-content-center mt-2">
+                      <PieCharts
+                        COLORS={COLORS1}
+                        data={data3}
+                        cornerRadius={2}
+                        In={true}
+                        width={420}
+                        height={200}
+                      />
                     </div>
                   )}
                 </>

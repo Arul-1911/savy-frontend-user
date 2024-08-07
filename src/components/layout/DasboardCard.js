@@ -1,6 +1,5 @@
 import React from "react";
-import { Card, CardBody, Container, Image } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Card, CardBody } from "react-bootstrap";
 
 const DashboardCard = ({ children, height, width }) => {
   return (

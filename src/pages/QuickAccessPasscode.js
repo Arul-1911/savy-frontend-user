@@ -44,7 +44,7 @@ export default function QuickAccessPasscode() {
   };
 
   return (
-    <LoginCard height={"350px"} width={"400px"}>
+    <LoginCard height={"350px"} width={"400px"} passcode={true}>
       <div className="d-flex align-items-center flex-column px-5">
         <Image
           height={"50px"}

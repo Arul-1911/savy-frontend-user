@@ -5,20 +5,46 @@ import { Col, Row, Image } from "react-bootstrap";
 import { CiCalendar } from "react-icons/ci";
 import { IoInformationCircleOutline } from "react-icons/io5";
 import SearchField from "../../../components/layout/SearchField";
-import { BarChart } from "@mui/x-charts/BarChart";
 import ExcludeTransaction from "./SubComponents/ExcludeTransaction";
+import {
+  BarChart,
+  Bar,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ReferenceLine,
+  ResponsiveContainer,
+} from "recharts";
+import BarsChart from "../../../components/Charts/BarsChart";
 
-// const pData = [2400, 1398, -9800, 3908, 4800, -3800, 4300];
-const uData = [4000, -3000, -2000, 2780, -1890, 2390, 3490];
-
-const xLabels = [
-  "Page A",
-  "Page B",
-  "Page C",
-  "Page D",
-  "Page E",
-  "Page F",
-  "Page G",
+const data = [
+  {
+    name: "02 Dec - 01 Jan",
+    uv: 4000,
+    pv: 2400,
+    amt: 2400,
+  },
+  {
+    name: "02 Jan - 01 Feb",
+    uv: -3000,
+    pv: 1398,
+    amt: 2210,
+  },
+  {
+    name: "02 Feb - 01 Mar",
+    uv: -2000,
+    pv: -9800,
+    amt: 2290,
+  },
+  {
+    name: "02 Mar - Today",
+    uv: 2780,
+    pv: 3908,
+    amt: 2000,
+  },
 ];
 
 const NetWorth = () => {
@@ -148,15 +174,22 @@ const NetWorth = () => {
             </Col>
 
             <Col>
-              <BarChart
-                width={500}
-                height={300}
-                series={[
-                  // { data: pData, label: "pv", id: "pvId", stack: "stack1" },
-                  { data: uData, label: "uv", id: "uvId", stack: "stack1" },
-                ]}
-                xAxis={[{ data: xLabels, scaleType: "band" }]}
-              />
+              <ResponsiveContainer width="100%" height="100%">
+                <BarsChart
+                  data={data}
+                  barWidth={50}
+                  width={"100%"}
+                  height={220}
+                  gradient={true}
+                  gradientNumber={12}
+                  cashFlow={true}
+                  netWorth={true}
+                  barGrad1={"#E2F2FF"}
+                  barGrad2={"#E2F2FF"}
+                  barGrad3={"#E2F2FF"}
+                  barGrad4={"#004AAD"}
+                />
+              </ResponsiveContainer>
             </Col>
           </Row>
         </DashboardCard>

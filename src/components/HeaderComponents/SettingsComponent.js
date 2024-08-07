@@ -7,13 +7,16 @@ const SettingsComponent = ({ show, hide }) => {
   const [selectActivePeriod, setSelectActivePeriod] = useState(0);
 
   const periods = [
-    "Next 7 days",
-    "Next 14 days",
-    "Next 30 days",
-    "This month",
-    "This pay cycle",
-    "Next pay cycle",
+    "Past fortnight",
+    "Past months",
+    "Past 3 months",
+    "Past 6 months",
+    "Past year",
+    "Calendar week",
     "Calendar fortnight",
+    "Calendar month",
+    "Calendar month (last business day)",
+    "Calendar year",
   ];
 
   const activePeriods = (index) => {
@@ -31,7 +34,7 @@ const SettingsComponent = ({ show, hide }) => {
         />
         <div
           style={{
-            margin: "auto",
+            margin: "auto 170px",
             fontWeight: 600,
             fontSize: "18px",
             color: "rgba(55, 73, 87, 1)",

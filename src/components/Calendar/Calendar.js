@@ -6,54 +6,105 @@ import ModalWindow from "../../components/modals/ModalWindow";
 import { Card, CardBody } from "react-bootstrap";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 
-const Calendar = ({ show, hide }) => {
+const Calendar = ({ show, hide, already, activeLink }) => {
   return (
-    <ModalWindow show={show} onHide={hide}>
-      <div className="d-flex align-items-center">
-        <IoArrowBackCircleOutline
-          color="rgba(92, 182, 249, 1)"
-          cursor={"pointer"}
-          size={28}
-          onClick={() => hide(false)}
-        />
-        <div
-          style={{
-            margin: "auto",
-            fontWeight: 600,
-            fontSize: "18px",
-            color: "rgba(55, 73, 87, 1)",
-          }}
-          className="text-center"
-        >
-          Calendar
-        </div>
-      </div>
-      <div className="d-flex justify-content-center mt-3">
-        <Card style={{ width: "100%", borderRadius: "10px" }}>
-          <CardBody>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DateCalendar />
-            </LocalizationProvider>
-            <div className="d-flex justify-content-center">
-              <button
-                className="w-75"
-                style={{
-                  backgroundColor: "var(--primary-color)",
-                  color: "white",
-                  padding: "10px",
-                  borderRadius: "10px",
-                  border: "none",
-                  outline: "none",
-                }}
-                onClick={() => hide(false)}
-              >
-                Confirm
-              </button>
+    <>
+      {!already ? (
+        <ModalWindow show={show} onHide={hide}>
+          <div className="d-flex align-items-center">
+            <IoArrowBackCircleOutline
+              color="rgba(92, 182, 249, 1)"
+              cursor={"pointer"}
+              size={28}
+              onClick={() => hide(false)}
+            />
+            <div
+              style={{
+                margin: "auto",
+                fontWeight: 600,
+                fontSize: "18px",
+                color: "rgba(55, 73, 87, 1)",
+              }}
+              className="text-center"
+            >
+              Calendar
             </div>
-          </CardBody>
-        </Card>
-      </div>
-    </ModalWindow>
+          </div>
+          <div className="d-flex justify-content-center mt-3">
+            <Card style={{ width: "100%", borderRadius: "10px" }}>
+              <CardBody>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DateCalendar />
+                </LocalizationProvider>
+                <div className="d-flex justify-content-center">
+                  <button
+                    className="w-75"
+                    style={{
+                      backgroundColor: "var(--primary-color)",
+                      color: "white",
+                      padding: "10px",
+                      borderRadius: "10px",
+                      border: "none",
+                      outline: "none",
+                    }}
+                    onClick={() => hide(false)}
+                  >
+                    Confirm
+                  </button>
+                </div>
+              </CardBody>
+            </Card>
+          </div>
+        </ModalWindow>
+      ) : (
+        <>
+          <div className="d-flex align-items-center">
+            <IoArrowBackCircleOutline
+              color="rgba(92, 182, 249, 1)"
+              cursor={"pointer"}
+              size={28}
+              onClick={() => activeLink(already)}
+            />
+            <div
+              style={{
+                margin: "auto",
+                fontWeight: 600,
+                fontSize: "18px",
+                color: "rgba(55, 73, 87, 1)",
+              }}
+              className="text-center"
+            >
+              Calendar
+            </div>
+          </div>
+          <div className="d-flex justify-content-center mt-3">
+            <Card style={{ width: "100%", borderRadius: "10px" }}>
+              <CardBody>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DateCalendar />
+                </LocalizationProvider>
+                <div className="d-flex justify-content-center">
+                  <button
+                    className="w-75"
+                    style={{
+                      backgroundColor: "var(--primary-color)",
+                      color: "white",
+                      padding: "10px",
+                      borderRadius: "10px",
+                      border: "none",
+                      outline: "none",
+                    }}
+                    onClick={() => activeLink(already)}
+                  >
+                    Confirm
+                  </button>
+                </div>
+              </CardBody>
+            </Card>
+          </div>
+        </>
+      )}
+    </>
   );
 };
 

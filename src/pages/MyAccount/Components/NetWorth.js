@@ -55,12 +55,18 @@ const NetWorth = () => {
         <Col>
           <DashboardCard>
             <div className="d-flex align-items-center justify-content-between">
-              <h5 style={{ fontWeight: 600, color: "rgba(0, 39, 91, 1)" }}>
-                Liabilities
+              <h5
+                style={{
+                  fontWeight: 600,
+                  color: "rgba(0, 39, 91, 1)",
+                  fontSize: "18px",
+                }}
+              >
+                Assets
               </h5>
               <p
                 style={{
-                  color: "rgba(92, 182, 249, 1)",
+                  color: "var(--primary-color)",
                   fontWeight: 600,
                   fontSize: "16px",
                   cursor: "pointer",
@@ -141,18 +147,37 @@ const NetWorth = () => {
                 </div>
               );
             })}
+            <div className="mt-3 text-center">
+              <button
+                className="py-2"
+                style={{
+                  backgroundColor: "rgba(0, 74, 173, 0.08)",
+                  color: "var(--primary-color)",
+                  borderRadius: "20px",
+                  border: "1px solid rgba(0, 74, 173, 0.08)",
+                }}
+              >
+                + Add Assets
+              </button>
+            </div>
           </DashboardCard>
         </Col>
 
         <Col>
           <DashboardCard>
             <div className="d-flex align-items-center justify-content-between">
-              <h4 style={{ fontWeight: 600, color: "rgba(0, 39, 91, 1)" }}>
+              <h4
+                style={{
+                  fontWeight: 600,
+                  color: "rgba(0, 39, 91, 1)",
+                  fontSize: "18px",
+                }}
+              >
                 Liabilities
               </h4>
               <p
                 style={{
-                  color: "rgba(92, 182, 249, 1)",
+                  color: "var(--primary-color)",
                   fontWeight: 600,
                   fontSize: "16px",
                   cursor: "pointer",

@@ -1,11 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button, Col, Form, Image, Row, Spinner } from "react-bootstrap";
 import { ToastContainer } from "react-toastify";
-import { useTitle } from "../components";
 import { getError } from "../utils/error";
-import { useSelector } from "react-redux";
-import { selectAuth, setAccessToken, setUser } from "../features/authSlice";
 import FormField from "../components/layout/FormField";
 import { useLoginAdminMutation } from "../features/apiSlice";
 import LoginCard from "../components/layout/LoginCard";
@@ -14,8 +11,8 @@ export default function SignupScreen() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loginAdmin, { isLoading }] = useLoginAdminMutation();
-  // const { accessToken } = useSelector(selectAuth);
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [{ isLoading }] = useLoginAdminMutation();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -47,6 +44,7 @@ export default function SignupScreen() {
           Sign up with your account to get started
         </div>
       </div>
+
       <Form className="mt-3 px-5" onSubmit={handleLogin}>
         <FormField
           placeholder={"E-mail"}
@@ -65,8 +63,8 @@ export default function SignupScreen() {
         <FormField
           type={"password"}
           placeholder={"Confirm Password"}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
         />
 
         <p
@@ -104,6 +102,7 @@ export default function SignupScreen() {
           </Col>
         </Row>
       </Form>
+
       <ToastContainer />
     </LoginCard>
   );

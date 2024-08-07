@@ -13,39 +13,61 @@ import { MotionDiv } from "../components";
 import DashboardCard from "../components/layout/DasboardCard";
 import "./Dashboard.css";
 import SearchField from "../components/layout/SearchField";
-import Stack from "@mui/material/Stack";
-import { PieChart } from "@mui/x-charts/PieChart";
-import { BarPlot, ChartContainer } from "@mui/x-charts";
 import { Link } from "react-router-dom";
 import BudgetComponents from "./DashboardComponents/BudgetComponents";
 import UpcomingBillComponents from "./DashboardComponents/UpcomingBillComponent";
+import PieCharts from "../components/Charts/PieChart";
+import BarsChart from "../components/Charts/BarsChart";
+
+const MoneyInvsOutData = [
+  { name: "Money In", uv: 4000 },
+  { name: "Money Out", uv: 3000 },
+];
+
+const MonthlyMoneyOutData = [
+  { name: "Jan", uv: 4000 },
+  { name: "Feb", uv: 3000 },
+  { name: "Mar", uv: 8000 },
+  { name: "Apr", uv: 6000 },
+  { name: "May", uv: 3000 },
+  { name: "Jun", uv: 11000 },
+  { name: "July", uv: 9000 },
+  { name: "Aug", uv: 2000 },
+  { name: "Sep", uv: 3500 },
+  { name: "Oct", uv: 4500 },
+  { name: "Nov", uv: 5500 },
+  { name: "Dec", uv: 2000 },
+];
 
 const data = [
-  { label: "Group A", value: 550, color: "rgba(74, 86, 226, 1)" },
-  { label: "Group B", value: 450, color: "rgba(36, 204, 167, 1)" },
-  { label: "Group C", value: 350, color: "rgba(36, 204, 167, 0.7)" },
-  { label: "Group D", value: 350, color: "rgba(36, 204, 167, 0.4)" },
-  { label: "Group E", value: 250, color: "rgba(36, 204, 167, 0.2)" },
+  {
+    name: "Shopping",
+    value: 7000,
+  },
+  {
+    name: "Food",
+    value: 4567,
+  },
+  {
+    name: "Bills",
+    value: 2398,
+  },
+  {
+    name: "Benzin",
+    value: 3908,
+  },
+  {
+    name: "Others",
+    value: 4800,
+  },
 ];
 
-const uData = [4000, 3000];
-const xLabels = ["Page A", "Page B"];
-
-const Data = [
-  82000, 30000, 44545, 78344, 93885, 64587, 54589, 47477, 34393, 56409, 84934,
-];
-const Labels = [
-  "Page A",
-  "Page B",
-  "Page C",
-  "Page D",
-  "Page E",
-  "Page F",
-  "Page G",
-  "Page H",
-  "Page I",
-  "Page J",
-  "Page K",
+const COLORS = [
+  { start: "rgba(36, 204, 167, 1)", end: "rgba(74, 86, 226, 1)" },
+  { start: "rgba(36, 204, 167, 1)", end: "rgba(36, 204, 167, 1)" },
+  { start: "rgba(36, 204, 167, 0.7)", end: "rgba(36, 204, 167, 0.7)" },
+  { start: "rgba(36, 204, 167, 0.4)", end: "rgba(36, 204, 167, 0.4)" },
+  { start: "rgba(36, 204, 167, 0.2)", end: "rgba(36, 204, 167, 0.2)" },
 ];
 
 export default function Dashboard() {
@@ -92,7 +114,7 @@ export default function Dashboard() {
         </h2>
         <Row className="g-3">
           <Col>
-            <DashboardCard>
+            <DashboardCard height={"380px"}>
               <h4 style={{ fontWeight: 600, color: "rgba(0, 39, 91, 1)" }}>
                 Account Portfolio
               </h4>
@@ -163,21 +185,22 @@ export default function Dashboard() {
                     fontWeight: 600,
                   }}
                 >
-                  Monthly money out
+                  Monthly Money Out
                 </li>
               </ul>
 
               {accountPortfolioActive === 1 && (
                 <div
-                  className="mt-2"
+                  className="mt-3"
                   style={{
                     backgroundColor: "rgba(245, 247, 248, 1)",
-                    height: "200px",
+                    height: "260px",
                     borderRadius: "10px",
                     padding: "20px",
                   }}
                 >
                   <div
+                    className="mt-5"
                     style={{
                       display: "flex",
                       justifyContent: "space-between",
@@ -219,15 +242,16 @@ export default function Dashboard() {
 
               {accountPortfolioActive === 2 && (
                 <div
-                  className="mt-2"
+                  className="mt-3"
                   style={{
                     backgroundColor: "rgba(245, 247, 248, 1)",
-                    height: "200px",
+                    height: "260px",
                     borderRadius: "10px",
                     padding: "20px",
                   }}
                 >
                   <div
+                    className="mt-5"
                     style={{
                       display: "flex",
                       justifyContent: "space-between",
@@ -266,10 +290,10 @@ export default function Dashboard() {
 
               {accountPortfolioActive === 3 && (
                 <div
-                  className="mt-2"
+                  className="mt-3"
                   style={{
                     backgroundColor: "rgba(245, 247, 248, 1)",
-                    height: "200px",
+                    height: "260px",
                     borderRadius: "10px",
                     padding: "20px",
                   }}
@@ -289,17 +313,21 @@ export default function Dashboard() {
                           fontSize: "16px",
                         }}
                       >
-                        This time
+                        This month
                       </div>
-                      <ChartContainer
+                      <BarsChart
+                        data={MoneyInvsOutData}
                         width={200}
-                        height={200}
-                        colors={["rgba(0, 74, 173, 1)"]}
-                        series={[{ data: uData, label: "uv", type: "bar" }]}
-                        xAxis={[{ scaleType: "band", data: xLabels }]}
-                      >
-                        <BarPlot borderRadius={10} />
-                      </ChartContainer>
+                        height={220}
+                        cashFlow={true}
+                        barWidth={45}
+                        gradient={true}
+                        gradientNumber={12}
+                        barGrad1={"#004AAD"}
+                        barGrad2={"#3AC3AC"}
+                        barGrad3={"#004AAD"}
+                        barGrad4={"#DC5A5A"}
+                      />
                     </div>
                     <div>
                       <div
@@ -325,6 +353,8 @@ export default function Dashboard() {
                               "linear-gradient(270deg, #5CB6F9 0%, #004AAD 100%)",
                             WebkitBackgroundClip: "text",
                             color: "transparent",
+                            fontSize: "20px",
+                            fontWeight: 600,
                           }}
                         >
                           30.000,00$
@@ -354,6 +384,8 @@ export default function Dashboard() {
                               "linear-gradient(270deg, #DC5A5B -4.02%, #004AAD 105.17%)",
                             WebkitBackgroundClip: "text",
                             color: "transparent",
+                            fontSize: "20px",
+                            fontWeight: 600,
                           }}
                         >
                           20.000,00$
@@ -366,10 +398,10 @@ export default function Dashboard() {
 
               {accountPortfolioActive === 4 && (
                 <div
-                  className="mt-2"
+                  className="mt-3"
                   style={{
                     backgroundColor: "rgba(245, 247, 248, 1)",
-                    height: "200px",
+                    height: "260px",
                     borderRadius: "10px",
                     padding: "20px",
                   }}
@@ -385,15 +417,19 @@ export default function Dashboard() {
                   </div>
 
                   <div className="d-flex justify-content-center">
-                    <ChartContainer
-                      width={500}
-                      height={200}
-                      colors={["rgba(74, 86, 226, 1)"]}
-                      series={[{ data: Data, label: "uv", type: "bar" }]}
-                      xAxis={[{ scaleType: "band", data: Labels }]}
-                    >
-                      <BarPlot borderRadius={10} />
-                    </ChartContainer>
+                    <BarsChart
+                      data={MonthlyMoneyOutData}
+                      barWidth={30}
+                      width={"100%"}
+                      height={220}
+                      cashFlow={true}
+                      gradient={true}
+                      gradientNumber={12}
+                      barGrad1={"#5CB6F9"}
+                      barGrad2={"#004AAD"}
+                      barGrad3={"#5CB6F9"}
+                      barGrad4={"#004AAD"}
+                    />
                   </div>
                 </div>
               )}
@@ -401,7 +437,7 @@ export default function Dashboard() {
           </Col>
 
           <Col>
-            <DashboardCard>
+            <DashboardCard height={"380px"}>
               <div className="d-flex align-items-center justify-content-between">
                 <h4 style={{ fontWeight: 600, color: "rgba(0, 39, 91, 1)" }}>
                   Expenses
@@ -473,23 +509,15 @@ export default function Dashboard() {
 
               <div className="mt-2">
                 {expenseActive === 1 && (
-                  <Stack direction="row">
-                    <PieChart
-                      series={[
-                        {
-                          paddingAngle: 2,
-                          innerRadius: 45,
-                          outerRadius: 100,
-                          cornerRadius: 10,
-                          data,
-                        },
-                      ]}
-                      margin={{ right: 5 }}
-                      width={200}
-                      height={200}
-                      legend={{ hidden: true }}
+                  <div className="d-flex justify-content-end">
+                    <PieCharts
+                      COLORS={COLORS}
+                      data={data}
+                      cornerRadius={10}
+                      height={280}
+                      width={500}
                     />
-                  </Stack>
+                  </div>
                 )}
 
                 {expenseActive === 2 && (
@@ -520,6 +548,7 @@ export default function Dashboard() {
                                 style={{
                                   fontSize: "12px",
                                   color: "rgba(55, 73, 87, 1)",
+                                  fontWeight: 600,
                                 }}
                               >
                                 {paymt?.text}
@@ -552,20 +581,25 @@ export default function Dashboard() {
                 {expenseActive === 3 && (
                   <Carousel>
                     <Carousel.Item>
-                      <div className="d-flex justify-content-center ">
-                        <ChartContainer
-                          width={500}
-                          height={250}
-                          colors={["rgba(74, 86, 226, 1)"]}
-                          series={[{ data: Data, label: "uv", type: "bar" }]}
-                          xAxis={[{ scaleType: "band", data: Labels }]}
-                        >
-                          <BarPlot borderRadius={10} />
-                        </ChartContainer>
+                      <div className="d-flex flex-column justify-content-center mt-5">
+                        <BarsChart
+                          data={MonthlyMoneyOutData}
+                          barWidth={30}
+                          width={"100%"}
+                          height={220}
+                          cashFlow={true}
+                          gradient={true}
+                          gradientNumber={12}
+                          moneyIn={true}
+                          barGrad1={"#5CB6F9"}
+                          barGrad2={"#004AAD"}
+                          barGrad3={" #5CB6F9"}
+                          barGrad4={"#004AAD"}
+                        />
                       </div>
                     </Carousel.Item>
                     <Carousel.Item>
-                      <Row className="d-flex justify-content-between gap-3">
+                      <Row className="d-flex justify-content-between gap-3 px-3 mt-2">
                         <Col
                           className="p-3"
                           style={{
@@ -623,7 +657,7 @@ export default function Dashboard() {
                         </Col>
                       </Row>
 
-                      <Row className="d-flex justify-content-between gap-3">
+                      <Row className="d-flex justify-content-between gap-3 mt-4 px-3">
                         <div className="d-flex align-items-center justify-content-between">
                           <div
                             style={{
@@ -648,9 +682,9 @@ export default function Dashboard() {
                         <div
                           style={{
                             backgroundColor: "#F5F7F8",
-                            borderRadius: "20px",
+                            borderRadius: "10px",
                           }}
-                          className="d-flex justify-content-around align-items-center"
+                          className="d-flex justify-content-around align-items-center p-2"
                         >
                           <div style={{ color: "#3AC3AC" }}>
                             <div style={{ fontSize: "12px", fontWeight: 400 }}>
@@ -720,7 +754,7 @@ export default function Dashboard() {
               <div className="mt-4">
                 <div
                   style={{
-                    color: "var(--primary-color)",
+                    color: "rgba(116, 141, 174, 1)",
                     fontWeight: 600,
                     fontSize: "16px",
                     cursor: "pointer",

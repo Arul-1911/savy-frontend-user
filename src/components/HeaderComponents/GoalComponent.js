@@ -1,12 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import ModalWindow from "../modals/ModalWindow";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
-import { Card, Image, ProgressBar } from "react-bootstrap";
+import { Card, Form, Image, InputGroup, ProgressBar } from "react-bootstrap";
 import { FiUpload } from "react-icons/fi";
 import FormField from "../layout/FormField";
 import { RxCrossCircled } from "react-icons/rx";
+import { CalendarSVG } from "../svg/CalendarSVG";
+import Calendar from "../Calendar/Calendar";
 
 const GoalComponent = ({ show, hide, active, activeLink }) => {
+  const [alreadyActiveCalendar, setAlreadyActiveCalendar] = useState(0);
+
   const goals = [
     {
       icons: "/images/Rectangle 116.png",
@@ -73,14 +77,14 @@ const GoalComponent = ({ show, hide, active, activeLink }) => {
             <IoArrowBackCircleOutline
               color="rgba(92, 182, 249, 1)"
               cursor={"pointer"}
-              size={23}
+              size={26}
               onClick={() => hide(false)}
             />
             <div
               style={{
                 margin: "auto",
                 fontWeight: 600,
-                fontSize: "14px",
+                fontSize: "16px",
                 color: "rgba(55, 73, 87, 1)",
               }}
               className="text-center"
@@ -321,21 +325,32 @@ const GoalComponent = ({ show, hide, active, activeLink }) => {
           </div>
 
           <div>
-            <p
-              style={{
-                color: "var(--primary-color)",
-                fontWeight: 600,
-                marginTop: "10px",
-              }}
+            <div
+              className="my-3"
+              style={{ fontWeight: 600, color: "var(--primary-color)" }}
             >
               Estimated Date
-            </p>
-            <FormField
-              placeholder={"Enter Category"}
-              type={"text"}
-              // onChange={(e) => setEmail(e.target.value)}
-              // value={email}
-            />
+            </div>
+            <InputGroup className="mb-3">
+              <Form.Control
+                className="form-field"
+                style={{ borderRight: "none" }}
+                placeholder="Select Date"
+                aria-label="Username"
+                aria-describedby="basic-addon1"
+              />
+              <InputGroup.Text
+                onClick={() => {
+                  activeLink(5);
+                  setAlreadyActiveCalendar(2);
+                }}
+                style={{ cursor: "pointer" }}
+                id="basic-addon1"
+                className="grp_input"
+              >
+                <CalendarSVG />
+              </InputGroup.Text>
+            </InputGroup>
           </div>
 
           <div className="text-center">
@@ -597,6 +612,14 @@ const GoalComponent = ({ show, hide, active, activeLink }) => {
             </button>
           </div>
         </>
+      )}
+
+      {active === 5 && (
+        <Calendar
+          already={alreadyActiveCalendar}
+          activeLink={activeLink}
+          active={active}
+        />
       )}
     </ModalWindow>
   );

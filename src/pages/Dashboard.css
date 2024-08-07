@@ -27,3 +27,13 @@
   border-bottom: 1px solid rgba(0, 0, 0, 0.15);
   margin-top: 10px;
 }
+
+.budget-field::placeholder {
+  font-size: 18px;
+  color: rgba(165, 172, 179, 1);
+}
+
+.budget-field-price::placeholder {
+  color: var(--primary-color);
+  font-size: 18px;
+}

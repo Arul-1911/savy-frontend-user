@@ -35,7 +35,7 @@ export default function FinancialPolicy({
   const handleSubmit = (e) => {
     e.preventDefault();
     try {
-      next ? next() : navigate("/user/internet-banking");
+      next ? next() : navigate("/user/choose-bank");
     } catch (error) {
       getError(error);
     }
@@ -49,6 +49,35 @@ export default function FinancialPolicy({
       containerDiv={containerDiv}
     >
       {!containerDiv ? (
+        <div className="d-flex align-items-center flex-column">
+          <Image
+            height={"50px"}
+            width={"50px"}
+            src="/logo/LoginLogo.png"
+            alt="..."
+          />
+          <div
+            style={{
+              color: "var(--primary-color)",
+              fontWeight: 800,
+              fontSize: "16px",
+            }}
+          >
+            Share your financial data
+          </div>
+          <div
+            className="mt-2"
+            style={{
+              color: "rgba(55, 73, 87, 1)",
+              fontWeight: 600,
+              fontSize: "10px",
+            }}
+          >
+            We need to connect to your bank to collect some information about
+            your finances
+          </div>
+        </div>
+      ) : (
         <div className="d-flex align-items-center justify-content-between mb-5">
           <div>
             <IoArrowBackCircleOutline
@@ -79,48 +108,21 @@ export default function FinancialPolicy({
             />
           </div>
         </div>
-      ) : (
-        <div className="d-flex align-items-center flex-column">
-          <Image
-            height={"50px"}
-            width={"50px"}
-            src="/logo/LoginLogo.png"
-            alt="..."
-          />
-          <div
-            style={{
-              color: "var(--primary-color)",
-              fontWeight: 800,
-              fontSize: "16px",
-            }}
-          >
-            Share your financial data
-          </div>
-          <div
-            style={{
-              color: "rgba(55, 73, 87, 1)",
-              fontWeight: 600,
-              fontSize: "9px",
-            }}
-          >
-            We need to connect to your bank to collect some information about
-            your finances
-          </div>
-        </div>
       )}
 
-      <div className="mt-2 px-4">
+      <div className="mt-2 ">
         <div className="d-flex align-items-center justify-content-between">
           <div
+            className="px-4"
             style={{
-              fontSize: "12px",
+              fontSize: "14px",
               fontWeight: 700,
               color: "rgba(0, 74, 173, 1)",
             }}
           >
             Data we need to collect
           </div>
-          <div>
+          <div className="px-4">
             <IoInformationCircleOutline
               color="rgba(0, 74, 173, 1)"
               cursor={"pointer"}
@@ -130,7 +132,7 @@ export default function FinancialPolicy({
         </div>
         <ul
           style={{
-            fontSize: "10px",
+            fontSize: "12px",
             fontWeight: 400,
             color: "rgba(55, 73, 87, 1)",
           }}
@@ -145,7 +147,7 @@ export default function FinancialPolicy({
       <div className="d-flex align-items-center justify-content-between px-4">
         <div
           style={{
-            fontSize: "12px",
+            fontSize: "14px",
             fontWeight: 700,
             color: "rgba(0, 74, 173, 1)",
           }}
@@ -164,7 +166,7 @@ export default function FinancialPolicy({
       <div className="d-flex align-items-center justify-content-between mt-2 px-4">
         <div
           style={{
-            fontSize: "12px",
+            fontSize: "14px",
             fontWeight: 700,
             color: "rgba(0, 74, 173, 1)",
           }}
@@ -197,8 +199,8 @@ export default function FinancialPolicy({
         </div>
         <div
           style={{
-            fontSize: "8px",
-            fontWeight: 400,
+            fontSize: "10px",
+            fontWeight: 600,
             color: "rgba(0, 74, 173, 1)",
           }}
         >
@@ -210,13 +212,13 @@ export default function FinancialPolicy({
       <p
         className="px-5 text-center mt-3"
         style={{
-          fontSize: "12px",
+          fontSize: "10px",
           fontWeight: 400,
           color: "rgba(55, 73, 87, 1)",
         }}
       >
-        By continuing you agree to the Terms and Conditions and our Privacy
-        Policy.
+        PFM is an accredited Consumer Data Right Recipient that is bound by
+        rules set by the Australian Government.
       </p>
 
       <Row className="mt-2 px-4">

@@ -156,10 +156,16 @@ h6 {
 
 .form-field {
   padding: 10px;
+  border: 1px solid rgba(217, 217, 217, 1);
+}
+
+.form-field-button {
+  border: 1px solid rgba(217, 217, 217, 1);
+  border-left: none;
 }
 
 .form-field::placeholder {
-  /* color: rgba(217, 217, 217, 1); */
+  color: rgba(217, 217, 217, 1);
   font-weight: 700;
   font-size: 12px;
 }
@@ -233,11 +239,6 @@ td {
 .form-switch .form-check-input {
   width: 3rem !important;
   height: 1.5rem !important;
-}
-
-.form-check-input:checked {
-  background-color: rgba(18, 221, 0, 1);
-  border-color: rgba(18, 221, 0, 1);
 }
 
 input[type="range"] {

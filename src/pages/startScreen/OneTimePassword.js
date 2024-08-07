@@ -8,31 +8,34 @@ import { RxCrossCircled } from "react-icons/rx";
 import FormField from "../../components/layout/FormField";
 import { getError } from "../../utils/error";
 
-export default function OneTimePassword({goBack,next,containerDiv}) {
+export default function OneTimePassword({ goBack, next, containerDiv }) {
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     try {
-     
-        
-      next?next(): navigate("/user/available-bank");
-      
-      
+      next ? next() : navigate("/user/available-bank");
     } catch (error) {
       getError(error);
     }
   };
 
   return (
-    <LoginCard height={"500px"} width={"450px"} bankDetails={true} containerDiv={containerDiv}>
+    <LoginCard
+      height={"500px"}
+      width={"450px"}
+      bankDetails={true}
+      containerDiv={containerDiv}
+    >
       <div className="d-flex align-items-center justify-content-between">
         <div>
           <IoArrowBackCircleOutline
             color="rgba(92, 182, 249, 1)"
             cursor={"pointer"}
             size={23}
-            onClick={() => goBack?goBack(): navigate("/user/internet-banking")}
+            onClick={() =>
+              goBack ? goBack() : navigate("/user/internet-banking")
+            }
           />
         </div>
 
@@ -50,7 +53,7 @@ export default function OneTimePassword({goBack,next,containerDiv}) {
             color="rgba(92, 182, 249, 1)"
             cursor={"pointer"}
             size={23}
-            onClick={() =>goBack?goBack(): navigate("/")}
+            onClick={() => (goBack ? goBack() : navigate("/"))}
           />
         </div>
       </div>
@@ -79,7 +82,7 @@ export default function OneTimePassword({goBack,next,containerDiv}) {
         </div>
       </div>
       <div
-        className="my-2 mb-3"
+        className="my-2 "
         style={{
           color: "rgba(55, 73, 87, 1)",
           fontSize: "10px",
@@ -120,6 +123,18 @@ export default function OneTimePassword({goBack,next,containerDiv}) {
                 }}
               >
                 Enter the code sent to +xxxxxxxx440
+              </div>
+
+              <div
+                style={{
+                  fontSize: "10px",
+                  fontWeight: 500,
+                  color: "rgba(55, 73, 87, 1)",
+                  textAlign: "center",
+                }}
+              >
+                This code will expire in{" "}
+                <span style={{ color: "rgba(92, 182, 249, 1)" }}>04:54</span>
               </div>
             </div>
 

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import ModalWindow from "../../../components/modals/ModalWindow";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
-import { Card, Form, Image, InputGroup } from "react-bootstrap";
+import { Card, Col, Form, Image, InputGroup, Row } from "react-bootstrap";
 import { GiPalmTree } from "react-icons/gi";
 import { FaAngleRight } from "react-icons/fa6";
 import { MdOutlineCalendarMonth, MdAddPhotoAlternate } from "react-icons/md";
@@ -70,6 +70,7 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
                 >
                   Mojos In The Marketplace
                 </p>
+                <hr />
                 <p
                   style={{
                     color: "#5CB6F9",
@@ -80,9 +81,10 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
                   SQ*MOJOS IN THE MARKEPLACE Bridge FFTPOS Purchase * Receipt
                   580495 Date 02 Mar 2024 Time 9:50 Card 4444********2616
                 </p>
+                <hr />
 
                 <div>
-                  <p
+                  <div
                     style={{
                       color: "#374957",
                       fontSize: "12px",
@@ -90,8 +92,8 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
                     }}
                   >
                     ING Australia Orange Everyday
-                  </p>
-                  <p
+                  </div>
+                  <div
                     style={{
                       color: "#374957",
                       fontSize: "10px",
@@ -99,8 +101,9 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
                     }}
                   >
                     BSB: 923100 | Acc: X XXX 0853
-                  </p>
+                  </div>
                   <p
+                    className="mt-2"
                     style={{
                       color: "#374957",
                       fontSize: "10px",
@@ -139,7 +142,12 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
                 <div>
                   <GiPalmTree color="#004AAD" />{" "}
                 </div>
-                <div>Lifestyle: Cafes & Coffee</div>
+                <div style={{ fontWeight: 600 }}>
+                  <span style={{ color: "rgba(92, 182, 249, 1)" }}>
+                    Lifestyle:
+                  </span>{" "}
+                  Cafes & Coffee
+                </div>
               </div>
               <div>
                 <FaAngleRight />
@@ -151,7 +159,7 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
                 <div>
                   <IoPricetagsOutline color="#004AAD" />{" "}
                 </div>
-                <div>Tag Transaction</div>
+                <div style={{ fontWeight: 600 }}>Tag Transaction</div>
               </div>
               <div className="d-flex align-items-center gap-2">
                 <div
@@ -184,7 +192,7 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
                 <div>
                   <MdTrackChanges color="#004AAD" />
                 </div>
-                <div>Exclude from tracking</div>
+                <div style={{ fontWeight: 600 }}>Exclude from tracking</div>
               </div>
               <div>
                 <Form.Check type="switch" />
@@ -196,7 +204,7 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
                 <div>
                   <AiOutlineEdit color="#004AAD" />{" "}
                 </div>
-                <div>Add a note</div>
+                <div style={{ fontWeight: 600 }}>Add a note</div>
               </div>
               <div>
                 <FaAngleRight />
@@ -208,7 +216,7 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
                 <div>
                   <MdOutlineCalendarMonth color="#004AAD" />{" "}
                 </div>
-                <div>Is this a bill?</div>
+                <div style={{ fontWeight: 600 }}>Is this a bill?</div>
               </div>
               <div>
                 <button
@@ -218,6 +226,7 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
                     backgroundColor: "white",
                     border: "1px solid #5CB6F9",
                     color: "#5CB6F9",
+                    fontSize: "12px",
                   }}
                 >
                   + Add to bill
@@ -225,8 +234,8 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
               </div>
             </div>
 
-            <div className="d-flex justify-content-between">
-              <div
+            <Row className="gap-3">
+              <Col
                 style={{
                   border: "1px solid #E2F2FF",
                   padding: "10px",
@@ -234,24 +243,71 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
                 }}
               >
                 <h3 style={{ fontWeight: 700, color: "var(--primary-color)" }}>
-                  -$38.00
+                  -$350.00
                 </h3>
-                <div>Total spend this year</div>
+                <div
+                  style={{
+                    fontSize: "12px",
+                    color: "rgba(55, 73, 87, 0.7)",
+                    textAlign: "center",
+                  }}
+                >
+                  Total spend this year
+                </div>
                 <hr />
 
                 <div className="d-flex justify-content-between">
-                  <div>How many times</div>
-                  <div>26</div>
+                  <div
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: 600,
+                      color: "rgba(55, 73, 87, 0.7)",
+                      textAlign: "center",
+                    }}
+                  >
+                    How many times
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: 600,
+                    }}
+                  >
+                    26
+                  </div>
                 </div>
 
-                <div className="d-flex justify-content-between">
-                  <div>How many times</div>
-                  <div>-$36</div>
+                <div className="d-flex justify-content-between mt-2">
+                  <div
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: 600,
+                      color: "rgba(55, 73, 87, 0.7)",
+                      textAlign: "center",
+                    }}
+                  >
+                    How many times
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: 600,
+                    }}
+                  >
+                    -$36
+                  </div>
                 </div>
-              </div>
 
-              <div
-                className="text-center d-flex align-items-center justify-content-center flex-column"
+                <div
+                  className="text-center"
+                  style={{ color: "rgba(92, 182, 249, 1)", fontWeight: "600" }}
+                >
+                  View
+                </div>
+              </Col>
+
+              <Col
+                className="d-flex justify-content-center align-items-center flex-column"
                 onClick={() => activeLink(2)}
                 style={{
                   border: "1px solid #E2F2FF",
@@ -260,13 +316,17 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
                   cursor: "pointer",
                 }}
               >
-                <div style={{ color: "#374957", fontSize: "12px" }}>
+                <div style={{ color: "rgba(55, 73, 87, 1)", fontSize: "12px" }}>
                   Something doesn't look right?
                 </div>
 
-                <div style={{ color: "#5CB6F9" }}>Improve Transaction</div>
-              </div>
-            </div>
+                <div
+                  style={{ color: "rgba(92, 182, 249, 1)", fontWeight: 600 }}
+                >
+                  Improve Transaction
+                </div>
+              </Col>
+            </Row>
           </div>
         </>
       )}
@@ -426,7 +486,7 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
             <div
               style={{
                 fontWeight: 600,
-                fontSize: "18px",
+                fontSize: "16px",
                 color: "rgba(55, 73, 87, 1)",
               }}
               className="text-center"
@@ -436,13 +496,13 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
 
             <button
               onClick={() => activeLink(4)}
-              className="px-2 py-1"
+              className="px-3 py-1"
               style={{
                 backgroundColor: "white",
                 color: "var(--primary-color)",
                 border: "1px solid #D2EBFD",
-                fontWeight: "600",
-                borderRadius: "20px",
+                borderRadius: "18px",
+                fontSize: "12px",
               }}
             >
               Create
@@ -450,10 +510,12 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
           </div>
 
           <div className="mt-3">
-            <SearchField />
+            <div className="px-2">
+              <SearchField />
+            </div>
 
             <div
-              className="mt-2"
+              className="mt-3"
               style={{
                 fontSize: "16px",
                 color: "var(--primary-color)",
@@ -462,14 +524,18 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
             >
               Recent tags
             </div>
-            <Card style={{ borderRadius: "10px" }}>
+            <Card className="mt-2" style={{ borderRadius: "10px" }}>
               <Card.Body>
                 {tags?.map((tag, idx) => {
                   return (
                     <div
                       onClick={() => handleTagChange(tag)}
-                      className="mt-2"
-                      style={{ fontWeight: 600, cursor: "pointer" }}
+                      className="mt-3"
+                      style={{
+                        fontWeight: 600,
+                        cursor: "pointer",
+                        fontSize: "12px",
+                      }}
                       key={idx}
                     >
                       {tag}
@@ -505,10 +571,18 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
           </div>
 
           <Form className="mt-3">
-            <Form.Label>Name</Form.Label>
+            <Form.Label
+              style={{ color: "var(--primary-color)", fontWeight: 600 }}
+            >
+              Name
+            </Form.Label>
             <FormField type={"text"} placeholder={"Enter name"} />
 
-            <Form.Label>Category name</Form.Label>
+            <Form.Label
+              style={{ color: "var(--primary-color)", fontWeight: 600 }}
+            >
+              Category name
+            </Form.Label>
             <FormField type={"text"} placeholder={"Enter name"} />
 
             <div className="d-flex justify-content-center mt-2">

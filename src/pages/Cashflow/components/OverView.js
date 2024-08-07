@@ -1,13 +1,21 @@
 import React from "react";
 import DashboardCard from "../../../components/layout/DasboardCard";
-import { IoIosArrowUp } from "react-icons/io";
+import { IoIosArrowUp, IoMdArrowUp } from "react-icons/io";
 import { Col, Row, Image } from "react-bootstrap";
-import { ChartContainer } from "@mui/x-charts/ChartContainer";
-import { BarPlot } from "@mui/x-charts/BarChart";
 import { FaArrowUp } from "react-icons/fa6";
+import { IoArrowDownSharp } from "react-icons/io5";
+import BarsChart from "../../../components/Charts/BarsChart";
 
-const uData = [4000, 3000];
-const xLabels = ["Page A", "Page B"];
+const MoneyInvsOutData = [
+  { name: "Money In", uv: 4000 },
+  { name: "Money Out", uv: 3000 },
+];
+
+const MoneyOutData = [
+  { name: "Money In", uv: 6200 },
+  { name: "Money Out", uv: 7000 },
+  { name: "Money", uv: 5000 },
+];
 
 const OverView = () => {
   const mostChangedCategory = [
@@ -89,7 +97,7 @@ const OverView = () => {
                 fontWeight: 600,
               }}
             >
-              Cashflow
+              Statistics
             </h3>
             <button
               className="d-flex gap-2 align-items-center"
@@ -139,15 +147,19 @@ const OverView = () => {
                 $4,400
               </h3>
               <div className="d-flex justify-content-center">
-                <ChartContainer
+                <BarsChart
+                  data={MoneyInvsOutData}
                   width={200}
-                  height={250}
-                  colors={["rgba(58, 195, 172, 1)"]}
-                  series={[{ data: uData, label: "uv", type: "bar" }]}
-                  xAxis={[{ scaleType: "band", data: xLabels }]}
-                >
-                  <BarPlot borderRadius={10} />
-                </ChartContainer>
+                  height={220}
+                  barWidth={50}
+                  gradient={true}
+                  cashflow={true}
+                  gradientNumber={2}
+                  barGrad1={"#3AC3AC"}
+                  barGrad2={"#3AC3AC"}
+                  barGrad3={"#374957"}
+                  barGrad4={"#374957"}
+                />
               </div>
             </Col>
 
@@ -177,19 +189,33 @@ const OverView = () => {
                   08 Dec - 07 Jan
                 </div>
               </div>
-              <h3 style={{ fontWeight: 600, color: "rgba(0, 74, 173, 1)" }}>
-                $1,900
-              </h3>
-              <div className="d-flex justify-content-center">
-                <ChartContainer
-                  width={200}
-                  height={250}
-                  colors={["rgba(58, 195, 172, 1)"]}
-                  series={[{ data: uData, label: "uv", type: "bar" }]}
-                  xAxis={[{ scaleType: "band", data: xLabels }]}
+
+              <div className="d-flex align-items-center justify-content-between">
+                <h3 style={{ fontWeight: 600, color: "rgba(0, 74, 173, 1)" }}>
+                  $1,900
+                </h3>
+
+                <div
+                  style={{ color: "rgba(58, 195, 172, 1)", fontSize: "14px" }}
                 >
-                  <BarPlot borderRadius={10} />
-                </ChartContainer>
+                  <IoMdArrowUp /> 53.8%
+                </div>
+              </div>
+
+              <div className="d-flex justify-content-center">
+                <BarsChart
+                  data={MoneyInvsOutData}
+                  width={200}
+                  height={220}
+                  barWidth={50}
+                  gradient={true}
+                  cashflow={true}
+                  gradientNumber={2}
+                  barGrad1={"#3AC3AC"}
+                  barGrad2={"#3AC3AC"}
+                  barGrad3={"#374957"}
+                  barGrad4={"#374957"}
+                />
               </div>
             </Col>
 
@@ -219,7 +245,7 @@ const OverView = () => {
                   08 Dec - 07 Jan
                 </div>
               </div>
-              <div className="">
+              <div className="d-flex justify-content-between align-items-center">
                 <h3
                   style={{
                     fontWeight: 600,
@@ -228,18 +254,28 @@ const OverView = () => {
                 >
                   $4,400
                 </h3>
+
+                <div
+                  style={{ color: "rgba(255, 48, 55, 1)", fontSize: "14px" }}
+                >
+                  <IoArrowDownSharp /> 53.8%
+                </div>
               </div>
 
               <div className="d-flex justify-content-center">
-                <ChartContainer
-                  width={200}
-                  height={250}
-                  colors={["rgba(58, 195, 172, 1)"]}
-                  series={[{ data: uData, label: "uv", type: "bar" }]}
-                  xAxis={[{ scaleType: "band", data: xLabels }]}
-                >
-                  <BarPlot borderRadius={10} />
-                </ChartContainer>
+                <BarsChart
+                  data={MoneyOutData}
+                  width={260}
+                  height={220}
+                  barWidth={50}
+                  gradient={true}
+                  cashflow={true}
+                  gradientNumber={3}
+                  barGrad1={"#004AAD"}
+                  barGrad2={"#004AAD"}
+                  barGrad3={"#004AAD"}
+                  barGrad4={"#004AAD"}
+                />
               </div>
             </Col>
           </Row>
