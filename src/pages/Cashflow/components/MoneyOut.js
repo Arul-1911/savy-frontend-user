@@ -3,31 +3,12 @@ import DashboardCard from "../../../components/layout/DasboardCard";
 import { IoIosArrowUp } from "react-icons/io";
 import { Col, Row, Image } from "react-bootstrap";
 import { CiCalendar } from "react-icons/ci";
-import Stack from "@mui/material/Stack";
-import { PieChart } from "@mui/x-charts/PieChart";
 import { IoInformationCircleOutline } from "react-icons/io5";
 import SearchField from "../../../components/layout/SearchField";
 import BucketComponet from "./SubComponents/BucketComponet";
-import { BarPlot, ChartContainer } from "@mui/x-charts";
 import ExcludeTransaction from "./SubComponents/ExcludeTransaction";
 import PieCharts from "../../../components/Charts/PieChart";
 import BarsChart from "../../../components/Charts/BarsChart";
-
-const data = [
-  { label: "Group A", value: 400, color: "#0088FE", label: "A" },
-  { label: "Group B", value: 300, color: "rgba(58, 195, 172, 1)", label: "B" },
-];
-
-const data2 = [
-  { label: "Group A", value: 550, color: "rgba(74, 86, 226, 1)" },
-  { label: "Group B", value: 450, color: "rgba(36, 204, 167, 1)" },
-  { label: "Group C", value: 350, color: "rgba(36, 204, 167, 0.7)" },
-  { label: "Group D", value: 350, color: "rgba(36, 204, 167, 0.4)" },
-  { label: "Group E", value: 250, color: "rgba(36, 204, 167, 0.2)" },
-];
-
-const Data = [82000, 30000, 44545, 78344];
-const Labels = ["Page A", "Page B", "Page C", "Page D"];
 
 const data1 = [
   {
@@ -77,10 +58,10 @@ const COLORS1 = [
 ];
 
 const MoneyInvsOutData = [
-  { name: "Money In", uv: 4000 },
-  { name: "Money Out", uv: 3000 },
-  { name: "Money Out", uv: 2000 },
-  { name: "Money Out", uv: 1000 },
+  { name: "02 Dec - 01 Jan", uv: 4000 },
+  { name: "02 Jan - 01 Feb", uv: 3000 },
+  { name: "02 Feb - 01 Mar", uv: 2000 },
+  { name: "02 Mar - Today", uv: 1000 },
 ];
 
 const MoneyOut = () => {
@@ -247,10 +228,11 @@ const MoneyOut = () => {
                     <div className="d-flex justify-content-center">
                       <BarsChart
                         data={MoneyInvsOutData}
-                        width={450}
+                        width={500}
                         height={220}
                         barWidth={70}
                         gradient={true}
+                        cashFlow={true}
                         gradientNumber={4}
                         barGrad1={"rgba(226, 242, 255, 1)"}
                         barGrad2={"rgba(226, 242, 255, 1)"}
