@@ -26,6 +26,17 @@ export default function ConnectBank({
     }
   };
 
+  const handleCancel = () => {
+    if (infoNext) {
+      infoNext();
+    } else {
+      navigate("/");
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("user");
+      localStorage.removeItem("bankToken");
+    }
+  };
+
   return (
     <LoginCard
       height={"500px"}
@@ -138,7 +149,7 @@ export default function ConnectBank({
               fontWeight: 700,
               fontSize: "12px",
             }}
-            onClick={() => (infoNext ? infoNext() : navigate("/"))}
+            onClick={handleCancel}
           >
             Cancel
           </Button>

@@ -10,7 +10,7 @@ const BucketComponet = ({ show, hide, onChange }) => {
 
   return (
     <ModalWindow show={show} onHide={hide}>
-      <div className="d-flex">
+      <div className="d-flex align-items-center">
         <IoArrowBackCircleOutline
           color="rgba(92, 182, 249, 1)"
           cursor={"pointer"}
@@ -19,7 +19,7 @@ const BucketComponet = ({ show, hide, onChange }) => {
         />
         <div
           style={{
-            margin: "auto",
+            margin: "auto 150px",
             fontWeight: 600,
             fontSize: "16px",
             color: "rgba(55, 73, 87, 1)",

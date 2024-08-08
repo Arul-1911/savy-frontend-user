@@ -155,7 +155,7 @@ function OffcanvasAccount({ show, handleClose }) {
                           to={link?.path}
                           onClick={link?.onClick}
                           className=""
-                          style={{ color: "#374957" }}
+                          style={{ color: "#374957", fontSize: "14px" }}
                         >
                           {link?.label}
                         </Link>

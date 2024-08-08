@@ -6,7 +6,6 @@ import OverView from "./components/OverView";
 import MoneyIn from "./components/MoneyIn";
 import MoneyOut from "./components/MoneyOut";
 import NetWorth from "./components/NetWorth";
-import ModalWindow from "../../components/modals/ModalWindow";
 import CashFlowSettings from "./components/SubComponents/CashFlowSettings";
 
 const CashFlow = () => {

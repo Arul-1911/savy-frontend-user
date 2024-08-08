@@ -23,7 +23,7 @@ const NetWorth = () => {
   ];
 
   return (
-    <div>
+    <>
       <div className="mt-3 d-flex align-items-center justify-content-between net_worth">
         <div>
           <p style={{ fontWeight: 600, color: "rgba(0, 39, 91, 1)" }}>
@@ -206,7 +206,7 @@ const NetWorth = () => {
           </DashboardCard>
         </Col>
       </Row>
-    </div>
+    </>
   );
 };
 

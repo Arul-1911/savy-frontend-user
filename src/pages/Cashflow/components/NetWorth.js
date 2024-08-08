@@ -114,7 +114,7 @@ const NetWorth = () => {
             </button>
           </div>
 
-          <Row className="d-flex gap-4 px-2 mt-3">
+          <Row className="d-flex flex-wrap gap-4 px-2 mt-3">
             <Col>
               <div
                 style={{

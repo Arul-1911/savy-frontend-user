@@ -1,7 +1,8 @@
 .net_worth {
-  border-radius: 10px;
   padding: 20px;
-  background: linear-gradient(to right, rgb(137, 209, 193), rgb(142, 150, 235));
+  background-image: url("/public/images/Frame\ 1000002407.png");
+  object-fit: contain;
+  border-radius: 10px;
 }
 
 .my_account_portfolio {

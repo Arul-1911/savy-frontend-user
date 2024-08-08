@@ -8,6 +8,7 @@ import { IoIosArrowDown } from "react-icons/io";
 import { FaRegCheckCircle } from "react-icons/fa";
 import "../Dashboard.css";
 import Calendar from "../../components/Calendar/Calendar";
+import { CiSquareMinus } from "react-icons/ci";
 
 const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
   const [selectActivePeriod, setSelectActivePeriod] = useState(0);
@@ -377,7 +378,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
 
       {active === 2 && (
         <>
-          <div className="d-flex">
+          <div className="d-flex align-items-center ">
             <IoArrowBackCircleOutline
               color="rgba(92, 182, 249, 1)"
               cursor={"pointer"}
@@ -386,27 +387,14 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
             />
             <div
               style={{
-                margin: "auto",
+                fontSize: "16px",
                 fontWeight: 600,
-                fontSize: "18px",
-                color: "rgba(55, 73, 87, 1)",
+                textAlign: "center",
+                margin: "auto 150px",
               }}
-              className="text-center"
             >
-              Payday
+              Select period
             </div>
-          </div>
-
-          <div
-            style={{
-              fontSize: "14px",
-              fontWeight: 600,
-              color: "var(--primary-color)",
-              textAlign: "center",
-              marginTop: "10px",
-            }}
-          >
-            Select period
           </div>
 
           <div className="mt-2">
@@ -458,7 +446,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
             />
             <div
               style={{
-                margin: "auto",
+                margin: "auto 170px",
                 fontWeight: 600,
                 fontSize: "16px",
                 color: "rgba(55, 73, 87, 1)",
@@ -470,7 +458,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
           </div>
 
           <div
-            className="text-center mt-2 px-4"
+            className="text-center  px-4"
             style={{
               fontSize: "12px",
               color: "rgba(55, 73, 87, 1)",
@@ -483,7 +471,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
 
           <div>
             <div
-              className="my-3"
+              className=""
               style={{ fontWeight: 600, color: "var(--primary-color)" }}
             >
               Popular Categories
@@ -494,7 +482,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                   return (
                     <div
                       key={idx}
-                      className="d-flex justify-content-between align-items-center mt-2"
+                      className="d-flex justify-content-between align-items-center mt-1"
                     >
                       <div
                         className="w-100"
@@ -509,10 +497,10 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                         onMouseEnter={() => setActivePopularCat(idx)}
                         onMouseLeave={() => setActivePopularCat(null)}
                       >
-                        <div style={{ fontSize: "14px", fontWeight: 600 }}>
+                        <div style={{ fontSize: "12px", fontWeight: 600 }}>
                           {data?.text}
                         </div>
-                        <div style={{ fontSize: "12px", fontWeight: 400 }}>
+                        <div style={{ fontSize: "10px", fontWeight: 400 }}>
                           {data?.subText}
                         </div>
                       </div>
@@ -525,7 +513,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
 
           <div>
             <div
-              className="my-3"
+              className="my-1"
               style={{ fontWeight: 600, color: "var(--primary-color)" }}
             >
               All Categories
@@ -544,11 +532,11 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                       key={idx}
                       className="d-flex justify-content-between align-items-center mt-2"
                     >
-                      <div>
-                        <div style={{ fontSize: "14px", fontWeight: 600 }}>
+                      <div style={{ lineHeight: "14px" }}>
+                        <div style={{ fontSize: "12px", fontWeight: 600 }}>
                           {data?.text}
                         </div>
-                        <div style={{ fontSize: "12px", fontWeight: 400 }}>
+                        <div style={{ fontSize: "10px", fontWeight: 400 }}>
                           {data?.subText}
                         </div>
                       </div>
@@ -588,7 +576,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
             />
             <div
               style={{
-                margin: "auto",
+                margin: "auto 170px",
                 fontWeight: 600,
                 fontSize: "16px",
                 color: "rgba(55, 73, 87, 1)",
@@ -611,7 +599,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                 <div className="d-flex justify-content-between align-items-center mt-2">
                   <div className="d-flex gap-2">
                     <div>
-                      <input type="checkbox" />
+                      <CiSquareMinus size={20} color="var(--primary-color)" />
                     </div>
                     <div>
                       <div style={{ fontSize: "14px", fontWeight: 600 }}>
@@ -663,10 +651,10 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                     >
                       <div className="d-flex gap-2">
                         <div>
-                          <div style={{ fontSize: "14px", fontWeight: 600 }}>
+                          <div style={{ fontSize: "12px", fontWeight: 600 }}>
                             {data?.text}
                           </div>
-                          <div style={{ fontSize: "12px", fontWeight: 400 }}>
+                          <div style={{ fontSize: "10px", fontWeight: 400 }}>
                             $7,441.00
                           </div>
                         </div>
@@ -731,7 +719,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
             />
             <div
               style={{
-                margin: "auto",
+                margin: "auto 170px",
                 fontWeight: 600,
                 fontSize: "16px",
                 color: "rgba(55, 73, 87, 1)",
@@ -873,7 +861,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
             />
             <div
               style={{
-                margin: "auto",
+                margin: "auto 170px",
                 fontWeight: 600,
                 fontSize: "16px",
                 color: "rgba(55, 73, 87, 1)",
