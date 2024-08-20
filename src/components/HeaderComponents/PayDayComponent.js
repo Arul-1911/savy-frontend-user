@@ -48,14 +48,14 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
                 <div className="d-flex align-items-center justify-content-between">
                   <div>
                     <h2
-                      style={{ color: "var(--primary-color)", fontWeight: 800 }}
+                      style={{ color: "var(--primary-color)", fontWeight: 600 }}
                     >
                       5 days
                     </h2>
                     <div
                       style={{
                         color: "rgba(159, 175, 198, 1)",
-                        fontSize: "12px",
+                        fontSize: "10px",
                       }}
                     >
                       Left for this week's budget
@@ -69,7 +69,7 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
                         backgroundColor: "rgba(92, 182, 249, 0.08)",
                         fontSize: "12px",
                         color: "rgba(92, 182, 249, 1)",
-                        fontWeight: 600,
+                        fontWeight: 500,
                         borderRadius: "15px",
                         padding: "6px",
                       }}
@@ -80,8 +80,8 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
                       className="mt-2"
                       style={{
                         color: "rgba(55, 73, 87, 1)",
-                        fontSize: "12px",
-                        fontWeight: 600,
+                        fontSize: "10px",
+                        fontWeight: 500,
                       }}
                     >
                       Weekly on wednesday
@@ -107,7 +107,7 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
                       <div>
                         <div
                           style={{
-                            fontWeight: 600,
+                            fontWeight: 500,
                             color: "rgba(55, 73, 87, 1)",
                             fontSize: "12px",
                           }}
@@ -155,7 +155,7 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
                     className="px-2 py-2"
                     style={{
                       fontWeight: 600,
-                      fontSize: "14px",
+                      fontSize: "12px",
                       border: "1px solid rgba(228, 228, 228, 1)",
                       borderRadius: "20px",
                       backgroundColor: "white",
@@ -169,7 +169,7 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
                     className="px-2 py-2"
                     style={{
                       fontWeight: 600,
-                      fontSize: "14px",
+                      fontSize: "12px",
                       border: "1px solid rgba(228, 228, 228, 1)",
                       borderRadius: "20px",
                       backgroundColor: "var(--primary-color)",
@@ -309,7 +309,7 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
                     padding: "10px",
                   }}
                 >
-                  Create
+                  Confirm
                 </button>
               </div>
             </Form>

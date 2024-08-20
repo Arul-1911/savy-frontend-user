@@ -21,6 +21,9 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
     "Restaurants",
     "Restaurants",
     "Restaurants",
+    "Restaurants",
+    "Restaurants",
+    "Restaurants",
   ];
 
   const handleTagChange = (tag) => {
@@ -137,12 +140,12 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
               Manage
             </div>
 
-            <div className="d-flex justify-content-between align-items-center my-2">
+            <div className="px-4 d-flex justify-content-between align-items-center my-2">
               <div className="d-flex align-items-center gap-2">
                 <div>
                   <GiPalmTree color="#004AAD" />{" "}
                 </div>
-                <div style={{ fontWeight: 600 }}>
+                <div style={{ fontWeight: 600, fontSize: "12px" }}>
                   <span style={{ color: "rgba(92, 182, 249, 1)" }}>
                     Lifestyle:
                   </span>{" "}
@@ -154,12 +157,14 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
               </div>
             </div>
 
-            <div className="d-flex justify-content-between align-items-center my-2">
+            <div className="px-3 d-flex justify-content-between align-items-center my-2">
               <div className="d-flex align-items-center gap-2">
                 <div>
                   <IoPricetagsOutline color="#004AAD" />{" "}
                 </div>
-                <div style={{ fontWeight: 600 }}>Tag Transaction</div>
+                <div style={{ fontWeight: 600, fontSize: "12px" }}>
+                  Tag Transaction
+                </div>
               </div>
               <div className="d-flex align-items-center gap-2">
                 <div
@@ -187,40 +192,46 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
               </div>
             </div>
 
-            <div className="d-flex justify-content-between align-items-center my-2">
+            <div className="px-3 d-flex justify-content-between align-items-center my-2">
               <div className="d-flex align-items-center gap-2">
                 <div>
                   <MdTrackChanges color="#004AAD" />
                 </div>
-                <div style={{ fontWeight: 600 }}>Exclude from tracking</div>
+                <div style={{ fontWeight: 600, fontSize: "12px" }}>
+                  Exclude from tracking
+                </div>
               </div>
               <div>
                 <Form.Check type="switch" />
               </div>
             </div>
 
-            <div className="d-flex justify-content-between align-items-center my-2">
+            <div className="px-3 d-flex justify-content-between align-items-center my-2">
               <div className="d-flex align-items-center gap-2">
                 <div>
                   <AiOutlineEdit color="#004AAD" />{" "}
                 </div>
-                <div style={{ fontWeight: 600 }}>Add a note</div>
+                <div style={{ fontWeight: 600, fontSize: "12px" }}>
+                  Add a note
+                </div>
               </div>
               <div>
                 <FaAngleRight />
               </div>
             </div>
 
-            <div className="d-flex justify-content-between align-items-center my-2">
+            <div className="px-3 d-flex justify-content-between align-items-center my-2">
               <div className="d-flex align-items-center gap-2">
                 <div>
                   <MdOutlineCalendarMonth color="#004AAD" />{" "}
                 </div>
-                <div style={{ fontWeight: 600 }}>Is this a bill?</div>
+                <div style={{ fontWeight: 600, fontSize: "12px" }}>
+                  Is this a bill?
+                </div>
               </div>
               <div>
                 <button
-                  className="px-2 py-1"
+                  className="px-3 py-1"
                   style={{
                     borderRadius: "20px",
                     backgroundColor: "white",
@@ -234,7 +245,7 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
               </div>
             </div>
 
-            <Row className="gap-3">
+            <Row className="gap-3 px-4">
               <Col
                 style={{
                   border: "1px solid #E2F2FF",
@@ -242,14 +253,18 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
                   borderRadius: "10px",
                 }}
               >
-                <h3 style={{ fontWeight: 700, color: "var(--primary-color)" }}>
+                <h4
+                  className="text-center"
+                  style={{ fontWeight: 700, color: "var(--primary-color)" }}
+                >
                   -$350.00
-                </h3>
+                </h4>
                 <div
                   style={{
-                    fontSize: "12px",
+                    fontSize: "10px",
                     color: "rgba(55, 73, 87, 0.7)",
                     textAlign: "center",
+                    fontWeight: 500,
                   }}
                 >
                   Total spend this year
@@ -259,9 +274,9 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
                 <div className="d-flex justify-content-between">
                   <div
                     style={{
-                      fontSize: "12px",
+                      fontSize: "10px",
                       fontWeight: 600,
-                      color: "rgba(55, 73, 87, 0.7)",
+                      color: "#374957",
                       textAlign: "center",
                     }}
                   >
@@ -269,7 +284,7 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
                   </div>
                   <div
                     style={{
-                      fontSize: "12px",
+                      fontSize: "10px",
                       fontWeight: 600,
                     }}
                   >
@@ -280,17 +295,17 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
                 <div className="d-flex justify-content-between mt-2">
                   <div
                     style={{
-                      fontSize: "12px",
+                      fontSize: "10px",
                       fontWeight: 600,
-                      color: "rgba(55, 73, 87, 0.7)",
+                      color: "#374957",
                       textAlign: "center",
                     }}
                   >
-                    How many times
+                    Average cost
                   </div>
                   <div
                     style={{
-                      fontSize: "12px",
+                      fontSize: "10px",
                       fontWeight: 600,
                     }}
                   >
@@ -299,10 +314,14 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
                 </div>
 
                 <div
-                  className="text-center"
-                  style={{ color: "rgba(92, 182, 249, 1)", fontWeight: "600" }}
+                  className="text-center mt-2"
+                  style={{
+                    fontSize: "12px",
+                    color: "rgba(92, 182, 249, 1)",
+                    fontWeight: "600",
+                  }}
                 >
-                  View
+                  View History
                 </div>
               </Col>
 
@@ -316,12 +335,23 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
                   cursor: "pointer",
                 }}
               >
-                <div style={{ color: "rgba(55, 73, 87, 1)", fontSize: "12px" }}>
+                <div
+                  style={{
+                    color: "rgba(55, 73, 87, 1)",
+                    fontSize: "12px",
+                    fontWeight: 400,
+                  }}
+                >
                   Something doesn't look right?
                 </div>
 
                 <div
-                  style={{ color: "rgba(92, 182, 249, 1)", fontWeight: 600 }}
+                  className="mt-2"
+                  style={{
+                    fontSize: "12px",
+                    color: "rgba(92, 182, 249, 1)",
+                    fontWeight: 600,
+                  }}
                 >
                   Improve Transaction
                 </div>
@@ -503,6 +533,7 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
                 border: "1px solid #D2EBFD",
                 borderRadius: "18px",
                 fontSize: "12px",
+                fontWeight: 600,
               }}
             >
               Create
@@ -517,7 +548,7 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
             <div
               className="mt-3"
               style={{
-                fontSize: "16px",
+                fontSize: "18px",
                 color: "var(--primary-color)",
                 fontWeight: 600,
               }}
@@ -530,11 +561,12 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
                   return (
                     <div
                       onClick={() => handleTagChange(tag)}
-                      className="mt-3"
+                      className="mb-2"
                       style={{
                         fontWeight: 600,
                         cursor: "pointer",
                         fontSize: "12px",
+                        color: "#374957",
                       }}
                       key={idx}
                     >
