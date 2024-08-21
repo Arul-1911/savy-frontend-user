@@ -1,21 +1,67 @@
 import React, { useState } from "react";
 import ModalWindow from "../modals/ModalWindow";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
-import { Card, Form, Image, InputGroup, ProgressBar } from "react-bootstrap";
+import {
+  Card,
+  Form,
+  Image,
+  InputGroup,
+  ProgressBar,
+  Spinner,
+} from "react-bootstrap";
 import FormField from "../layout/FormField";
 import { CalendarSVG } from "../svg/CalendarSVG";
 import { FilterSVG } from "../svg/FilterSVG";
 import { Filter2SVG } from "../svg/Filter2SVG";
 import Calendar from "../Calendar/Calendar";
 import Filter from "../Filter/Filter";
+import { getError } from "../../utils/error";
+import { useCreatePaydayMutation } from "../../features/apiSlice";
 
 const PayDayComponent = ({ show, hide, active, activeLink }) => {
   const [alreadyActiveFilter, setAlreadyActiveFilter] = useState(0);
   const [alreadyActiveCalendar, setAlreadyActiveCalendar] = useState(0);
+  const [createPayday, { isLoading }] = useCreatePaydayMutation();
 
-  const handleSubmit = (e) => {
+  const [payDayDate, setPaydayDate] = useState(null);
+  const [selectPayDayPeriod, setSelectPayDayPeriod] = useState("");
+  const [amount, setAmount] = useState("");
+
+  const paydayPeriod = [
+    {
+      text: "Next 7 days",
+      value: 7,
+    },
+    {
+      text: "Next 14 days",
+      value: 14,
+    },
+    {
+      text: "Next 30 days",
+      value: 30,
+    },
+    {
+      text: "This Month",
+      value: 30,
+    },
+  ];
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    hide(false);
+
+    const paydayData = {
+      pay_date: payDayDate,
+      pay_period: selectPayDayPeriod,
+      amount: amount,
+    };
+
+    try {
+      await createPayday(paydayData).unwrap();
+      hide(false);
+      activeLink(1);
+    } catch (error) {
+      getError(error);
+    }
   };
 
   return (
@@ -239,8 +285,8 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
                   className="form-field"
                   style={{ borderRight: "none" }}
                   placeholder="Payday"
-                  aria-label="Username"
                   aria-describedby="basic-addon1"
+                  value={payDayDate}
                 />
                 <InputGroup.Text
                   onClick={() => {
@@ -269,8 +315,9 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
                   className="form-field"
                   style={{ borderRight: "none" }}
                   placeholder="Select period"
-                  aria-label="Username"
+                  onChange={(e) => selectPayDayPeriod(e.target.value)}
                   aria-describedby="basic-addon1"
+                  value={selectPayDayPeriod}
                 />
                 <InputGroup.Text
                   onClick={() => {
@@ -294,23 +341,45 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
               >
                 Amount
               </Form.Label>
-              <FormField type={"text"} placeholder={"Enter amount"} />
+              <FormField
+                type={"text"}
+                placeholder={"Enter amount"}
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+              />
 
               <div className="d-flex justify-content-center mt-3">
-                <button
-                  className="w-75"
-                  style={{
-                    fontWeight: 600,
-                    fontSize: "14px",
-                    border: "1px solid rgba(228, 228, 228, 1)",
-                    borderRadius: "10px",
-                    backgroundColor: "var(--primary-color)",
-                    color: "white",
-                    padding: "10px",
-                  }}
-                >
-                  Confirm
-                </button>
+                {isLoading ? (
+                  <button
+                    className="w-75"
+                    style={{
+                      fontWeight: 600,
+                      fontSize: "14px",
+                      border: "1px solid rgba(228, 228, 228, 1)",
+                      borderRadius: "10px",
+                      backgroundColor: "var(--primary-color)",
+                      color: "white",
+                      padding: "10px",
+                    }}
+                  >
+                    <Spinner size="sm" />
+                  </button>
+                ) : (
+                  <button
+                    className="w-75"
+                    style={{
+                      fontWeight: 600,
+                      fontSize: "14px",
+                      border: "1px solid rgba(228, 228, 228, 1)",
+                      borderRadius: "10px",
+                      backgroundColor: "var(--primary-color)",
+                      color: "white",
+                      padding: "10px",
+                    }}
+                  >
+                    Confirm
+                  </button>
+                )}
               </div>
             </Form>
           </>
@@ -601,6 +670,8 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
             already={alreadyActiveFilter}
             activeLink={activeLink}
             active={active}
+            data={paydayPeriod}
+            selectedPeriod={setSelectPayDayPeriod}
           />
         )}
 
@@ -609,6 +680,8 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
             already={alreadyActiveCalendar}
             activeLink={activeLink}
             active={active}
+            date={payDayDate}
+            setDate={setPaydayDate}
           />
         )}
       </ModalWindow>

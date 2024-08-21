@@ -31,18 +31,10 @@ const linkList = [
   },
 ];
 
-// const active_text = {
-//   Dashboard: "dashboard",
-//   Users: "users",
-//   Strings: "strings",
-// };
-
 export default function SideNavbar({ isExpanded }) {
   const pathname = window.location.pathname;
   const [activeLink, setActiveLink] = useState("Dashboard");
-  // const { accessToken } = useSelector(selectAuth);
-  const accessToken = localStorage.getItem("accessToken");
-  const bankToken = localStorage.getItem("bankToken");
+  const { accessToken, user } = useSelector(selectAuth);
 
   const activeLinkHandler = (url) => {
     return pathname.includes(url);
@@ -52,12 +44,9 @@ export default function SideNavbar({ isExpanded }) {
     isExpanded ? "menu-item" : "menu-item menu-item-NX"
   }`;
 
-  // const logoWidth = isExpanded?"100px":"55px";
-
-  // console.log({ userInfo });
   return (
     <>
-      {accessToken && bankToken ? (
+      {accessToken && user ? (
         <div
           className={
             isExpanded

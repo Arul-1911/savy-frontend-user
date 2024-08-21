@@ -1,37 +1,42 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button, Col, Form, Image, Row, Spinner } from "react-bootstrap";
-import { ToastContainer } from "react-toastify";
 import { useTitle } from "../components";
 import { getError } from "../utils/error";
 import { useSelector } from "react-redux";
 import { selectAuth, setAccessToken, setUser } from "../features/authSlice";
 import FormField from "../components/layout/FormField";
-import { useLoginAdminMutation } from "../features/apiSlice";
+import { useLoginUserMutation } from "../features/apiSlice";
 import LoginCard from "../components/layout/LoginCard";
+import { useDispatch } from "react-redux";
 
 export default function LoginScreen() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loginAdmin, { isLoading }] = useLoginAdminMutation();
+  const [loginUser, { isLoading }] = useLoginUserMutation();
   const { accessToken } = useSelector(selectAuth);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      navigate("/user/quick-access-passcode");
+      const data = await loginUser({ email, password }).unwrap();
+      console.log(data);
+      dispatch(setAccessToken(data?.token));
+      dispatch(setUser(data?.user));
+      navigate("/user/dashboard");
+      // navigate("/user/quick-access-passcode");
     } catch (error) {
-      console.log(error);
       getError(error);
     }
   };
 
-  // useEffect(() => {
-  //   if (accessToken) {
-  //     navigate("/admin/dashboard");
-  //   }
-  // }, [accessToken]);
+  useEffect(() => {
+    if (accessToken) {
+      navigate("/user/dashboard");
+    }
+  }, [accessToken]);
 
   useTitle("Login");
   return (
@@ -116,7 +121,6 @@ export default function LoginScreen() {
           </Link>
         </Row>
       </Form>
-      <ToastContainer />
     </LoginCard>
   );
 }

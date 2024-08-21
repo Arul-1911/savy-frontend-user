@@ -1,31 +1,42 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Col, Form, Image, Row, Spinner } from "react-bootstrap";
-import { ToastContainer } from "react-toastify";
+import { Button, Col, Form, Image, Row } from "react-bootstrap";
+// import { ToastContainer } from "react-toastify";
 import { getError } from "../utils/error";
 import FormField from "../components/layout/FormField";
-import { useLoginAdminMutation } from "../features/apiSlice";
 import LoginCard from "../components/layout/LoginCard";
 
 export default function SignupScreen() {
   const navigate = useNavigate();
+  const [mobile, setMobile] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [{ isLoading }] = useLoginAdminMutation();
 
-  const handleLogin = async (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
+
+    const user = {
+      mobile_no: mobile,
+      email,
+      password,
+      confirm_password: confirmPassword,
+    };
+
     try {
-      navigate("/user/passcode");
+      if (password !== confirmPassword) {
+        throw new Error("Password and confirm password are not matched");
+      } else {
+        localStorage.setItem("userDetails", JSON.stringify(user));
+        navigate("/user/passcode");
+      }
     } catch (error) {
-      console.log(error);
       getError(error);
     }
   };
 
   return (
-    <LoginCard height={"500px"} width={"450px"}>
+    <LoginCard width={"450px"}>
       <div className="d-flex align-items-center flex-column">
         <Image
           height={"50px"}
@@ -45,12 +56,19 @@ export default function SignupScreen() {
         </div>
       </div>
 
-      <Form className="mt-3 px-5" onSubmit={handleLogin}>
+      <Form className="mt-3 px-5" onSubmit={handleRegister}>
         <FormField
           placeholder={"E-mail"}
           type={"email"}
           onChange={(e) => setEmail(e.target.value)}
           value={email}
+        />
+
+        <FormField
+          placeholder={"Mobile"}
+          type={"number"}
+          onChange={(e) => setMobile(e.target.value)}
+          value={mobile}
         />
 
         <FormField
@@ -81,29 +99,23 @@ export default function SignupScreen() {
 
         <Row>
           <Col>
-            {isLoading ? (
-              <Button type="submit" className="float-sm-end" disabled>
-                <Spinner animation="border" size="sm" />
-              </Button>
-            ) : (
-              <Button
-                type="submit"
-                className="float-sm-end w-100 "
-                style={{
-                  background: "var(--primary-color)",
-                  fontWeight: 700,
-                  fontSize: "12px",
-                  padding: "10px",
-                }}
-              >
-                Continue
-              </Button>
-            )}
+            <Button
+              type="submit"
+              className="float-sm-end w-100 "
+              style={{
+                background: "var(--primary-color)",
+                fontWeight: 700,
+                fontSize: "12px",
+                padding: "10px",
+              }}
+            >
+              Continue
+            </Button>
           </Col>
         </Row>
       </Form>
 
-      <ToastContainer />
+      {/* <ToastContainer /> */}
     </LoginCard>
   );
 }

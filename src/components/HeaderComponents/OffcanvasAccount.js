@@ -13,8 +13,11 @@ import SettingsComponent from "./SettingsComponent";
 import PayDayComponent from "./PayDayComponent";
 import AddAccount from "./AddAccount";
 import Notification from "./Notification";
+import { clearAuth } from "../../features/authSlice";
+import { useDispatch } from "react-redux";
 
 function OffcanvasAccount({ show, handleClose }) {
+  const dispatch = useDispatch();
   const [datasharingShow, setDatasharingShow] = useState(false);
   const [dataActiveLink, setDataActiveLink] = useState(1);
   const [financialReportShow, setFinancialReportShow] = useState(false);
@@ -52,9 +55,7 @@ function OffcanvasAccount({ show, handleClose }) {
 
   const navigate = useNavigate();
   const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("bankToken");
-    localStorage.removeItem("user");
+    dispatch(clearAuth());
     navigate("/");
     handleClose();
   };

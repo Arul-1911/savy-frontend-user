@@ -9,47 +9,31 @@ import { RxCross2 } from "react-icons/rx";
 import { GiHamburgerMenu } from "react-icons/gi";
 import GoalComponent from "../HeaderComponents/GoalComponent";
 import PayDayComponent from "../HeaderComponents/PayDayComponent";
-import { useNavigate } from "react-router-dom";
 import Notification from "../HeaderComponents/Notification";
 import SettingsComponent from "../HeaderComponents/SettingsComponent";
 import OffcanvasAccount from "../HeaderComponents/OffcanvasAccount";
 import AddAccount from "../HeaderComponents/AddAccount";
 import "./Header.css";
+import { selectAuth } from "../../features/authSlice";
+import { useSelector } from "react-redux";
 
 export default function Header({ sidebarHandler }) {
-  const navigate = useNavigate();
-  // const { user, accessToken } = useSelector(selectAuth);
+  const { user, accessToken } = useSelector(selectAuth);
   const [show, setShow] = useState(false);
-
   const handleClose = () => setShow(false);
   const toggleShow = () => setShow((s) => !s);
-
-  const accessToken = localStorage.getItem("accessToken");
-  const bankToken = localStorage.getItem("bankToken");
-
   const [goalBackLink, setGoalBackLink] = useState(1);
   const [goalModal, setGoalModal] = useState(false);
-
   const [payDaysLink, setPayDaysLink] = useState(1);
   const [payDays, setPayDays] = useState(false);
-
   const [notificationModal, setNotificationModal] = useState(false);
-
   const [settings, setSettings] = useState(false);
-
   const [addAccountModal, setAddAccountModal] = useState(false);
   const [addAccountLink, setAddAccountLink] = useState(1);
 
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("bankToken");
-    localStorage.removeItem("user");
-    navigate("/");
-  };
-
   return (
     <>
-      {accessToken && bankToken ? (
+      {accessToken && user && (
         <>
           <Container className="header">
             <Row>
@@ -271,8 +255,6 @@ export default function Header({ sidebarHandler }) {
           {/*Account Offcanvas */}
           <OffcanvasAccount show={show} handleClose={handleClose} />
         </>
-      ) : (
-        <></>
       )}
     </>
   );

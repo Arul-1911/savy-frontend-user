@@ -4,14 +4,14 @@ import { Button, Col, Form, Image, Row, Spinner } from "react-bootstrap";
 import { ToastContainer } from "react-toastify";
 import { getError } from "../utils/error";
 import FormField from "../components/layout/FormField";
-import { useLoginAdminMutation } from "../features/apiSlice";
 import LoginCard from "../components/layout/LoginCard";
+import { useLoginUserMutation } from "../features/apiSlice";
 
 export default function ResetPassword() {
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [loginAdmin, { isLoading }] = useLoginAdminMutation();
+  const [loginUser, { isLoading }] = useLoginUserMutation();
 
   const handleLogin = async (e) => {
     e.preventDefault();

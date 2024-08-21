@@ -3,21 +3,13 @@ import ModalWindow from "../modals/ModalWindow";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { FaRegCheckCircle } from "react-icons/fa";
 
-const Filter = ({ show, hide, already, activeLink }) => {
+const Filter = ({ show, hide, already, activeLink, data, selectedPeriod }) => {
   const [selectActivePeriod, setSelectActivePeriod] = useState(0);
 
-  const periods = [
-    "Next 7 days",
-    "Next 14 days",
-    "Next 30 days",
-    "This month",
-    "This pay cycle",
-    "Next pay cycle",
-    "Calendar fortnight",
-  ];
-
-  const activePeriods = (index) => {
+  const activePeriods = (index, value) => {
     setSelectActivePeriod(index);
+    selectedPeriod(value);
+    activeLink(already);
   };
 
   return (
@@ -57,7 +49,7 @@ const Filter = ({ show, hide, already, activeLink }) => {
           </div>
 
           <div className="mt-2">
-            {periods?.map((prd, idx) => {
+            {data?.map((prd, idx) => {
               return (
                 <div key={idx}>
                   <div className="d-flex align-items-center justify-content-between">
@@ -77,7 +69,7 @@ const Filter = ({ show, hide, already, activeLink }) => {
                       }
                       onClick={() => activePeriods(idx)}
                     >
-                      {prd}
+                      {prd?.text}
                     </div>
                     {selectActivePeriod === idx && (
                       <FaRegCheckCircle
@@ -127,7 +119,7 @@ const Filter = ({ show, hide, already, activeLink }) => {
           </div>
 
           <div className="mt-2">
-            {periods?.map((prd, idx) => {
+            {data?.map((prd, idx) => {
               return (
                 <div key={idx}>
                   <div className="d-flex align-items-center justify-content-between">
@@ -145,9 +137,9 @@ const Filter = ({ show, hide, already, activeLink }) => {
                               cursor: "pointer",
                             }
                       }
-                      onClick={() => activePeriods(idx)}
+                      onClick={() => activePeriods(idx, prd?.value)}
                     >
-                      {prd}
+                      {prd?.text}
                     </div>
                     {selectActivePeriod === idx && (
                       <FaRegCheckCircle

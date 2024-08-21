@@ -1,30 +1,37 @@
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 import { Button, Col, Form, Image, Row, Spinner } from "react-bootstrap";
-import { ToastContainer } from "react-toastify";
-import { useTitle } from "../components";
+// import { ToastContainer } from "react-toastify";
 import { getError } from "../utils/error";
-import { useSelector } from "react-redux";
-import { selectAuth } from "../features/authSlice";
 import FormField from "../components/layout/FormField";
-import { useLoginAdminMutation } from "../features/apiSlice";
+import { useUserRegistrationMutation } from "../features/apiSlice";
 import LoginCard from "../components/layout/LoginCard";
 
 export default function Passcode() {
-  const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loginAdmin, { isLoading }] = useLoginAdminMutation();
-  // const { accessToken } = useSelector(selectAuth);
+  const [code, setCode] = useState("");
+  const [confirmCode, setConfirmCode] = useState("");
+  const [userRegistration, { isLoading }] = useUserRegistrationMutation();
 
-  const handleLogin = async (e) => {
+  const handlePasscode = async (e) => {
     e.preventDefault();
+    const user = JSON.parse(localStorage.getItem("userDetails"));
+
     try {
-      localStorage.setItem("accessToken", true);
-      localStorage.setItem("user", true);
-      navigate("/user/connect-bank");
+      if (user) {
+        if (code !== confirmCode) {
+          throw new Error("Code and confim code are not matched");
+        } else {
+          const updatedUser = {
+            ...user,
+            code: code,
+            confirm_code: confirmCode,
+          };
+          const { data } = await userRegistration(updatedUser).unwrap();
+          window.location.href = data?.links?.public;
+        }
+      } else {
+        throw new Error("User not found");
+      }
     } catch (error) {
-      console.log(error);
       getError(error);
     }
   };
@@ -49,21 +56,21 @@ export default function Passcode() {
           Set up your 6-digit code for quick access to the application
         </div>
       </div>
-      <Form className="mt-3 px-5" onSubmit={handleLogin}>
+      <Form className="mt-3 px-5" onSubmit={handlePasscode}>
         <FormField
           type={"password"}
           placeholder={"6 - digit code"}
           maxLength={6}
-          onChange={(e) => setEmail(e.target.value)}
-          value={email}
+          onChange={(e) => setCode(e.target.value)}
+          value={code}
         />
 
         <FormField
           type={"password"}
           placeholder={"Repeat the 6 - digit code"}
-          value={password}
+          value={confirmCode}
           maxLength={6}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) => setConfirmCode(e.target.value)}
         />
 
         <p
@@ -101,7 +108,7 @@ export default function Passcode() {
           </Col>
         </Row>
       </Form>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
     </LoginCard>
   );
 }

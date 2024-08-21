@@ -1,23 +1,10 @@
 import React, { useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import {
-  Button,
-  Card,
-  Col,
-  Container,
-  Form,
-  Image,
-  Row,
-  Spinner,
-} from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import { Button, Col, Form, Image, Row, Spinner } from "react-bootstrap";
 import { ToastContainer } from "react-toastify";
 import { getError } from "../utils/error";
 import FormField from "../components/layout/FormField";
-import {
-  useForgetPasswordMutation,
-  useNewPasswordMutation,
-  useSubmitOTPMutation,
-} from "../features/apiSlice";
+import { useForgetPasswordMutation } from "../features/apiSlice";
 import LoginCard from "../components/layout/LoginCard";
 
 export default function ForgetPassword() {
@@ -28,18 +15,6 @@ export default function ForgetPassword() {
   const [check, setCheck] = useState(false);
   const [otpCheck, setOTPCheck] = useState(false);
   const [forgetPassword, { isLoading }] = useForgetPasswordMutation();
-  const [
-    newPassword,
-    {
-      isLoading: { newPasswordLoading },
-    },
-  ] = useNewPasswordMutation();
-  const [
-    submitOTP,
-    {
-      isLoading: { otpLoading },
-    },
-  ] = useSubmitOTPMutation();
 
   const [otp, setOtp] = useState(new Array(6).fill(""));
   const inputs = useRef([]);
@@ -184,7 +159,7 @@ export default function ForgetPassword() {
 
         <Row className="mt-5">
           <Col>
-            {isLoading || otpLoading || newPasswordLoading ? (
+            {isLoading ? (
               <Button type="submit" className="float-sm-end" disabled>
                 <Spinner animation="border" size="sm" />
               </Button>
