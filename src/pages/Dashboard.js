@@ -734,7 +734,7 @@ export default function Dashboard() {
 
         <Row className="g-3 mt-2">
           <Col>
-            <DashboardCard height="300px">
+            <DashboardCard>
               <div className="d-flex align-items-center justify-content-between">
                 <h4 style={{ fontWeight: 600, color: "rgba(0, 39, 91, 1)" }}>
                   Net worth
@@ -950,7 +950,7 @@ export default function Dashboard() {
                 </div>
 
                 <h3
-                  className="text-center mt-3"
+                  className="text-center mt-4"
                   style={{
                     fontWeight: 700,
                     fontSize: "20px",
@@ -961,7 +961,7 @@ export default function Dashboard() {
                 </h3>
 
                 <div
-                  className="text-center px-5"
+                  className="text-center px-5 mt-4"
                   style={{
                     fontWeight: 400,
                     fontSize: "16px",

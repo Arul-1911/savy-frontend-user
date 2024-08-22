@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Button, Col, Form, Image, Row, Spinner } from "react-bootstrap";
-// import { ToastContainer } from "react-toastify";
 import { getError } from "../utils/error";
 import FormField from "../components/layout/FormField";
 import { useUserRegistrationMutation } from "../features/apiSlice";
@@ -108,7 +107,6 @@ export default function Passcode() {
           </Col>
         </Row>
       </Form>
-      {/* <ToastContainer /> */}
     </LoginCard>
   );
 }

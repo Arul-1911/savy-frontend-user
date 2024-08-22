@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Col, Form, Image, Row } from "react-bootstrap";
-// import { ToastContainer } from "react-toastify";
 import { getError } from "../utils/error";
 import FormField from "../components/layout/FormField";
 import LoginCard from "../components/layout/LoginCard";
@@ -114,8 +113,6 @@ export default function SignupScreen() {
           </Col>
         </Row>
       </Form>
-
-      {/* <ToastContainer /> */}
     </LoginCard>
   );
 }

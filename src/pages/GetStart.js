@@ -1,8 +1,19 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Button, Card, Col, Container, Image, Row } from "react-bootstrap";
+import { useSelector } from "react-redux";
+import { selectAuth } from "../features/authSlice";
 
 export default function GetStart() {
+  const navigate = useNavigate();
+  const { accessToken } = useSelector(selectAuth);
+
+  useEffect(() => {
+    if (accessToken) {
+      navigate("/user/dashboard");
+    }
+  }, [accessToken]);
+
   return (
     <Container
       fluid
