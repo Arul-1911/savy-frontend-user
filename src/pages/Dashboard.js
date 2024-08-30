@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Carousel,
   Col,
@@ -18,26 +18,8 @@ import BudgetComponents from "./DashboardComponents/BudgetComponents";
 import UpcomingBillComponents from "./DashboardComponents/UpcomingBillComponent";
 import PieCharts from "../components/Charts/PieChart";
 import BarsChart from "../components/Charts/BarsChart";
-
-const MoneyInvsOutData = [
-  { name: "Money In", uv: 4000 },
-  { name: "Money Out", uv: 3000 },
-];
-
-const MonthlyMoneyOutData = [
-  { name: "Jan", uv: 4000 },
-  { name: "Feb", uv: 3000 },
-  { name: "Mar", uv: 8000 },
-  { name: "Apr", uv: 6000 },
-  { name: "May", uv: 3000 },
-  { name: "Jun", uv: 11000 },
-  { name: "July", uv: 9000 },
-  { name: "Aug", uv: 2000 },
-  { name: "Sep", uv: 3500 },
-  { name: "Oct", uv: 4500 },
-  { name: "Nov", uv: 5500 },
-  { name: "Dec", uv: 2000 },
-];
+import { useDashboardDataMutation } from "../features/apiSlice";
+import { getError } from "../utils/error";
 
 const data = [
   {
@@ -80,6 +62,9 @@ export default function Dashboard() {
   const [showBills, setShowBills] = useState(false);
   const [showActiveBills, setShowActiveBills] = useState(1);
 
+  const [dashboardData, { isLoading }] = useDashboardDataMutation();
+  const [dashboard, setDashboard] = useState({});
+
   const upcomingPayments = [
     {
       icons: "/icons/disnep.png",
@@ -101,6 +86,30 @@ export default function Dashboard() {
     },
   ];
 
+  useEffect(() => {
+    getDashboardData();
+  }, []);
+
+  const getDashboardData = async () => {
+    try {
+      const { data } = await dashboardData();
+      console.log(data);
+      setDashboard(data?.dashboardData);
+    } catch (error) {
+      getError(error);
+    }
+  };
+
+  const formatTime = (isoString) => {
+    const date = new Date(isoString);
+
+    // Get hours and minutes
+    const hours = date.getUTCHours().toString().padStart(2, "0"); // Convert hours to 2-digit format
+    const minutes = date.getUTCMinutes().toString().padStart(2, "0"); // Convert minutes to 2-digit format
+
+    return `${hours}:${minutes}`; // Combine hours and minutes
+  };
+
   return (
     <MotionDiv>
       <Container fluid>
@@ -110,7 +119,10 @@ export default function Dashboard() {
           }}
           className="my-2"
         >
-          Hello! <span style={{ color: "rgba(55, 73, 87, 0.6)" }}>Krishna</span>
+          Hello!{" "}
+          <span style={{ color: "rgba(55, 73, 87, 0.6)" }}>
+            {dashboard?.userName}
+          </span>
         </h2>
         <Row className="g-3">
           <Col>
@@ -223,7 +235,7 @@ export default function Dashboard() {
                           fontSize: "30px",
                         }}
                       >
-                        $ 4000
+                        ${dashboard?.card1?.["Total amount"]}
                       </div>
                     </div>
 
@@ -274,7 +286,7 @@ export default function Dashboard() {
                           fontSize: "30px",
                         }}
                       >
-                        $6,770
+                        ${dashboard?.card1?.["Credit Card"]}
                       </div>
                     </div>
 
@@ -316,7 +328,7 @@ export default function Dashboard() {
                         This month
                       </div>
                       <BarsChart
-                        data={MoneyInvsOutData}
+                        data={dashboard?.card1?.moneyInVsMoneyOut}
                         width={200}
                         height={220}
                         cashFlow={true}
@@ -357,7 +369,7 @@ export default function Dashboard() {
                             fontWeight: 600,
                           }}
                         >
-                          30.000,00$
+                          {dashboard?.card1?.moneyInVsMoneyOut[0].uv}$
                         </div>
                       </div>
 
@@ -388,7 +400,7 @@ export default function Dashboard() {
                             fontWeight: 600,
                           }}
                         >
-                          20.000,00$
+                          {dashboard?.card1?.moneyInVsMoneyOut[1].uv}$
                         </div>
                       </div>
                     </div>
@@ -418,7 +430,7 @@ export default function Dashboard() {
 
                   <div className="d-flex justify-content-center">
                     <BarsChart
-                      data={MonthlyMoneyOutData}
+                      data={dashboard?.card1?.monthlyMoneyOut}
                       barWidth={30}
                       width={"100%"}
                       height={220}
@@ -583,7 +595,7 @@ export default function Dashboard() {
                     <Carousel.Item>
                       <div className="d-flex flex-column justify-content-center mt-5">
                         <BarsChart
-                          data={MonthlyMoneyOutData}
+                          data={dashboard?.card2?.monthlyMoneyIn}
                           barWidth={30}
                           width={"100%"}
                           height={220}
@@ -772,7 +784,7 @@ export default function Dashboard() {
                     cursor: "pointer",
                   }}
                 >
-                  $ 1,220.00
+                  ${dashboard?.card1?.["Total amount"]}
                 </div>
               </div>
 
@@ -791,7 +803,7 @@ export default function Dashboard() {
                     fontSize: "16px",
                   }}
                 >
-                  $1219.92
+                  ${dashboard?.card1?.["Total amount"]}
                 </div>
               </div>
 
@@ -810,7 +822,7 @@ export default function Dashboard() {
                     fontSize: "16px",
                   }}
                 >
-                  $0.8
+                  $0
                 </div>
               </div>
             </DashboardCard>
@@ -1008,169 +1020,53 @@ export default function Dashboard() {
               </div>
 
               <ul className="market mt-2">
-                <li className="d-flex justify-content-between align-items-center ">
-                  <div className="d-flex align-items-center gap-2">
-                    <Image
-                      width={"50px"}
-                      height={"50px"}
-                      style={{ borderRadius: "50%" }}
-                      src="/icons/Rectangle 116.png"
-                      alt="..."
-                    />
-                    <div>
-                      <div
-                        style={{
-                          fontSize: "rgba(55, 73, 87, 1)",
-                          fontSize: "16px",
-                        }}
-                      >
-                        Trader Jane’s market
+                {dashboard?.transactions?.map((data, idx) => {
+                  return (
+                    <li
+                      key={idx}
+                      className="d-flex justify-content-between align-items-center "
+                    >
+                      <div className="d-flex align-items-center gap-2">
+                        <Image
+                          width={"50px"}
+                          height={"50px"}
+                          style={{ borderRadius: "50%" }}
+                          src="/icons/Rectangle 116.png"
+                          alt="..."
+                        />
+                        <div>
+                          <div
+                            style={{
+                              fontSize: "rgba(55, 73, 87, 1)",
+                              fontSize: "16px",
+                            }}
+                          >
+                            {data?.description}
+                          </div>
+                          <div
+                            style={{
+                              fontSize: "rgba(55, 73, 87, 0.7)",
+                              fontSize: "12px",
+                              fontWeight: 400,
+                            }}
+                          >
+                            at {formatTime(data?.time)}
+                          </div>
+                        </div>
                       </div>
-                      <div
-                        style={{
-                          fontSize: "rgba(55, 73, 87, 0.7)",
-                          fontSize: "12px",
-                          fontWeight: 400,
-                        }}
-                      >
-                        at 14:30
-                      </div>
-                    </div>
-                  </div>
 
-                  <div
-                    style={{
-                      color: "var(--primary-color)",
-                      fontSize: "20px",
-                      fontWeight: 800,
-                    }}
-                  >
-                    -20.00 $
-                  </div>
-                </li>
-
-                <li className="d-flex justify-content-between align-items-center">
-                  <div className="d-flex align-items-center gap-2">
-                    <Image
-                      width={"50px"}
-                      height={"50px"}
-                      style={{ borderRadius: "50%" }}
-                      src="/icons/Airbnb.png"
-                      alt="..."
-                    />
-                    <div>
                       <div
                         style={{
-                          fontSize: "rgba(55, 73, 87, 1)",
-                          fontSize: "16px",
+                          color: "var(--primary-color)",
+                          fontSize: "20px",
+                          fontWeight: 800,
                         }}
                       >
-                        C&C partners
+                        {data?.amount} $
                       </div>
-                      <div
-                        style={{
-                          fontSize: "rgba(55, 73, 87, 0.7)",
-                          fontSize: "12px",
-                          fontWeight: 400,
-                        }}
-                      >
-                        at 14:30
-                      </div>
-                    </div>
-                  </div>
-
-                  <div
-                    style={{
-                      color: "var(--primary-color)",
-                      fontSize: "20px",
-                      fontWeight: 800,
-                    }}
-                  >
-                    -20.00 $
-                  </div>
-                </li>
-
-                <li className="d-flex justify-content-between align-items-center">
-                  <div className="d-flex align-items-center gap-2">
-                    <Image
-                      width={"50px"}
-                      height={"50px"}
-                      style={{ borderRadius: "50%" }}
-                      src="/icons/Rectangle 117.png"
-                      alt="..."
-                    />
-                    <div>
-                      <div
-                        style={{
-                          fontSize: "rgba(55, 73, 87, 1)",
-                          fontSize: "16px",
-                        }}
-                      >
-                        OW finance office
-                      </div>
-                      <div
-                        style={{
-                          fontSize: "rgba(55, 73, 87, 0.7)",
-                          fontSize: "12px",
-                          fontWeight: 400,
-                        }}
-                      >
-                        at 14:30
-                      </div>
-                    </div>
-                  </div>
-
-                  <div
-                    style={{
-                      color: "var(--primary-color)",
-                      fontSize: "20px",
-                      fontWeight: 800,
-                    }}
-                  >
-                    -20.00 $
-                  </div>
-                </li>
-
-                <li className="d-flex justify-content-between align-items-center">
-                  <div className="d-flex align-items-center gap-2">
-                    <Image
-                      width={"50px"}
-                      height={"50px"}
-                      style={{ borderRadius: "50%" }}
-                      src="/icons/Better Stack.png"
-                      alt="..."
-                    />
-                    <div>
-                      <div
-                        style={{
-                          fontSize: "rgba(55, 73, 87, 1)",
-                          fontSize: "16px",
-                        }}
-                      >
-                        Artsy Coffee Shop
-                      </div>
-                      <div
-                        style={{
-                          fontSize: "rgba(55, 73, 87, 0.7)",
-                          fontSize: "12px",
-                          fontWeight: 400,
-                        }}
-                      >
-                        at 14:30
-                      </div>
-                    </div>
-                  </div>
-
-                  <div
-                    style={{
-                      color: "var(--primary-color)",
-                      fontSize: "20px",
-                      fontWeight: 800,
-                    }}
-                  >
-                    -20.00 $
-                  </div>
-                </li>
+                    </li>
+                  );
+                })}
               </ul>
             </DashboardCard>
           </Col>

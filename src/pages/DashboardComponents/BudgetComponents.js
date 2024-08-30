@@ -1,65 +1,159 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ModalWindow from "../../components/modals/ModalWindow";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { Filter2SVG } from "../../components/svg/Filter2SVG";
-import { Card, Form, Image, InputGroup, ProgressBar } from "react-bootstrap";
+import {
+  Card,
+  Form,
+  Image,
+  InputGroup,
+  ProgressBar,
+  Spinner,
+} from "react-bootstrap";
 import { CalendarSVG } from "../../components/svg/CalendarSVG";
 import Calendar from "../../components/Calendar/Calendar";
 import Filter from "../../components/Filter/Filter";
 import { IoIosSettings } from "react-icons/io";
 import { FiEdit } from "react-icons/fi";
+import { getError } from "../../utils/error";
+import {
+  useGetBudgetMutation,
+  useGetCategoriesMutation,
+  useGetPaydaysMutation,
+  useSaveBudgetMutation,
+} from "../../features/apiSlice";
+import { LuMinusSquare } from "react-icons/lu";
 
 const BudgetComponents = ({ show, hide, active, activeLink }) => {
   const [alreadyActiveFilter, setAlreadyActiveFilter] = useState(0);
   const [alreadyActiveCalendar, setAlreadyActiveCalendar] = useState(0);
+  const [selectBudgetPeriod, setSelectbudgetPeriod] = useState("");
 
-  const [activeCat, setActiveCat] = useState("Cafes & Coffee");
+  const [getCategories, { isLoading }] = useGetCategoriesMutation();
+  const [getPaydays, { isLoading: paydayLoading }] = useGetPaydaysMutation();
+  const [saveBudget, { isLoading: budgetLoading }] = useSaveBudgetMutation();
+  const [getBudget, { isLoading: getBudgetLoading }] = useGetBudgetMutation();
 
-  const popularCat = [
+  const [categories, setCategories] = useState([]);
+  const [paydays, setPaydays] = useState([]);
+  const [budgets, setBudgets] = useState([]);
+
+  const [activeCat, setActiveCat] = useState(null);
+  const [selectCategory, setSelectCategory] = useState("");
+  const [selectPayday, setSelectPayday] = useState("");
+  const [budget, setBudget] = useState("");
+  const [bill, setBill] = useState(null);
+
+  const budgetPeriod = [
     {
-      text: "Restaurants",
-      subText: "Lifestyle",
+      text: "Next 7 days",
+      value: 7,
     },
     {
-      text: "Cafes & Coffee",
-      subText: "Lifestyle",
+      text: "Next 14 days",
+      value: 14,
     },
     {
-      text: "Restaurants",
-      subText: "Lifestyle",
+      text: "Next 30 days",
+      value: 30,
+    },
+    {
+      text: "This Month",
+      value: 30,
     },
   ];
 
-  const allCat = [
-    {
-      text: "Restaurants",
-      subText: "Lifestyle",
-    },
-    {
-      text: "Restaurants",
-      subText: "Lifestyle",
-    },
-    {
-      text: "Restaurants",
-      subText: "Lifestyle",
-    },
-    {
-      text: "Restaurants",
-      subText: "Lifestyle",
-    },
-    {
-      text: "Restaurants",
-      subText: "Lifestyle",
-    },
-    {
-      text: "Restaurants",
-      subText: "Lifestyle",
-    },
-    {
-      text: "Restaurants",
-      subText: "Lifestyle",
-    },
-  ];
+  // Function to handle mouse enter (hover)
+  const activeCategory = (index) => {
+    setActiveCat((prev) => ({ ...prev, hoverIndex: index }));
+  };
+
+  // Function to handle mouse leave (remove hover effect)
+  const notActiveCategory = () => {
+    setActiveCat((prev) => ({ ...prev, hoverIndex: null }));
+  };
+
+  // Function to handle category click
+  const handleCategoryClick = (index, value) => {
+    setActiveCat({ selectedIndex: index, selectedValue: value });
+    setSelectCategory(value);
+  };
+
+  useEffect(() => {
+    if (show) {
+      getAllCategories();
+      getAllPaydays();
+      getAllBudget();
+    }
+  }, [show]);
+
+  // ======= Getting all categories =======
+  const getAllCategories = async () => {
+    try {
+      const { data } = await getCategories();
+      setCategories(data?.categorys);
+    } catch (error) {
+      getError(error);
+    }
+  };
+
+  // ======= Getting all paydays =======
+  const getAllPaydays = async () => {
+    try {
+      const { data } = await getPaydays();
+      setPaydays(data?.paydays);
+    } catch (error) {
+      getError(error);
+    }
+  };
+
+  // ======= Getting all budget =======
+  const getAllBudget = async () => {
+    try {
+      const { data } = await getBudget();
+      setBudgets(data?.budgets);
+    } catch (error) {
+      getError(error);
+    }
+  };
+
+  const handleCheckCat = () => {
+    if (selectCategory !== "") activeLink(3);
+  };
+
+  const handleCheckPayday = () => {
+    if (selectPayday) activeLink(5);
+  };
+
+  // ======= Format date =======
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+    });
+  };
+
+  const createBudget = async () => {
+    if (selectCategory && budget && selectPayday) activeLink(6);
+  };
+
+  // ======= Create budget =======
+  const handleCreateBudget = async () => {
+    const budgetData = {
+      categorys: selectCategory?._id,
+      paydays: selectPayday?._id,
+      budget_amount: budget,
+      is_bill: bill === "on" ? true : false,
+    };
+    try {
+      const data = await saveBudget(budgetData).unwrap();
+      console.log(data);
+      activeLink(7);
+    } catch (error) {
+      getError(error);
+    }
+  };
 
   return (
     <ModalWindow show={show} onHide={hide}>
@@ -157,182 +251,79 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
 
           <Card className="mt-3" style={{ borderRadius: "20px" }}>
             <Card.Body>
-              <div
-                className="mt-2"
-                style={{
-                  backgroundColor: "rgba(245, 247, 248, 1)",
-                  padding: "8px",
-                  borderRadius: "10px",
-                }}
-              >
-                <div className=" d-flex justify-content-between align-items-center">
-                  <div className="d-flex gap-2 align-items-center">
-                    <Image src="/images/Rectangle 116.png" alt="..." />
-                    <div>
-                      <div
-                        style={{
-                          fontWeight: 600,
-                          color: "rgba(55, 73, 87, 1)",
-                          fontSize: "12px",
-                        }}
-                      >
-                        Cafe & Coffee
-                      </div>
-                      <div
-                        style={{
-                          fontWeight: 400,
-                          color: "rgba(159, 175, 198, 1)",
-                          fontSize: "12px",
-                        }}
-                      >
-                        $20 spent of 50
-                      </div>
-                    </div>
-                  </div>
+              {!getBudgetLoading ? (
+                budgets?.map((data) => {
+                  return (
+                    <div
+                      key={data?._id}
+                      className="mt-2"
+                      style={{
+                        backgroundColor: "rgba(245, 247, 248, 1)",
+                        padding: "8px",
+                        borderRadius: "10px",
+                      }}
+                    >
+                      <div className=" d-flex justify-content-between align-items-center">
+                        <div className="d-flex gap-2 align-items-center">
+                          <Image src="/images/Rectangle 116.png" alt="..." />
+                          <div>
+                            <div
+                              style={{
+                                fontWeight: 600,
+                                color: "rgba(55, 73, 87, 1)",
+                                fontSize: "12px",
+                              }}
+                            >
+                              Cafe & Coffee
+                            </div>
+                            <div
+                              style={{
+                                fontWeight: 400,
+                                color: "rgba(159, 175, 198, 1)",
+                                fontSize: "12px",
+                              }}
+                            >
+                              $20 spent of 50
+                            </div>
+                          </div>
+                        </div>
 
-                  <div>
-                    <div
-                      style={{
-                        color: "var(--primary-color)",
-                        fontSize: "12px",
-                        fontWeight: 600,
-                      }}
-                    >
-                      $30.00
-                    </div>
-                    <div
-                      style={{
-                        fontWeight: 400,
-                        color: "rgba(159, 175, 198, 1)",
-                        fontSize: "12px",
-                      }}
-                    >
-                      remaining
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-1">
-                  <ProgressBar now={40} label={`${100}%`} visuallyHidden />
-                </div>
-              </div>
-
-              <div
-                className="mt-2"
-                style={{
-                  backgroundColor: "rgba(245, 247, 248, 1)",
-                  padding: "8px",
-                  borderRadius: "10px",
-                }}
-              >
-                <div className=" d-flex justify-content-between align-items-center">
-                  <div className="d-flex gap-2 align-items-center">
-                    <Image src="/images/Rectangle 116.png" alt="..." />
-                    <div>
-                      <div
-                        style={{
-                          fontWeight: 600,
-                          color: "rgba(55, 73, 87, 1)",
-                          fontSize: "12px",
-                        }}
-                      >
-                        Cafe & Coffee
+                        <div>
+                          <div
+                            style={{
+                              color: "var(--primary-color)",
+                              fontSize: "12px",
+                              fontWeight: 600,
+                            }}
+                          >
+                            ${data?.budget_amount}
+                          </div>
+                          <div
+                            style={{
+                              fontWeight: 400,
+                              color: "rgba(159, 175, 198, 1)",
+                              fontSize: "12px",
+                            }}
+                          >
+                            remaining
+                          </div>
+                        </div>
                       </div>
-                      <div
-                        style={{
-                          fontWeight: 400,
-                          color: "rgba(159, 175, 198, 1)",
-                          fontSize: "12px",
-                        }}
-                      >
-                        $20 spent of 50
+                      <div className="mt-1">
+                        <ProgressBar
+                          now={40}
+                          label={`${100}%`}
+                          visuallyHidden
+                        />
                       </div>
                     </div>
-                  </div>
-
-                  <div>
-                    <div
-                      style={{
-                        color: "var(--primary-color)",
-                        fontSize: "12px",
-                        fontWeight: 600,
-                      }}
-                    >
-                      $30.00
-                    </div>
-                    <div
-                      style={{
-                        fontWeight: 400,
-                        color: "rgba(159, 175, 198, 1)",
-                        fontSize: "12px",
-                      }}
-                    >
-                      remaining
-                    </div>
-                  </div>
+                  );
+                })
+              ) : (
+                <div className="text-center">
+                  <Spinner size="sm" />
                 </div>
-                <div className="mt-1">
-                  <ProgressBar now={40} label={`${100}%`} visuallyHidden />
-                </div>
-              </div>
-
-              <div
-                className="mt-2"
-                style={{
-                  backgroundColor: "rgba(245, 247, 248, 1)",
-                  padding: "8px",
-                  borderRadius: "10px",
-                }}
-              >
-                <div className=" d-flex justify-content-between align-items-center">
-                  <div className="d-flex gap-2 align-items-center">
-                    <Image src="/images/Rectangle 116.png" alt="..." />
-                    <div>
-                      <div
-                        style={{
-                          fontWeight: 600,
-                          color: "rgba(55, 73, 87, 1)",
-                          fontSize: "12px",
-                        }}
-                      >
-                        Cafe & Coffee
-                      </div>
-                      <div
-                        style={{
-                          fontWeight: 400,
-                          color: "rgba(159, 175, 198, 1)",
-                          fontSize: "12px",
-                        }}
-                      >
-                        $20 spent of 50
-                      </div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <div
-                      style={{
-                        color: "var(--primary-color)",
-                        fontSize: "12px",
-                        fontWeight: 600,
-                      }}
-                    >
-                      $30.00
-                    </div>
-                    <div
-                      style={{
-                        fontWeight: 400,
-                        color: "rgba(159, 175, 198, 1)",
-                        fontSize: "12px",
-                      }}
-                    >
-                      remaining
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-1">
-                  <ProgressBar now={40} label={`${100}%`} visuallyHidden />
-                </div>
-              </div>
+              )}
             </Card.Body>
           </Card>
 
@@ -397,7 +388,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
             </div>
             <Card style={{ borderRadius: " 10px" }}>
               <Card.Body>
-                {popularCat?.map((data, idx) => {
+                {categories.slice(0, 3)?.map((data, idx) => {
                   return (
                     <div
                       key={idx}
@@ -406,7 +397,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                       <div
                         className="w-100 px-2"
                         style={
-                          activeCat === data?.text
+                          activeCat === data?.name
                             ? {
                                 backgroundColor: "rgba(233, 246, 252, 1)",
                                 borderRadius: "10px",
@@ -415,11 +406,11 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                         }
                       >
                         <div style={{ fontSize: "14px", fontWeight: 600 }}>
-                          {data?.text}
+                          {data?.name}
                         </div>
-                        <div style={{ fontSize: "12px", fontWeight: 400 }}>
+                        {/* <div style={{ fontSize: "12px", fontWeight: 400 }}>
                           {data?.subText}
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   );
@@ -443,30 +434,51 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
               }}
             >
               <Card.Body>
-                {allCat?.map((data, idx) => {
-                  return (
-                    <div
-                      key={idx}
-                      className="d-flex justify-content-between align-items-center mt-2"
-                    >
-                      <div>
-                        <div style={{ fontSize: "14px", fontWeight: 600 }}>
-                          {data?.text}
-                        </div>
-                        <div style={{ fontSize: "12px", fontWeight: 400 }}>
-                          {data?.subText}
+                {!isLoading ? (
+                  categories?.map((data, idx) => {
+                    return (
+                      <div
+                        key={data?._id}
+                        className="d-flex justify-content-between align-items-center mt-2"
+                      >
+                        <div
+                          className="w-100 py-2 px-1"
+                          style={{
+                            backgroundColor:
+                              activeCat?.selectedIndex === idx
+                                ? "rgba(233, 246, 252, 1)"
+                                : activeCat?.hoverIndex === idx
+                                ? "rgba(233, 246, 252, 0.5)"
+                                : "white",
+                            cursor: "pointer",
+                            borderRadius: "5px",
+                          }}
+                          onMouseEnter={() => activeCategory(idx)}
+                          onMouseLeave={notActiveCategory}
+                          onClick={() => handleCategoryClick(idx, data)}
+                        >
+                          <div style={{ fontSize: "14px", fontWeight: 600 }}>
+                            {data?.name}
+                          </div>
+                          <div style={{ fontSize: "10px", fontWeight: 400 }}>
+                            Lifestyle
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })
+                ) : (
+                  <div className="text-center">
+                    <Spinner size="sm" />
+                  </div>
+                )}
               </Card.Body>
             </Card>
 
             <div className="text-center">
               <button
                 className="w-75 mt-3"
-                onClick={() => activeLink(3)}
+                onClick={handleCheckCat}
                 style={{
                   backgroundColor: "var(--primary-color)",
                   padding: "10px",
@@ -514,24 +526,26 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
             <Card style={{ borderRadius: " 10px" }}>
               <Card.Body>
                 <div className="d-flex justify-content-between align-items-center mt-2">
-                  <div className="d-flex gap-2">
+                  <div className="d-flex align-items-center gap-2">
                     <div>
-                      <input type="checkbox" />
+                      <LuMinusSquare color="var(--primary-color)" />
                     </div>
                     <div>
                       <div style={{ fontSize: "14px", fontWeight: 600 }}>
-                        Cafes & Coffee
+                        {selectCategory?.name}
                       </div>
-                      <div style={{ fontSize: "12px", fontWeight: 400 }}>
+                      {/* <div style={{ fontSize: "12px", fontWeight: 400 }}>
                         Lifestyle
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                   <div
+                    onClick={() => activeLink(2)}
                     style={{
                       fontSize: "14px",
                       fontWeight: 600,
                       color: "var(--primary-color)",
+                      cursor: "pointer",
                     }}
                   >
                     Changes
@@ -556,42 +570,52 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
               style={{
                 borderRadius: " 10px",
                 overflowY: "scroll",
-                height: "300px",
+                height: "200px",
               }}
             >
               <Card.Body>
-                {allCat?.map((data, idx) => {
-                  return (
-                    <div
-                      key={idx}
-                      className="d-flex justify-content-between align-items-center mt-2"
-                    >
-                      <div className="d-flex gap-2">
-                        <div>
-                          <input type="checkbox" />
-                        </div>
-                        <div>
-                          <div style={{ fontSize: "14px", fontWeight: 600 }}>
-                            {data?.text}
-                          </div>
-                          <div style={{ fontSize: "12px", fontWeight: 400 }}>
-                            $7,441.00
-                          </div>
-                        </div>
-                      </div>
-
+                {!paydayLoading ? (
+                  paydays?.map((data) => {
+                    return (
                       <div
-                        style={{
-                          fontSize: "12px",
-                          fontWeight: 600,
-                          color: "var(--primary-color)",
-                        }}
+                        key={data?._id}
+                        className="d-flex justify-content-between align-items-center mt-2"
                       >
-                        $7,441.00
+                        <div className="d-flex gap-2">
+                          <div>
+                            <input
+                              type="radio"
+                              checked={selectPayday?._id === data?._id}
+                              onChange={() => setSelectPayday(data)}
+                            />
+                          </div>
+                          <div>
+                            <div style={{ fontSize: "14px", fontWeight: 600 }}>
+                              {data?.source}
+                            </div>
+                            <div style={{ fontSize: "12px", fontWeight: 400 }}>
+                              ${data?.amount}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div
+                          style={{
+                            fontSize: "12px",
+                            fontWeight: 600,
+                            color: "var(--primary-color)",
+                          }}
+                        >
+                          ${data?.amount}
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })
+                ) : (
+                  <div className="text-center">
+                    <Spinner size="sm" />
+                  </div>
+                )}
               </Card.Body>
             </Card>
 
@@ -620,7 +644,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
             <div className="text-center">
               <button
                 className="w-75 mt-3"
-                onClick={() => activeLink(5)}
+                onClick={handleCheckPayday}
                 style={{
                   backgroundColor: "var(--primary-color)",
                   padding: "10px",
@@ -827,7 +851,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
       )}
 
       {active === 5 && (
-        <>
+        <Form onSubmit={createBudget}>
           <div className="d-flex">
             <IoArrowBackCircleOutline
               color="rgba(92, 182, 249, 1)"
@@ -878,8 +902,10 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                   backgroundColor: "rgba(245, 247, 248, 1)",
                   fontSize: "12px",
                 }}
+                required
+                value={budget}
                 placeholder="Enter budget"
-                aria-label="Username"
+                onChange={(e) => setBudget(e.target.value)}
                 aria-describedby="basic-addon1"
               />
             </div>
@@ -906,7 +932,11 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
 
                   <div>
                     <Form>
-                      <Form.Check type="switch" id="custom-switch" />
+                      <Form.Check
+                        onChange={(e) => setBill(e.target.value)}
+                        type="switch"
+                        id="custom-switch"
+                      />
                     </Form>
                   </div>
                 </div>
@@ -924,24 +954,26 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
             <Card style={{ borderRadius: " 10px" }}>
               <Card.Body>
                 <div className="d-flex justify-content-between align-items-center mt-2">
-                  <div className="d-flex gap-2">
+                  <div className="d-flex align-items-center gap-2">
                     <div>
-                      <input type="checkbox" />
+                      <LuMinusSquare color="var(--primary-color)" />
                     </div>
                     <div>
                       <div style={{ fontSize: "14px", fontWeight: 600 }}>
-                        Cafes & Coffee
+                        {selectCategory?.name}
                       </div>
-                      <div style={{ fontSize: "12px", fontWeight: 400 }}>
+                      {/* <div style={{ fontSize: "12px", fontWeight: 400 }}>
                         Lifestyle
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                   <div
+                    onClick={() => activeLink(2)}
                     style={{
                       fontSize: "14px",
                       fontWeight: 600,
                       color: "var(--primary-color)",
+                      cursor: "pointer",
                     }}
                   >
                     Changes
@@ -963,22 +995,24 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                 <div className="d-flex justify-content-between align-items-center mt-2">
                   <div className="d-flex gap-2">
                     <div>
-                      <input type="checkbox" />
+                      <LuMinusSquare color="var(--primary-color)" />
                     </div>
                     <div>
                       <div style={{ fontSize: "14px", fontWeight: 600 }}>
-                        30 days salary
+                        {selectPayday?.pay_period} days salary
                       </div>
                       <div style={{ fontSize: "12px", fontWeight: 400 }}>
-                        June 30
+                        {formatDate(selectPayday?.pay_date)}
                       </div>
                     </div>
                   </div>
                   <div
+                    onClick={() => activeLink(3)}
                     style={{
                       fontSize: "14px",
                       fontWeight: 600,
                       color: "var(--primary-color)",
+                      cursor: "pointer",
                     }}
                   >
                     Changes
@@ -991,7 +1025,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
           <div className="text-center">
             <button
               className="w-75 mt-3"
-              onClick={() => activeLink(6)}
+              type="submit"
               style={{
                 backgroundColor: "var(--primary-color)",
                 padding: "10px",
@@ -1003,7 +1037,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
               Confirm
             </button>
           </div>
-        </>
+        </Form>
       )}
 
       {active === 6 && (
@@ -1058,8 +1092,8 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                   backgroundColor: "rgba(245, 247, 248, 1)",
                   fontSize: "12px",
                 }}
-                placeholder="$500"
-                aria-label="Username"
+                disabled
+                placeholder={`$${budget}`}
                 aria-describedby="basic-addon1"
               />
             </div>
@@ -1077,22 +1111,24 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                 <div className="d-flex justify-content-between align-items-center mt-2">
                   <div className="d-flex gap-2">
                     <div>
-                      <input type="checkbox" />
+                      <LuMinusSquare color="var(--primary-color)" />
                     </div>
                     <div>
                       <div style={{ fontSize: "14px", fontWeight: 600 }}>
-                        Cafes & Coffee
+                        {selectCategory?.name}
                       </div>
-                      <div style={{ fontSize: "12px", fontWeight: 400 }}>
+                      {/* <div style={{ fontSize: "12px", fontWeight: 400 }}>
                         Lifestyle
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                   <div
+                    onClick={() => activeLink(2)}
                     style={{
                       fontSize: "14px",
                       fontWeight: 600,
                       color: "var(--primary-color)",
+                      cursor: "pointer",
                     }}
                   >
                     Changes
@@ -1114,22 +1150,24 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                 <div className="d-flex justify-content-between align-items-center mt-2">
                   <div className="d-flex gap-2">
                     <div>
-                      <input type="checkbox" />
+                      <LuMinusSquare color="var(--primary-color)" />
                     </div>
                     <div>
                       <div style={{ fontSize: "14px", fontWeight: 600 }}>
-                        30 days salary
+                        {selectPayday?.pay_period} days salary
                       </div>
                       <div style={{ fontSize: "12px", fontWeight: 400 }}>
-                        June 30
+                        {formatDate(selectPayday?.pay_date)}
                       </div>
                     </div>
                   </div>
                   <div
+                    onClick={() => activeLink(3)}
                     style={{
                       fontSize: "14px",
                       fontWeight: 600,
                       color: "var(--primary-color)",
+                      cursor: "pointer",
                     }}
                   >
                     Changes
@@ -1142,7 +1180,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
           <div className="text-center">
             <button
               className="w-75 mt-3"
-              onClick={() => activeLink(7)}
+              onClick={handleCreateBudget}
               style={{
                 backgroundColor: "var(--primary-color)",
                 padding: "10px",
@@ -1151,7 +1189,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                 borderRadius: "10px",
               }}
             >
-              Create
+              {budgetLoading ? <Spinner size="sm" /> : "Create"}
             </button>
           </div>
         </>
@@ -1383,6 +1421,8 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
           already={alreadyActiveFilter}
           activeLink={activeLink}
           active={active}
+          data={budgetPeriod}
+          selectedPeriod={setSelectbudgetPeriod}
         />
       )}
 

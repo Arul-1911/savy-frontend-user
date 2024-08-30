@@ -23,6 +23,7 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
   const [alreadyActiveCalendar, setAlreadyActiveCalendar] = useState(0);
   const [createPayday, { isLoading }] = useCreatePaydayMutation();
 
+  const [paydayName, setPaydayName] = useState("");
   const [payDayDate, setPaydayDate] = useState(null);
   const [selectPayDayPeriod, setSelectPayDayPeriod] = useState("");
   const [amount, setAmount] = useState("");
@@ -50,6 +51,7 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
     e.preventDefault();
 
     const paydayData = {
+      source: paydayName,
       pay_date: payDayDate,
       pay_period: selectPayDayPeriod,
       amount: amount,
@@ -57,6 +59,10 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
 
     try {
       await createPayday(paydayData).unwrap();
+      setPaydayName("");
+      setPaydayDate(null);
+      setSelectPayDayPeriod("");
+      setAmount("");
       hide(false);
       activeLink(1);
     } catch (error) {
@@ -278,6 +284,23 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
                   color: "var(--primary-color)",
                 }}
               >
+                Name
+              </Form.Label>
+              <FormField
+                type={"text"}
+                placeholder={"Enter name"}
+                value={paydayName}
+                required
+                onChange={(e) => setPaydayName(e.target.value)}
+              />
+
+              <Form.Label
+                style={{
+                  fontSize: "18px",
+                  fontWeight: 600,
+                  color: "var(--primary-color)",
+                }}
+              >
                 Payday
               </Form.Label>
               <InputGroup className="mb-3">
@@ -344,6 +367,7 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
               <FormField
                 type={"text"}
                 placeholder={"Enter amount"}
+                required
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
               />

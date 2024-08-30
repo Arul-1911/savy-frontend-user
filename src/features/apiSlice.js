@@ -45,6 +45,22 @@ export const apiSlice = createApi({
       }),
     }),
 
+    // ====== Goals =======
+    createGoals: builder.mutation({
+      query: (data) => ({
+        url: "/goal/create-goal",
+        method: "POST",
+        body: data,
+      }),
+    }),
+
+    getGoals: builder.mutation({
+      query: () => ({
+        url: "/goal/get-goals",
+        method: "GET",
+      }),
+    }),
+
     // ====== payday =======
     createPayday: builder.mutation({
       query: (data) => ({
@@ -60,6 +76,43 @@ export const apiSlice = createApi({
         method: "GET",
       }),
     }),
+
+    getPaydays: builder.mutation({
+      query: () => ({
+        url: "/payday/get-paydays",
+        method: "GET",
+      }),
+    }),
+
+    // ====== Budget =======
+    saveBudget: builder.mutation({
+      query: (data) => ({
+        url: "/budget/create-budget",
+        method: "POST",
+        body: data,
+      }),
+    }),
+
+    getBudget: builder.mutation({
+      query: (data) => ({
+        url: "/budget/get-budgets",
+        method: "GET",
+      }),
+    }),
+
+    getCategories: builder.mutation({
+      query: () => ({
+        url: "/category/get-categorys",
+        method: "GET",
+      }),
+    }),
+
+    dashboardData: builder.mutation({
+      query: () => ({
+        url: "/user/get-graph-data",
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -68,5 +121,15 @@ export const {
   useLoginUserMutation,
   useForgetPasswordMutation,
 
+  useCreateGoalsMutation,
+  useGetGoalsMutation,
+
   useCreatePaydayMutation,
+  useGetPaydaysMutation,
+
+  useSaveBudgetMutation,
+  useGetBudgetMutation,
+  useGetCategoriesMutation,
+
+  useDashboardDataMutation,
 } = apiSlice;

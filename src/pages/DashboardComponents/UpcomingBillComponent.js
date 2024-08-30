@@ -1,7 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ModalWindow from "../../components/modals/ModalWindow";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
-import { Card, Form, Image, InputGroup, ProgressBar } from "react-bootstrap";
+import {
+  Card,
+  Form,
+  Image,
+  InputGroup,
+  ProgressBar,
+  Spinner,
+} from "react-bootstrap";
 import { CalendarSVG } from "../../components/svg/CalendarSVG";
 import FormField from "../../components/layout/FormField";
 import { IoIosArrowDown } from "react-icons/io";
@@ -9,12 +16,28 @@ import { FaRegCheckCircle } from "react-icons/fa";
 import "../Dashboard.css";
 import Calendar from "../../components/Calendar/Calendar";
 import { CiSquareMinus } from "react-icons/ci";
+import {
+  useGetBudgetMutation,
+  useGetCategoriesMutation,
+  useGetPaydaysMutation,
+} from "../../features/apiSlice";
+import { getError } from "../../utils/error";
 
 const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
   const [selectActivePeriod, setSelectActivePeriod] = useState(0);
   const [activePopularCat, setActivePopularCat] = useState(0);
+  const [activeCat, setActiveCat] = useState(null);
 
   const [openCalendar, setOpenCalendar] = useState(false);
+
+  const [getCategories, { isLoading }] = useGetCategoriesMutation();
+  const [getPaydays, { isLoading: paydayLoading }] = useGetPaydaysMutation();
+  const [getBudget, { isLoading: getBudgetLoading }] = useGetBudgetMutation();
+
+  const [categories, setCategories] = useState([]);
+  const [paydays, setPaydays] = useState([]);
+  const [budgets, setBudgets] = useState([]);
+  const [selectCategory, setSelectCategory] = useState("");
 
   const periods = [
     "Next 7 days",
@@ -75,6 +98,62 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
       subText: "Lifestyle",
     },
   ];
+
+  // Function to handle mouse enter (hover)
+  const activeCategory = (index) => {
+    setActiveCat((prev) => ({ ...prev, hoverIndex: index }));
+  };
+
+  // Function to handle mouse leave (remove hover effect)
+  const notActiveCategory = () => {
+    setActiveCat((prev) => ({ ...prev, hoverIndex: null }));
+  };
+
+  // Function to handle category click
+  const handleCategoryClick = (index, value) => {
+    setActiveCat({ selectedIndex: index, selectedValue: value });
+    setSelectCategory(value);
+  };
+
+  useEffect(() => {
+    if (show) {
+      getAllCategories();
+      getAllPaydays();
+      getAllBudget();
+    }
+  }, [show]);
+
+  // ======= Getting all categories =======
+  const getAllCategories = async () => {
+    try {
+      const { data } = await getCategories();
+      setCategories(data?.categorys);
+    } catch (error) {
+      getError(error);
+    }
+  };
+
+  // ======= Getting all paydays =======
+  const getAllPaydays = async () => {
+    try {
+      const { data } = await getPaydays();
+      setPaydays(data?.paydays);
+    } catch (error) {
+      getError(error);
+    }
+  };
+
+  // ======= Getting all budget =======
+  const getAllBudget = async () => {
+    try {
+      const { data } = await getBudget();
+      setBudgets(data?.budgets);
+    } catch (error) {
+      getError(error);
+    }
+  };
+
+  // console.log(selectCategory);
 
   return (
     <ModalWindow show={show} onHide={hide}>
@@ -526,23 +605,44 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
               }}
             >
               <Card.Body>
-                {allCat?.map((data, idx) => {
-                  return (
-                    <div
-                      key={idx}
-                      className="d-flex justify-content-between align-items-center mt-2"
-                    >
-                      <div style={{ lineHeight: "14px" }}>
-                        <div style={{ fontSize: "12px", fontWeight: 600 }}>
-                          {data?.text}
-                        </div>
-                        <div style={{ fontSize: "10px", fontWeight: 400 }}>
-                          {data?.subText}
+                {!isLoading ? (
+                  categories?.map((data, idx) => {
+                    return (
+                      <div
+                        key={idx}
+                        className="d-flex justify-content-between align-items-center mt-2"
+                      >
+                        <div
+                          className="w-100 py-1 px-1"
+                          style={{
+                            backgroundColor:
+                              activeCat?.selectedIndex === idx
+                                ? "rgba(233, 246, 252, 1)"
+                                : activeCat?.hoverIndex === idx
+                                ? "rgba(233, 246, 252, 0.5)"
+                                : "white",
+                            cursor: "pointer",
+                            borderRadius: "5px",
+                          }}
+                          onMouseEnter={() => activeCategory(idx)}
+                          onMouseLeave={notActiveCategory}
+                          onClick={() => handleCategoryClick(idx, data)}
+                        >
+                          <div style={{ fontSize: "12px", fontWeight: 600 }}>
+                            {data?.name}
+                          </div>
+                          <div style={{ fontSize: "10px", fontWeight: 400 }}>
+                            Lifestyle
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })
+                ) : (
+                  <div className="text-center">
+                    <Spinner size="sm" />
+                  </div>
+                )}
               </Card.Body>
             </Card>
 
@@ -572,7 +672,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
               color="rgba(92, 182, 249, 1)"
               cursor={"pointer"}
               size={28}
-              onClick={() => activeLink(2)}
+              onClick={() => activeLink(3)}
             />
             <div
               style={{
@@ -603,7 +703,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                     </div>
                     <div>
                       <div style={{ fontSize: "14px", fontWeight: 600 }}>
-                        Cafes & Coffee
+                        {selectCategory?.name}
                       </div>
                       <div style={{ fontSize: "12px", fontWeight: 400 }}>
                         Lifestyle
@@ -611,10 +711,12 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                     </div>
                   </div>
                   <div
+                    onClick={() => activeLink(3)}
                     style={{
                       fontSize: "14px",
                       fontWeight: 600,
                       color: "var(--primary-color)",
+                      cursor: "pointer",
                     }}
                   >
                     Changes
@@ -754,7 +856,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
             </div>
 
             <div className="px-3">
-              <FormField type={"text"} placeholder={"Enter budget"} />
+              <FormField type={"text"} placeholder={"Enter bill amount"} />
             </div>
           </Card>
 
@@ -800,7 +902,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
               className="my-3"
               style={{ fontWeight: 600, color: "var(--primary-color)" }}
             >
-              Selected payday
+              Selected Budget
             </div>
             <Card style={{ borderRadius: " 10px" }}>
               <Card.Body>
