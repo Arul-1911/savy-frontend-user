@@ -142,7 +142,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
   const handleCreateBudget = async () => {
     const budgetData = {
       category: selectCategory?._id,
-      paydays: selectPayday?._id,
+      payday: selectPayday?._id,
       budget_amount: budget,
       is_bill: bill === "on" ? true : false,
     };
