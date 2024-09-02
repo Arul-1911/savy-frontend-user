@@ -107,6 +107,15 @@ export const apiSlice = createApi({
       }),
     }),
 
+    // ====== Bills =======
+    createBill: builder.mutation({
+      query: (data) => ({
+        url: "/bill/create-bill",
+        method: "POST",
+        body: data,
+      }),
+    }),
+
     dashboardData: builder.mutation({
       query: () => ({
         url: "/user/get-graph-data",
@@ -130,6 +139,8 @@ export const {
   useSaveBudgetMutation,
   useGetBudgetMutation,
   useGetCategoriesMutation,
+
+  useCreateBillMutation,
 
   useDashboardDataMutation,
 } = apiSlice;

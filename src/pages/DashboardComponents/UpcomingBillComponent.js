@@ -17,27 +17,31 @@ import "../Dashboard.css";
 import Calendar from "../../components/Calendar/Calendar";
 import { CiSquareMinus } from "react-icons/ci";
 import {
+  useCreateBillMutation,
   useGetBudgetMutation,
   useGetCategoriesMutation,
-  useGetPaydaysMutation,
+  useSaveBudgetMutation,
 } from "../../features/apiSlice";
 import { getError } from "../../utils/error";
+import { LuMinusSquare } from "react-icons/lu";
 
 const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
   const [selectActivePeriod, setSelectActivePeriod] = useState(0);
   const [activePopularCat, setActivePopularCat] = useState(0);
   const [activeCat, setActiveCat] = useState(null);
+  const [activeBudget, setActiveBudget] = useState(null);
 
   const [openCalendar, setOpenCalendar] = useState(false);
 
   const [getCategories, { isLoading }] = useGetCategoriesMutation();
-  const [getPaydays, { isLoading: paydayLoading }] = useGetPaydaysMutation();
-  const [getBudget, { isLoading: getBudgetLoading }] = useGetBudgetMutation();
+  const [getBudget, { isLoading: budgetLoading }] = useGetBudgetMutation();
+  const [createBill, { isLoading: billLoading }] = useCreateBillMutation();
 
   const [categories, setCategories] = useState([]);
-  const [paydays, setPaydays] = useState([]);
   const [budgets, setBudgets] = useState([]);
   const [selectCategory, setSelectCategory] = useState("");
+  const [selectBudget, setSelectBudget] = useState("");
+  const [amount, setAmount] = useState("");
 
   const periods = [
     "Next 7 days",
@@ -68,37 +72,6 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
     },
   ];
 
-  const allCat = [
-    {
-      text: "Restaurants",
-      subText: "Lifestyle",
-    },
-    {
-      text: "Restaurants",
-      subText: "Lifestyle",
-    },
-    {
-      text: "Restaurants",
-      subText: "Lifestyle",
-    },
-    {
-      text: "Restaurants",
-      subText: "Lifestyle",
-    },
-    {
-      text: "Restaurants",
-      subText: "Lifestyle",
-    },
-    {
-      text: "Restaurants",
-      subText: "Lifestyle",
-    },
-    {
-      text: "Restaurants",
-      subText: "Lifestyle",
-    },
-  ];
-
   // Function to handle mouse enter (hover)
   const activeCategory = (index) => {
     setActiveCat((prev) => ({ ...prev, hoverIndex: index }));
@@ -115,10 +88,25 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
     setSelectCategory(value);
   };
 
+  // Function to handle mouse enter (hover)
+  const activeBudgets = (index) => {
+    setActiveBudget((prev) => ({ ...prev, hoverIndex: index }));
+  };
+
+  // Function to handle mouse leave (remove hover effect)
+  const notActiveBudgets = () => {
+    setActiveBudget((prev) => ({ ...prev, hoverIndex: null }));
+  };
+
+  // Function to handle budget click
+  const handleBudgetClick = (index, value) => {
+    setActiveBudget({ selectedIndex: index, selectedValue: value });
+    setSelectBudget(value);
+  };
+
   useEffect(() => {
     if (show) {
       getAllCategories();
-      getAllPaydays();
       getAllBudget();
     }
   }, [show]);
@@ -128,16 +116,6 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
     try {
       const { data } = await getCategories();
       setCategories(data?.categorys);
-    } catch (error) {
-      getError(error);
-    }
-  };
-
-  // ======= Getting all paydays =======
-  const getAllPaydays = async () => {
-    try {
-      const { data } = await getPaydays();
-      setPaydays(data?.paydays);
     } catch (error) {
       getError(error);
     }
@@ -153,7 +131,21 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
     }
   };
 
-  // console.log(selectCategory);
+  const handleBudget = async (e) => {
+    e.preventDefault();
+    try {
+      const budgetData = {
+        category: selectCategory._id,
+        budget: selectBudget._id,
+        budget_amount: amount,
+      };
+      await createBill(budgetData).unwrap();
+      hide(true);
+      activeLink(1);
+    } catch (error) {
+      getError(error);
+    }
+  };
 
   return (
     <ModalWindow show={show} onHide={hide}>
@@ -745,35 +737,54 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
               }}
             >
               <Card.Body>
-                {allCat?.map((data, idx) => {
-                  return (
-                    <div
-                      key={idx}
-                      className="d-flex justify-content-between align-items-center mt-2"
-                    >
-                      <div className="d-flex gap-2">
-                        <div>
-                          <div style={{ fontSize: "12px", fontWeight: 600 }}>
-                            {data?.text}
-                          </div>
-                          <div style={{ fontSize: "10px", fontWeight: 400 }}>
-                            $7,441.00
+                {!budgetLoading ? (
+                  budgets?.map((data, idx) => {
+                    return (
+                      <div
+                        key={idx}
+                        className="d-flex justify-content-between align-items-center mt-2 w-100 py-2 px-1"
+                        style={{
+                          backgroundColor:
+                            activeBudget?.selectedIndex === idx
+                              ? "rgba(233, 246, 252, 1)"
+                              : activeBudget?.hoverIndex === idx
+                              ? "rgba(233, 246, 252, 0.5)"
+                              : "white",
+                          cursor: "pointer",
+                          borderRadius: "5px",
+                        }}
+                        onMouseEnter={() => activeBudgets(idx)}
+                        onMouseLeave={notActiveBudgets}
+                        onClick={() => handleBudgetClick(idx, data)}
+                      >
+                        <div className="d-flex gap-2">
+                          <div>
+                            <div style={{ fontSize: "12px", fontWeight: 600 }}>
+                              Restaurant
+                            </div>
+                            <div style={{ fontSize: "10px", fontWeight: 400 }}>
+                              ${data?.budget_amount}
+                            </div>
                           </div>
                         </div>
-                      </div>
 
-                      <div
-                        style={{
-                          fontSize: "12px",
-                          fontWeight: 600,
-                          color: "var(--primary-color)",
-                        }}
-                      >
-                        $7,441.00
+                        <div
+                          style={{
+                            fontSize: "12px",
+                            fontWeight: 600,
+                            color: "var(--primary-color)",
+                          }}
+                        >
+                          ${data?.budget_amount}
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })
+                ) : (
+                  <div className="text-center">
+                    <Spinner size="sm" />
+                  </div>
+                )}
               </Card.Body>
             </Card>
 
@@ -811,7 +822,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
       )}
 
       {active === 5 && (
-        <>
+        <Form onSubmit={handleBudget}>
           <div className="d-flex">
             <IoArrowBackCircleOutline
               color="rgba(92, 182, 249, 1)"
@@ -856,7 +867,12 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
             </div>
 
             <div className="px-3">
-              <FormField type={"text"} placeholder={"Enter bill amount"} />
+              <FormField
+                required
+                type={"text"}
+                placeholder={"Enter bill amount"}
+                onChange={(e) => setAmount(e.target.value)}
+              />
             </div>
           </Card>
 
@@ -872,11 +888,11 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                 <div className="d-flex justify-content-between align-items-center mt-2">
                   <div className="d-flex gap-2">
                     <div>
-                      <input type="checkbox" />
+                      <LuMinusSquare color="var(--primary-color)" />
                     </div>
                     <div>
                       <div style={{ fontSize: "14px", fontWeight: 600 }}>
-                        Cafes & Coffee
+                        {selectCategory?.name}
                       </div>
                       <div style={{ fontSize: "12px", fontWeight: 400 }}>
                         Lifestyle
@@ -884,6 +900,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                     </div>
                   </div>
                   <div
+                    onClick={() => activeLink(3)}
                     style={{
                       fontSize: "14px",
                       fontWeight: 600,
@@ -909,11 +926,11 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                 <div className="d-flex justify-content-between align-items-center mt-2">
                   <div className="d-flex gap-2">
                     <div>
-                      <input type="checkbox" />
+                      <LuMinusSquare color="var(--primary-color)" />
                     </div>
                     <div>
                       <div style={{ fontSize: "14px", fontWeight: 600 }}>
-                        30 days salary
+                        ${selectBudget?.budget_amount}
                       </div>
                       <div style={{ fontSize: "12px", fontWeight: 400 }}>
                         June 30
@@ -921,7 +938,9 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                     </div>
                   </div>
                   <div
+                    onClick={() => activeLink(4)}
                     style={{
+                      cursor: "pointer",
                       fontSize: "14px",
                       fontWeight: 600,
                       color: "var(--primary-color)",
@@ -937,7 +956,6 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
           <div className="text-center">
             <button
               className="w-75 mt-3"
-              onClick={() => activeLink(7)}
               style={{
                 backgroundColor: "var(--primary-color)",
                 padding: "10px",
@@ -946,10 +964,10 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                 borderRadius: "10px",
               }}
             >
-              Confirm
+              {billLoading ? <Spinner size="sm" /> : "Confirm"}
             </button>
           </div>
-        </>
+        </Form>
       )}
 
       {active === 6 && (
