@@ -331,7 +331,7 @@ export default function Dashboard() {
                         data={dashboard?.card1?.moneyInVsMoneyOut}
                         width={200}
                         height={220}
-                        cashFlow={true}
+                        moneyInvsOut={true}
                         barWidth={45}
                         gradient={true}
                         gradientNumber={12}

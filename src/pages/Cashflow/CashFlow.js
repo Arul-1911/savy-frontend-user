@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MotionDiv } from "../../components";
 import { Container } from "react-bootstrap";
 import { IoSettingsOutline } from "react-icons/io5";
@@ -7,11 +7,29 @@ import MoneyIn from "./components/MoneyIn";
 import MoneyOut from "./components/MoneyOut";
 import NetWorth from "./components/NetWorth";
 import CashFlowSettings from "./components/SubComponents/CashFlowSettings";
+import { useGetCashflowMutation } from "../../features/apiSlice";
+import { getError } from "../../utils/error";
 
 const CashFlow = () => {
   const [accountPortfolioActive, setAccountPortfolioActive] = useState(1);
 
   const [settingModal, setSettingModal] = useState(false);
+
+  const [getCashflow, { isLoading }] = useGetCashflowMutation();
+  const [overView, setOverview] = useState({});
+
+  useEffect(() => {
+    getCashflowData();
+  }, []);
+
+  const getCashflowData = async () => {
+    try {
+      const { data } = await getCashflow();
+      setOverview(data?.cashFlowData);
+    } catch (error) {
+      getError(error);
+    }
+  };
 
   return (
     <MotionDiv>
@@ -112,7 +130,9 @@ const CashFlow = () => {
           </li>
         </ul>
 
-        {accountPortfolioActive === 1 && <OverView />}
+        {accountPortfolioActive === 1 && (
+          <OverView data={overView} loading={isLoading} />
+        )}
         {accountPortfolioActive === 2 && <MoneyIn />}
         {accountPortfolioActive === 3 && <MoneyOut />}
         {accountPortfolioActive === 4 && <NetWorth />}

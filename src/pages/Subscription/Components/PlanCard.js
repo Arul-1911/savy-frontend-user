@@ -16,6 +16,12 @@ function PlanCard({
   features,
 }) {
   console.log(features);
+  const totalMonthlyCost = monthlyPrice * 12;
+  const totalAnnualCost = annualPrice * 12;
+
+  const difference = totalMonthlyCost - totalAnnualCost;
+  const result = Math.floor((difference / totalMonthlyCost) * 100);
+
   return (
     <Card
       className="p-3 rounded-4 border-0 h-100 plan-card"
@@ -28,14 +34,14 @@ function PlanCard({
       }}
     >
       <Card.Body className="p-0">
-        {save && (
+        {Number.isFinite(result) && (
           <Row>
             <Col className="text-center d-flex justify-content-center">
               <p
                 className="rounded-pill bg-white px-3 mb-1 "
                 style={{ color: "var(--primary-color)" }}
               >
-                Save {save}%
+                Save {result}%
               </p>
             </Col>
           </Row>
@@ -66,7 +72,7 @@ function PlanCard({
               >
                 <h5 style={{ fontSize: "16px" }}>AUD ${annualPrice}</h5>
                 <p className="mb-0" style={{ fontSize: "0.75rem" }}>
-                  per month, billed monthly
+                  per month, billed annually
                 </p>
               </div>
               <p className="mt-2" style={{ fontSize: "0.85rem" }}>

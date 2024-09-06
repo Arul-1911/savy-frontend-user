@@ -20,7 +20,6 @@ export const apiSlice = createApi({
 
   endpoints: (builder) => ({
     // ====== user auth ======= /
-
     userRegistration: builder.mutation({
       query: (data) => ({
         url: "/user/register",
@@ -116,6 +115,22 @@ export const apiSlice = createApi({
       }),
     }),
 
+    // ====== Subscriptions =======
+    getSubscriptions: builder.mutation({
+      query: () => ({
+        url: "/plan/get-plans",
+        method: "GET",
+      }),
+    }),
+
+    // ====== Cashflow =======
+    getCashflow: builder.mutation({
+      query: () => ({
+        url: "/user/get-cashflow-data",
+        method: "GET",
+      }),
+    }),
+
     dashboardData: builder.mutation({
       query: () => ({
         url: "/user/get-graph-data",
@@ -141,6 +156,10 @@ export const {
   useGetCategoriesMutation,
 
   useCreateBillMutation,
+
+  useGetSubscriptionsMutation,
+
+  useGetCashflowMutation,
 
   useDashboardDataMutation,
 } = apiSlice;

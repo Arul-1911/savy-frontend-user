@@ -182,7 +182,7 @@ const NetWorth = () => {
                   height={220}
                   gradient={true}
                   gradientNumber={12}
-                  cashFlow={true}
+                  cashFlowBar={true}
                   netWorth={true}
                   barGrad1={"#E2F2FF"}
                   barGrad2={"#E2F2FF"}

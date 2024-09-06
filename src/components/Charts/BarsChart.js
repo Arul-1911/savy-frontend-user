@@ -20,6 +20,8 @@ const BarsChart = ({
   gradientNumber,
   moneyIn,
   cashFlow,
+  moneyInvsOut,
+  cashFlowBar,
   netWorth,
   barGrad1,
   barGrad2,
@@ -43,6 +45,11 @@ const BarsChart = ({
     );
   };
 
+  const legendPayload = [
+    { value: data && data[0]?.name, type: "square", color: barGrad1 },
+    { value: data && data[1]?.name, type: "square", color: barGrad3 },
+  ];
+
   return (
     <ResponsiveContainer width={width} height={height}>
       <BarChart
@@ -64,17 +71,26 @@ const BarsChart = ({
               );
             })}
         </defs>
+        {moneyInvsOut ||
+          (cashFlowBar && (
+            <XAxis
+              dataKey="name"
+              axisLine={false}
+              tick={{ fill: "#5CB6F9", fontSize: 14, fontWeight: "bold" }}
+              tickLine={false}
+              tickMargin={10}
+              interval={0}
+            />
+          ))}
+        <Tooltip />
         {cashFlow && (
-          <XAxis
-            dataKey="name"
-            axisLine={false}
-            tick={{ fill: "#5CB6F9", fontSize: 14, fontWeight: "bold" }}
-            tickLine={false}
-            tickMargin={10}
-            interval={0}
+          <Legend
+            payload={legendPayload}
+            align="right"
+            verticalAlign="middle"
+            layout="vertical"
           />
         )}
-        <Tooltip />
         {netWorth && <ReferenceLine y={0} stroke="#5CB6F9" />}
         <Bar
           dataKey="uv"
@@ -84,7 +100,7 @@ const BarsChart = ({
           {moneyIn && (
             <LabelList dataKey="name" content={renderCustomizedLabel} />
           )}
-          {data.map((entry, index) => (
+          {data?.map((entry, index) => (
             <Cell
               width={barWidth}
               key={`cell-${index}`}

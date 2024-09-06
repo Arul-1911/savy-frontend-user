@@ -5,19 +5,14 @@ import { Col, Row, Image } from "react-bootstrap";
 import { FaArrowUp } from "react-icons/fa6";
 import { IoArrowDownSharp } from "react-icons/io5";
 import BarsChart from "../../../components/Charts/BarsChart";
+import Skeleton from "react-loading-skeleton";
 
 const MoneyInvsOutData = [
   { name: "Money In", uv: 4000 },
   { name: "Money Out", uv: 3000 },
 ];
 
-const MoneyOutData = [
-  { name: "Money In", uv: 6200 },
-  { name: "Money Out", uv: 7000 },
-  { name: "Money", uv: 5000 },
-];
-
-const OverView = () => {
+const OverView = ({ data, loading }) => {
   const mostChangedCategory = [
     {
       icon: "/icons/Merchant 1.png",
@@ -64,28 +59,12 @@ const OverView = () => {
     },
   ];
 
-  const recentTransactions = [
-    {
-      icon: "/icons/Merchant 1.png",
-      text: "Carlin & Gazzard polvere nom 33 receipt",
-      subTexet: "Income: Salary/Regular Income",
-    },
-    {
-      icon: "/icons/Merchant 1.png",
-      text: "Carlin & Gazzard polvere nom 33 receipt",
-      subTexet: "Income: Salary/Regular Income",
-    },
-    {
-      icon: "/icons/Merchant 1.png",
-      text: "Carlin & Gazzard polvere nom 33 receipt",
-      subTexet: "Income: Salary/Regular Income",
-    },
-    {
-      icon: "/icons/Merchant 1.png",
-      text: "Carlin & Gazzard polvere nom 33 receipt",
-      subTexet: "Income: Salary/Regular Income",
-    },
-  ];
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+
+    const options = { day: "2-digit", month: "short", year: "numeric" };
+    return new Intl.DateTimeFormat("en-GB", options).format(date);
+  };
 
   return (
     <div>
@@ -117,171 +96,212 @@ const OverView = () => {
           </div>
 
           <Row className="d-flex gap-4 px-2 mt-3">
-            <Col
-              style={{
-                backgroundColor: "rgba(245, 247, 248, 1)",
-                borderRadius: "10px",
-                padding: "10px",
-                height: "300px",
-              }}
-            >
-              <div className="d-flex justify-content-between">
-                <div
+            {!loading ? (
+              <>
+                <Col
                   style={{
-                    color: "rgba(55, 73, 87, 1)",
-                    fontSize: "12px",
+                    backgroundColor: "rgba(245, 247, 248, 1)",
+                    borderRadius: "10px",
+                    padding: "10px",
+                    height: "300px",
                   }}
                 >
-                  Overspent
-                </div>
-                <div
+                  <div className="d-flex justify-content-between">
+                    <div
+                      style={{
+                        color: "rgba(55, 73, 87, 1)",
+                        fontSize: "12px",
+                      }}
+                    >
+                      Overspent
+                    </div>
+                    <div
+                      style={{
+                        color: "rgba(55, 73, 87, 0.7)",
+                        fontSize: "12px",
+                      }}
+                    >
+                      08 Dec - 07 Jan
+                    </div>
+                  </div>
+                  <h3 style={{ fontWeight: 600, color: "rgba(0, 74, 173, 1)" }}>
+                    $4,400
+                  </h3>
+                  <div className="d-flex justify-content-center">
+                    <BarsChart
+                      data={MoneyInvsOutData}
+                      width={340}
+                      height={220}
+                      barWidth={50}
+                      gradient={true}
+                      cashFlow={true}
+                      gradientNumber={2}
+                      barGrad1={"#3AC3AC"}
+                      barGrad2={"#3AC3AC"}
+                      barGrad3={"#374957"}
+                      barGrad4={"#374957"}
+                    />
+                  </div>
+                </Col>
+
+                <Col
                   style={{
-                    color: "rgba(55, 73, 87, 0.7)",
-                    fontSize: "12px",
+                    backgroundColor: "rgba(245, 247, 248, 1)",
+                    borderRadius: "10px",
+                    padding: "10px",
+                    height: "300px",
                   }}
                 >
-                  08 Dec - 07 Jan
-                </div>
-              </div>
-              <h3 style={{ fontWeight: 600, color: "rgba(0, 74, 173, 1)" }}>
-                $4,400
-              </h3>
-              <div className="d-flex justify-content-center">
-                <BarsChart
-                  data={MoneyInvsOutData}
-                  width={200}
-                  height={220}
-                  barWidth={50}
-                  gradient={true}
-                  cashflow={true}
-                  gradientNumber={2}
-                  barGrad1={"#3AC3AC"}
-                  barGrad2={"#3AC3AC"}
-                  barGrad3={"#374957"}
-                  barGrad4={"#374957"}
-                />
-              </div>
-            </Col>
+                  <div className="d-flex justify-content-between flex-wrap">
+                    <div
+                      style={{
+                        color: "rgba(55, 73, 87, 1)",
+                        fontSize: "12px",
+                      }}
+                    >
+                      Money In
+                    </div>
+                    <div
+                      style={{
+                        color: "rgba(55, 73, 87, 0.7)",
+                        fontSize: "12px",
+                      }}
+                    >
+                      This month
+                    </div>
+                  </div>
 
-            <Col
-              style={{
-                backgroundColor: "rgba(245, 247, 248, 1)",
-                borderRadius: "10px",
-                padding: "10px",
-                height: "300px",
-              }}
-            >
-              <div className="d-flex justify-content-between flex-wrap">
-                <div
+                  <div className="d-flex align-items-center justify-content-between">
+                    <h3
+                      style={{ fontWeight: 600, color: "rgba(0, 74, 173, 1)" }}
+                    >
+                      ${data?.moneyIn?.graphData[1]?.uv}
+                    </h3>
+
+                    <div
+                      style={
+                        data?.moneyIn?.percent && data?.moneyIn?.percent > 0
+                          ? { color: "rgba(58, 195, 172, 1)", fontSize: "14px" }
+                          : { color: "rgba(255, 48, 55, 1)", fontSize: "14px" }
+                      }
+                    >
+                      {data?.moneyIn?.percent && data?.moneyIn?.percent > 0 ? (
+                        <>
+                          <IoMdArrowUp /> {data?.moneyIn?.percent}%
+                        </>
+                      ) : (
+                        <>
+                          <IoArrowDownSharp /> {data?.moneyIn?.percent}%
+                        </>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="d-flex justify-content-center">
+                    <BarsChart
+                      data={data?.moneyIn?.graphData}
+                      width={340}
+                      height={220}
+                      barWidth={50}
+                      gradient={true}
+                      cashFlow={true}
+                      gradientNumber={2}
+                      barGrad1={"#3AC3AC"}
+                      barGrad2={"#3AC3AC"}
+                      barGrad3={"#374957"}
+                      barGrad4={"#374957"}
+                    />
+                  </div>
+                </Col>
+
+                <Col
                   style={{
-                    color: "rgba(55, 73, 87, 1)",
-                    fontSize: "12px",
+                    backgroundColor: "rgba(245, 247, 248, 1)",
+                    borderRadius: "10px",
+                    padding: "10px",
+                    height: "300px",
                   }}
                 >
-                  Money In
-                </div>
-                <div
-                  style={{
-                    color: "rgba(55, 73, 87, 0.7)",
-                    fontSize: "12px",
-                  }}
-                >
-                  08 Dec - 07 Jan
-                </div>
-              </div>
+                  <div className="d-flex justify-content-between">
+                    <div
+                      style={{
+                        color: "rgba(55, 73, 87, 1)",
+                        fontSize: "12px",
+                      }}
+                    >
+                      Money out
+                    </div>
+                    <div
+                      style={{
+                        color: "rgba(55, 73, 87, 0.7)",
+                        fontSize: "12px",
+                      }}
+                    >
+                      08 Dec - 07 Jan
+                    </div>
+                  </div>
+                  <div className="d-flex justify-content-between align-items-center">
+                    <h3
+                      style={{
+                        fontWeight: 600,
+                        color: "rgba(0, 74, 173, 1)",
+                      }}
+                    >
+                      ${data?.moneyOut?.graphData[1]?.uv}
+                    </h3>
 
-              <div className="d-flex align-items-center justify-content-between">
-                <h3 style={{ fontWeight: 600, color: "rgba(0, 74, 173, 1)" }}>
-                  $1,900
-                </h3>
+                    <div
+                      style={
+                        data?.moneyOut?.percent && data?.moneyOut?.percent > 0
+                          ? { color: "rgba(58, 195, 172, 1)", fontSize: "14px" }
+                          : { color: "rgba(255, 48, 55, 1)", fontSize: "14px" }
+                      }
+                    >
+                      {data?.moneyOut?.percent &&
+                        (data?.moneyOut?.percent > 0 ? (
+                          <>
+                            <IoMdArrowUp /> {data?.moneyOut?.percent}%
+                          </>
+                        ) : (
+                          <>
+                            <IoArrowDownSharp /> {data?.moneyOut?.percent}%
+                          </>
+                        ))}
+                    </div>
+                  </div>
 
-                <div
-                  style={{ color: "rgba(58, 195, 172, 1)", fontSize: "14px" }}
-                >
-                  <IoMdArrowUp /> 53.8%
-                </div>
-              </div>
-
-              <div className="d-flex justify-content-center">
-                <BarsChart
-                  data={MoneyInvsOutData}
-                  width={200}
-                  height={220}
-                  barWidth={50}
-                  gradient={true}
-                  cashflow={true}
-                  gradientNumber={2}
-                  barGrad1={"#3AC3AC"}
-                  barGrad2={"#3AC3AC"}
-                  barGrad3={"#374957"}
-                  barGrad4={"#374957"}
-                />
-              </div>
-            </Col>
-
-            <Col
-              style={{
-                backgroundColor: "rgba(245, 247, 248, 1)",
-                borderRadius: "10px",
-                padding: "10px",
-                height: "300px",
-              }}
-            >
-              <div className="d-flex justify-content-between">
-                <div
-                  style={{
-                    color: "rgba(55, 73, 87, 1)",
-                    fontSize: "12px",
-                  }}
-                >
-                  Money out
-                </div>
-                <div
-                  style={{
-                    color: "rgba(55, 73, 87, 0.7)",
-                    fontSize: "12px",
-                  }}
-                >
-                  08 Dec - 07 Jan
-                </div>
-              </div>
-              <div className="d-flex justify-content-between align-items-center">
-                <h3
-                  style={{
-                    fontWeight: 600,
-                    color: "rgba(0, 74, 173, 1)",
-                  }}
-                >
-                  $4,400
-                </h3>
-
-                <div
-                  style={{ color: "rgba(255, 48, 55, 1)", fontSize: "14px" }}
-                >
-                  <IoArrowDownSharp /> 53.8%
-                </div>
-              </div>
-
-              <div className="d-flex justify-content-center">
-                <BarsChart
-                  data={MoneyOutData}
-                  width={260}
-                  height={220}
-                  barWidth={50}
-                  gradient={true}
-                  cashflow={true}
-                  gradientNumber={3}
-                  barGrad1={"#004AAD"}
-                  barGrad2={"#004AAD"}
-                  barGrad3={"#004AAD"}
-                  barGrad4={"#004AAD"}
-                />
-              </div>
-            </Col>
+                  <div className="d-flex justify-content-center">
+                    <BarsChart
+                      data={data?.moneyOut?.graphData}
+                      width={340}
+                      height={220}
+                      barWidth={50}
+                      gradient={true}
+                      cashFlow={true}
+                      gradientNumber={2}
+                      barGrad1={"#3AC3AC"}
+                      barGrad2={"#3AC3AC"}
+                      barGrad3={"#374957"}
+                      barGrad4={"#374957"}
+                    />
+                  </div>
+                </Col>
+              </>
+            ) : (
+              [1, 2, 3].map((_, i) => (
+                <Col key={i} className={`p-2 `}>
+                  <Skeleton
+                    className="rounded-4"
+                    height={"350px"}
+                    width={"100%"}
+                  />
+                </Col>
+              ))
+            )}
           </Row>
         </DashboardCard>
       </div>
-      <Row className="mt-4 g-3">
+      <Row className="mt-2 g-2">
         <Col>
           <DashboardCard>
             <div className="d-flex align-items-center justify-content-between">
@@ -295,15 +315,16 @@ const OverView = () => {
               >
                 Top categories
               </div>
-              <p
+              <div
                 style={{
                   color: "rgba(92, 182, 249, 1)",
-                  fontWeight: 600,
+                  fontWeight: 500,
+                  fontSize: "14px",
                   cursor: "pointer",
                 }}
               >
                 View all
-              </p>
+              </div>
             </div>
 
             <ul className="market mt-2">
@@ -371,16 +392,16 @@ const OverView = () => {
               >
                 categories with most changes
               </div>
-              <p
+              <div
                 style={{
                   color: "rgba(92, 182, 249, 1)",
-                  fontWeight: 600,
-                  fontSize: "16px",
+                  fontWeight: 500,
+                  fontSize: "14px",
                   cursor: "pointer",
                 }}
               >
                 View all
-              </p>
+              </div>
             </div>
 
             <ul className="market mt-2">
@@ -449,7 +470,7 @@ const OverView = () => {
         </Col>
       </Row>
 
-      <Row className="mt-4 g-3">
+      <Row className="mt-2 g-2">
         <Col>
           <DashboardCard>
             <div className="d-flex align-items-center justify-content-between">
@@ -463,40 +484,42 @@ const OverView = () => {
               >
                 Recent largest transactions
               </div>
-              <p
+              <div
                 style={{
                   color: "rgba(92, 182, 249, 1)",
-                  fontWeight: 600,
+                  fontWeight: 500,
+                  fontSize: "14px",
                   cursor: "pointer",
                 }}
               >
                 View all
-              </p>
+              </div>
             </div>
 
             <ul className="market mt-2">
-              {recentTransactions?.map((data, idx) => {
+              {data?.largeTransaction?.map((data, idx) => {
                 return (
                   <li
                     key={idx}
-                    className="d-flex justify-content-between align-items-center "
+                    className="d-flex justify-content-between align-items-center"
                   >
-                    <div className="d-flex align-items-center gap-2">
+                    <div className="d-flex align-items-center gap-2 w-75">
                       <Image
                         width={"50px"}
                         height={"50px"}
                         style={{ borderRadius: "50%" }}
-                        src={data?.icon}
+                        src="/icons/Merchant 1.png"
                         alt="..."
                       />
                       <div>
                         <div
+                          className="w-75 text-truncate"
                           style={{
                             fontSize: "rgba(55, 73, 87, 1)",
                             fontSize: "16px",
                           }}
                         >
-                          {data?.text}
+                          {data?.description}
                         </div>
                         <div
                           style={{
@@ -505,12 +528,12 @@ const OverView = () => {
                             fontWeight: 400,
                           }}
                         >
-                          {data?.subTexet}
+                          {data?.direction}
                         </div>
                       </div>
                     </div>
 
-                    <div>
+                    <div className="d-flex flex-column align-items-end">
                       <div
                         style={{
                           color: "var(--primary-color)",
@@ -518,18 +541,16 @@ const OverView = () => {
                           fontWeight: 800,
                         }}
                       >
-                        -20.00 $
+                        {data?.amount} $
                       </div>
                       <div
                         style={{
                           color: "rgba(55, 73, 87, 0.7)",
                           fontWeight: 400,
                           fontSize: "12px",
-                          cursor: "pointer",
-                          marginLeft: "15px",
                         }}
                       >
-                        26 Feb 2024
+                        {formatDate(data?.time)}
                       </div>
                     </div>
                   </li>
@@ -552,16 +573,16 @@ const OverView = () => {
               >
                 Top merchents
               </div>
-              <p
+              <div
                 style={{
                   color: "rgba(92, 182, 249, 1)",
-                  fontWeight: 600,
-                  fontSize: "16px",
+                  fontWeight: 500,
+                  fontSize: "14px",
                   cursor: "pointer",
                 }}
               >
                 View all
-              </p>
+              </div>
             </div>
 
             <ul className="market mt-2">
