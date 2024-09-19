@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ModalWindow from "../../../components/modals/ModalWindow";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { Card, Col, Form, Image, InputGroup, Row } from "react-bootstrap";
@@ -6,29 +6,169 @@ import { GiPalmTree } from "react-icons/gi";
 import { FaAngleRight } from "react-icons/fa6";
 import { MdOutlineCalendarMonth, MdAddPhotoAlternate } from "react-icons/md";
 import { AiOutlineEdit } from "react-icons/ai";
-import { MdTrackChanges } from "react-icons/md";
 import { IoPricetagsOutline } from "react-icons/io5";
 import FormField from "../../../components/layout/FormField";
 import { GrCircleInformation } from "react-icons/gr";
 import SearchField from "../../../components/layout/SearchField";
+import {
+  imgAddr,
+  useGetCategoriesMutation,
+  useGetTagsMutation,
+  useGetTransactionMutation,
+  useUpdateTransactionMutation,
+} from "../../../features/apiSlice";
+import { getError } from "../../../utils/error";
+import Skeleton from "react-loading-skeleton";
+import { LuMinusSquare } from "react-icons/lu";
 
-const TransactionComponents = ({ show, hide, active, activeLink }) => {
-  const [tagRes, setTagRes] = useState("");
-  const tags = [
-    "Restaurants",
-    "Restaurants",
-    "Restaurants",
-    "Restaurants",
-    "Restaurants",
-    "Restaurants",
-    "Restaurants",
-    "Restaurants",
-    "Restaurants",
-  ];
+const TransactionComponents = ({
+  show,
+  hide,
+  active,
+  activeLink,
+  transactionId,
+}) => {
+  const [
+    getCategories,
+    {
+      isLoading: { categoriesLoading },
+    },
+  ] = useGetCategoriesMutation();
+  const [
+    getTags,
+    {
+      isLoading: { tagsLoading },
+    },
+  ] = useGetTagsMutation();
+  const [
+    updateTransaction,
+    {
+      isLoading: { transactionLoading },
+    },
+  ] = useUpdateTransactionMutation();
+  const [
+    getTransaction,
+    {
+      isLoading: { getTransactionLoading },
+    },
+  ] = useGetTransactionMutation();
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedCategoryName, setSelectedCategoryName] = useState("");
 
-  const handleTagChange = (tag) => {
-    setTagRes(tag);
+  const [selectedBucket, setSelectedBucket] = useState(null);
+  const [selectedBucketName, setSelectedBucketName] = useState("");
+  const [selectedBucketImage, setSelectedBucketImage] = useState("");
+
+  const [tags, setTags] = useState([]);
+  const [selectedTag, setSelectedTag] = useState(null);
+  const [selectedTagName, setSelectedTagName] = useState("");
+
+  const [addNote, setAddNote] = useState("");
+  const [isBill, setIsBill] = useState(false);
+
+  const [transaction, setTransaction] = useState({});
+
+  useEffect(() => {
+    if (active === 5) {
+      getAllCategories();
+    }
+  }, [active]);
+
+  useEffect(() => {
+    if (active === 3) {
+      getAllTags();
+    }
+  }, [active]);
+
+  useEffect(() => {
+    if (active === 1 && transactionId) {
+      getSingleTransation();
+    }
+  }, [active, transactionId]);
+
+  const handleTagChange = (tagId, tagName) => {
+    setSelectedTag(tagId);
+    setSelectedTagName(tagName);
     activeLink(1);
+  };
+
+  // ======== select category and bucket with id, image and name ========
+  const handleSelectCategoryBucket = (
+    categoryId,
+    categoryName,
+    bucketId,
+    bucketName,
+    bucketImg
+  ) => {
+    setSelectedCategory(categoryId);
+    setSelectedCategoryName(categoryName);
+    setSelectedBucket(bucketId);
+    setSelectedBucketName(bucketName);
+    setSelectedBucketImage(bucketImg);
+  };
+
+  // ======== get categories ========
+  const getAllCategories = async () => {
+    try {
+      const { categorys } = await getCategories().unwrap();
+      setCategories(categorys);
+    } catch (error) {
+      getError(error);
+    }
+  };
+
+  // ======== get tags ========
+  const getAllTags = async () => {
+    try {
+      const { tags } = await getTags().unwrap();
+      setTags(tags);
+    } catch (error) {
+      getError(error);
+    }
+  };
+
+  // ======== get tags ========
+  const getSingleTransation = async () => {
+    try {
+      const { transaction } = await getTransaction(transactionId).unwrap();
+      console.log(transaction);
+      setTransaction(transaction);
+    } catch (error) {
+      getError(error);
+    }
+  };
+
+  const handleCategory = (e) => {
+    e.preventDefault();
+    try {
+      if (selectedCategory === null) {
+        throw new Error("Please select category");
+      } else {
+        activeLink(6);
+      }
+    } catch (error) {
+      getError(error);
+    }
+  };
+
+  const handleUpdateTransaction = async () => {
+    const transData = {
+      category: selectedCategory,
+      tag: selectedTag,
+      bucket: selectedBucket,
+      notes: addNote,
+      bill: isBill ? "true" : "",
+    };
+    try {
+      const data = await updateTransaction({
+        transactionId,
+        transData: transData,
+      }).unwrap();
+      hide();
+    } catch (error) {
+      getError(error);
+    }
   };
 
   return (
@@ -51,8 +191,11 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
               }}
               className="text-center"
             >
-              2 Mar 2024
+              {/* 2 Mar 2024 */}
+              {transaction?.date}
             </div>
+
+            <button onClick={handleUpdateTransaction}>Update</button>
           </div>
 
           <Card style={{ borderRadius: "10px" }} className="mt-4">
@@ -62,17 +205,9 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
                   <Image src="/icons/Rectangle 116.png" alt="..." />
                 </div>
                 <h3 style={{ fontWeight: 700, color: "var(--primary-color)" }}>
-                  -$38.00
+                  ${transaction?.amount}
                 </h3>
-                <p
-                  style={{
-                    color: "#374957",
-                    fontSize: "12px",
-                    fontWeight: 600,
-                  }}
-                >
-                  Mojos In The Marketplace
-                </p>
+
                 <hr />
                 <p
                   style={{
@@ -81,50 +216,9 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
                     fontWeight: 400,
                   }}
                 >
-                  SQ*MOJOS IN THE MARKEPLACE Bridge FFTPOS Purchase * Receipt
-                  580495 Date 02 Mar 2024 Time 9:50 Card 4444********2616
+                  {transaction?.description}
                 </p>
                 <hr />
-
-                <div>
-                  <div
-                    style={{
-                      color: "#374957",
-                      fontSize: "12px",
-                      fontWeight: 600,
-                    }}
-                  >
-                    ING Australia Orange Everyday
-                  </div>
-                  <div
-                    style={{
-                      color: "#374957",
-                      fontSize: "10px",
-                      fontWeight: 400,
-                    }}
-                  >
-                    BSB: 923100 | Acc: X XXX 0853
-                  </div>
-                  <p
-                    className="mt-2"
-                    style={{
-                      color: "#374957",
-                      fontSize: "10px",
-                      fontWeight: 400,
-                    }}
-                  >
-                    Receipt Number:{" "}
-                    <span
-                      style={{
-                        color: "#374957",
-                        fontSize: "12px",
-                        fontWeight: 600,
-                      }}
-                    >
-                      580495
-                    </span>
-                  </p>
-                </div>
               </div>
             </Card.Body>
           </Card>
@@ -147,12 +241,14 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
                 </div>
                 <div style={{ fontWeight: 600, fontSize: "12px" }}>
                   <span style={{ color: "rgba(92, 182, 249, 1)" }}>
-                    Lifestyle:
+                    {selectedBucketName && selectedBucketName}
                   </span>{" "}
-                  Cafes & Coffee
+                  {selectedCategoryName
+                    ? selectedCategoryName
+                    : "No category selected"}
                 </div>
               </div>
-              <div>
+              <div style={{ cursor: "pointer" }} onClick={() => activeLink(5)}>
                 <FaAngleRight />
               </div>
             </div>
@@ -168,7 +264,7 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
               </div>
               <div className="d-flex align-items-center gap-2">
                 <div
-                  className="p-1"
+                  className="py-1 px-2"
                   style={{
                     color: "var(--primary-color)",
                     fontSize: "12px",
@@ -176,7 +272,7 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
                     backgroundColor: "#004AAD14",
                   }}
                 >
-                  {tagRes}
+                  {selectedTagName && selectedTagName}
                 </div>
                 <button
                   onClick={() => activeLink(3)}
@@ -192,35 +288,21 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
               </div>
             </div>
 
-            <div className="px-3 d-flex justify-content-between align-items-center my-2">
-              <div className="d-flex align-items-center gap-2">
-                <div>
-                  <MdTrackChanges color="#004AAD" />
-                </div>
-                <div style={{ fontWeight: 600, fontSize: "12px" }}>
-                  Exclude from tracking
-                </div>
-              </div>
-              <div>
-                <Form.Check type="switch" />
-              </div>
+            <div className="px-1 d-flex justify-content-between align-items-center py-1">
+              <InputGroup>
+                <InputGroup.Text id="basic-addon1">
+                  <AiOutlineEdit color="#004AAD" />
+                </InputGroup.Text>
+                <Form.Control
+                  placeholder="Add note"
+                  type="text"
+                  aria-describedby="basic-addon1"
+                  onChange={(e) => setAddNote(e.target.value)}
+                />
+              </InputGroup>
             </div>
 
-            <div className="px-3 d-flex justify-content-between align-items-center my-2">
-              <div className="d-flex align-items-center gap-2">
-                <div>
-                  <AiOutlineEdit color="#004AAD" />{" "}
-                </div>
-                <div style={{ fontWeight: 600, fontSize: "12px" }}>
-                  Add a note
-                </div>
-              </div>
-              <div>
-                <FaAngleRight />
-              </div>
-            </div>
-
-            <div className="px-3 d-flex justify-content-between align-items-center my-2">
+            <div className="px-3 d-flex justify-content-between align-items-center mb-2">
               <div className="d-flex align-items-center gap-2">
                 <div>
                   <MdOutlineCalendarMonth color="#004AAD" />{" "}
@@ -230,18 +312,11 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
                 </div>
               </div>
               <div>
-                <button
-                  className="px-3 py-1"
-                  style={{
-                    borderRadius: "20px",
-                    backgroundColor: "white",
-                    border: "1px solid #5CB6F9",
-                    color: "#5CB6F9",
-                    fontSize: "12px",
-                  }}
-                >
-                  + Add to bill
-                </button>
+                <Form.Check
+                  onChange={(e) => setIsBill(e.target.checked)}
+                  value={isBill}
+                  type="switch"
+                />
               </div>
             </div>
 
@@ -257,7 +332,7 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
                   className="text-center"
                   style={{ fontWeight: 700, color: "var(--primary-color)" }}
                 >
-                  -$350.00
+                  ${transaction?.spend}
                 </h4>
                 <div
                   style={{
@@ -288,7 +363,7 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
                       fontWeight: 600,
                     }}
                   >
-                    26
+                    {transaction?.total}
                   </div>
                 </div>
 
@@ -309,7 +384,7 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
                       fontWeight: 600,
                     }}
                   >
-                    -$36
+                    ${transaction?.average}
                   </div>
                 </div>
 
@@ -553,27 +628,58 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
                 fontWeight: 600,
               }}
             >
-              Recent tags
+              Select tags
             </div>
             <Card className="mt-2" style={{ borderRadius: "10px" }}>
               <Card.Body>
-                {tags?.map((tag, idx) => {
-                  return (
-                    <div
-                      onClick={() => handleTagChange(tag)}
-                      className="mb-2"
-                      style={{
-                        fontWeight: 600,
-                        cursor: "pointer",
-                        fontSize: "12px",
-                        color: "#374957",
-                      }}
-                      key={idx}
-                    >
-                      {tag}
-                    </div>
-                  );
-                })}
+                {tags?.length > 0 ? (
+                  !tagsLoading ? (
+                    tags?.map((data) => {
+                      return (
+                        <div
+                          onClick={() =>
+                            handleTagChange(data?._id, data?.tag_name)
+                          }
+                          className="mb-2 d-flex align-items-center gap-3"
+                          key={data?._id}
+                        >
+                          <img
+                            style={{
+                              width: "20px",
+                              height: "20px",
+                              borderRadius: "50%",
+                              objectFit: "contain",
+                            }}
+                            src={data?.image && imgAddr + data?.image}
+                            alt="..."
+                          />
+                          <div
+                            style={{
+                              fontWeight: 600,
+                              cursor: "pointer",
+                              fontSize: "12px",
+                              color: "#374957",
+                            }}
+                          >
+                            {data?.tag_name}
+                          </div>
+                        </div>
+                      );
+                    })
+                  ) : (
+                    [1, 2, 3, 4, 5].map((_, i) => (
+                      <div key={i} className={`p-2`}>
+                        <Skeleton
+                          className="rounded-1"
+                          height={"40px"}
+                          width={"100%"}
+                        />
+                      </div>
+                    ))
+                  )
+                ) : (
+                  <div className="text-center">No tags found</div>
+                )}
               </Card.Body>
             </Card>
           </div>
@@ -635,6 +741,217 @@ const TransactionComponents = ({ show, hide, active, activeLink }) => {
               </button>
             </div>
           </Form>
+        </>
+      )}
+
+      {/* ========== Select Category =========== */}
+      {active === 5 && (
+        <>
+          <div className="d-flex align-items-center">
+            <IoArrowBackCircleOutline
+              color="rgba(92, 182, 249, 1)"
+              cursor={"pointer"}
+              size={28}
+              onClick={() => activeLink(1)}
+            />
+            <div
+              style={{
+                margin: "auto",
+                fontWeight: 600,
+                fontSize: "18px",
+                color: "rgba(55, 73, 87, 1)",
+              }}
+              className="text-center"
+            >
+              Select a Category
+            </div>
+          </div>
+
+          <div className="text-center px-4">
+            To add a Category, please select the Category to continue.
+          </div>
+
+          <p className="text-primary font-bold">Category</p>
+
+          <SearchField />
+          <Form onSubmit={handleCategory}>
+            <Card
+              className="mt-3"
+              style={
+                categories.length > 5
+                  ? { height: "300px", overflowY: "scroll" }
+                  : {}
+              }
+            >
+              <Card.Body>
+                {categories.length > 0 ? (
+                  <>
+                    {!categoriesLoading
+                      ? categories?.map((data) => {
+                          return (
+                            <div
+                              key={data?._id}
+                              className="d-flex justify-content-between align-items-center mt-2"
+                            >
+                              <div className="d-flex align-items-center gap-2">
+                                <img
+                                  style={{
+                                    width: "15px",
+                                    height: "15px",
+                                    borderRadius: "50%",
+                                    objectFit: "contain",
+                                    color: "var(--primary-color)",
+                                  }}
+                                  src={data?.image && imgAddr + data?.image}
+                                  alt="..."
+                                />
+                                <div className="font-bold">{data?.name}</div>
+                              </div>
+                              <input
+                                type="checkbox"
+                                checked={selectedCategory === data?._id}
+                                onChange={() =>
+                                  handleSelectCategoryBucket(
+                                    data?._id,
+                                    data?.name,
+                                    data?.bucket?._id,
+                                    data?.bucket?.name,
+                                    data?.bucket?.image
+                                  )
+                                }
+                              />
+                            </div>
+                          );
+                        })
+                      : [1, 2, 3, 4, 5].map((_, i) => (
+                          <div key={i} className={`p-2`}>
+                            <Skeleton
+                              className="rounded-1"
+                              height={"40px"}
+                              width={"100%"}
+                            />
+                          </div>
+                        ))}
+                  </>
+                ) : (
+                  <div className="text-center">
+                    <p>No categories found!</p>
+                  </div>
+                )}
+              </Card.Body>
+            </Card>
+            <div className="text-center">
+              <button
+                className="w-75 mt-3"
+                style={{
+                  backgroundColor: "var(--primary-color)",
+                  padding: "10px",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "10px",
+                }}
+              >
+                Next
+              </button>
+            </div>
+          </Form>
+        </>
+      )}
+
+      {/* ========== Selected Bucket =========== */}
+      {active === 6 && (
+        <>
+          <div className="d-flex align-items-center">
+            <IoArrowBackCircleOutline
+              color="rgba(92, 182, 249, 1)"
+              cursor={"pointer"}
+              size={28}
+              onClick={() => activeLink(5)}
+            />
+            <div
+              style={{
+                margin: "auto",
+                fontWeight: 600,
+                fontSize: "18px",
+                color: "rgba(55, 73, 87, 1)",
+              }}
+              className="text-center"
+            >
+              Select a Bucket
+            </div>
+          </div>
+
+          <div className="text-center text-12 px-4">
+            To add a Bucket, please select the Bucket to continue.
+          </div>
+
+          <p className="text-primary font-bold">Selected Transaction</p>
+
+          <Card>
+            <Card.Body>
+              <div className="d-flex justify-content-between align-items-center">
+                <div className="d-flex align-items-center gap-2">
+                  <img
+                    style={{
+                      width: "15px",
+                      height: "15px",
+                      borderRadius: "50%",
+                      objectFit: "contain",
+                      color: "var(--primary-color)",
+                    }}
+                    src={selectedBucketImage && imgAddr + selectedBucketImage}
+                    alt="..."
+                  />
+                  <div>{selectedCategoryName}</div>
+                </div>
+                <div
+                  onClick={() => activeLink(5)}
+                  className="text-primary font-bold"
+                >
+                  Change
+                </div>
+              </div>
+            </Card.Body>
+          </Card>
+
+          <p className="text-primary font-bold">Bucket</p>
+
+          <Card className="mt-3">
+            <Card.Body>
+              <div className="d-flex justify-content-between align-items-center">
+                <div className="d-flex align-items-center gap-2">
+                  <img
+                    style={{
+                      width: "15px",
+                      height: "15px",
+                      borderRadius: "50%",
+                      objectFit: "contain",
+                      color: "var(--primary-color)",
+                    }}
+                    src={selectedBucketImage && imgAddr + selectedBucketImage}
+                    alt="..."
+                  />
+                  <div>{selectedBucketName}</div>
+                </div>
+                <LuMinusSquare color="var(--main-blue)" />
+              </div>
+            </Card.Body>
+          </Card>
+          <div className="text-center">
+            <button
+              onClick={() => activeLink(1)}
+              className="w-75 mt-3"
+              style={{
+                backgroundColor: "var(--primary-color)",
+                padding: "10px",
+                color: "white",
+                border: "none",
+                borderRadius: "10px",
+              }}
+            >
+              Done
+            </button>
+          </div>
         </>
       )}
     </ModalWindow>

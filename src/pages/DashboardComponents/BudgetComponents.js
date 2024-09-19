@@ -17,7 +17,7 @@ import { IoIosSettings } from "react-icons/io";
 import { FiEdit } from "react-icons/fi";
 import { getError } from "../../utils/error";
 import {
-  useGetBudgetMutation,
+  useGetBudgetsMutation,
   useGetCategoriesMutation,
   useGetPaydaysMutation,
   useSaveBudgetMutation,
@@ -32,7 +32,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
   const [getCategories, { isLoading }] = useGetCategoriesMutation();
   const [getPaydays, { isLoading: paydayLoading }] = useGetPaydaysMutation();
   const [saveBudget, { isLoading: budgetLoading }] = useSaveBudgetMutation();
-  const [getBudget, { isLoading: getBudgetLoading }] = useGetBudgetMutation();
+  const [getBudgets, { isLoading: getBudgetLoading }] = useGetBudgetsMutation();
 
   const [categories, setCategories] = useState([]);
   const [paydays, setPaydays] = useState([]);
@@ -110,7 +110,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
   // ======= Getting all budget =======
   const getAllBudget = async () => {
     try {
-      const { data } = await getBudget();
+      const { data } = await getBudgets().unwrap();
       setBudgets(data?.budgets);
     } catch (error) {
       getError(error);

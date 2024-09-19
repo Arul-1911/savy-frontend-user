@@ -92,7 +92,7 @@ export const apiSlice = createApi({
       }),
     }),
 
-    getBudget: builder.mutation({
+    getBudgets: builder.mutation({
       query: (data) => ({
         url: "/budget/get-budgets",
         method: "GET",
@@ -137,6 +137,37 @@ export const apiSlice = createApi({
         method: "GET",
       }),
     }),
+
+    // ====== Transactions =======
+    getTransactions: builder.mutation({
+      query: () => ({
+        url: "/user/get-transactions",
+        method: "GET",
+      }),
+    }),
+
+    getTransaction: builder.mutation({
+      query: (tranId) => ({
+        url: `/user/get-transaction/${tranId}`,
+        method: "GET",
+      }),
+    }),
+
+    updateTransaction: builder.mutation({
+      query: ({ transactionId, transData }) => ({
+        url: `/user/update-transaction/${transactionId}`,
+        method: "PATCH",
+        body: transData,
+      }),
+    }),
+
+    // ====== Tags =======
+    getTags: builder.mutation({
+      query: () => ({
+        url: "/tag/get-tags",
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -152,7 +183,7 @@ export const {
   useGetPaydaysMutation,
 
   useSaveBudgetMutation,
-  useGetBudgetMutation,
+  useGetBudgetsMutation,
   useGetCategoriesMutation,
 
   useCreateBillMutation,
@@ -162,4 +193,10 @@ export const {
   useGetCashflowMutation,
 
   useDashboardDataMutation,
+
+  useGetTransactionsMutation,
+  useGetTransactionMutation,
+  useUpdateTransactionMutation,
+
+  useGetTagsMutation,
 } = apiSlice;

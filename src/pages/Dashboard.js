@@ -20,6 +20,7 @@ import PieCharts from "../components/Charts/PieChart";
 import BarsChart from "../components/Charts/BarsChart";
 import { useDashboardDataMutation } from "../features/apiSlice";
 import { getError } from "../utils/error";
+import { formatTime } from "../components/FormateDateTime/FormatDateTime";
 
 const data = [
   {
@@ -100,15 +101,15 @@ export default function Dashboard() {
     }
   };
 
-  const formatTime = (isoString) => {
-    const date = new Date(isoString);
+  // const formatTime = (isoString) => {
+  //   const date = new Date(isoString);
 
-    // Get hours and minutes
-    const hours = date.getUTCHours().toString().padStart(2, "0"); // Convert hours to 2-digit format
-    const minutes = date.getUTCMinutes().toString().padStart(2, "0"); // Convert minutes to 2-digit format
+  //   // Get hours and minutes
+  //   const hours = date.getUTCHours().toString().padStart(2, "0"); // Convert hours to 2-digit format
+  //   const minutes = date.getUTCMinutes().toString().padStart(2, "0"); // Convert minutes to 2-digit format
 
-    return `${hours}:${minutes}`; // Combine hours and minutes
-  };
+  //   return `${hours}:${minutes}`; // Combine hours and minutes
+  // };
 
   return (
     <MotionDiv>

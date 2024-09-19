@@ -18,7 +18,7 @@ import Calendar from "../../components/Calendar/Calendar";
 import { CiSquareMinus } from "react-icons/ci";
 import {
   useCreateBillMutation,
-  useGetBudgetMutation,
+  useGetBudgetsMutation,
   useGetCategoriesMutation,
   useSaveBudgetMutation,
 } from "../../features/apiSlice";
@@ -34,7 +34,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
   const [openCalendar, setOpenCalendar] = useState(false);
 
   const [getCategories, { isLoading }] = useGetCategoriesMutation();
-  const [getBudget, { isLoading: budgetLoading }] = useGetBudgetMutation();
+  const [getBudgets, { isLoading: budgetLoading }] = useGetBudgetsMutation();
   const [createBill, { isLoading: billLoading }] = useCreateBillMutation();
 
   const [categories, setCategories] = useState([]);
@@ -124,7 +124,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
   // ======= Getting all budget =======
   const getAllBudget = async () => {
     try {
-      const { data } = await getBudget();
+      const { data } = await getBudgets().unwrap();
       setBudgets(data?.budgets);
     } catch (error) {
       getError(error);
