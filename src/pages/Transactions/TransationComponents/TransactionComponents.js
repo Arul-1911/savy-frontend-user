@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from "react";
 import ModalWindow from "../../../components/modals/ModalWindow";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
-import { Card, Col, Form, Image, InputGroup, Row } from "react-bootstrap";
+import {
+  Card,
+  Col,
+  Form,
+  Image,
+  InputGroup,
+  Row,
+  Spinner,
+} from "react-bootstrap";
 import { GiPalmTree } from "react-icons/gi";
 import { FaAngleRight } from "react-icons/fa6";
 import { MdOutlineCalendarMonth, MdAddPhotoAlternate } from "react-icons/md";
@@ -12,6 +20,7 @@ import { GrCircleInformation } from "react-icons/gr";
 import SearchField from "../../../components/layout/SearchField";
 import {
   imgAddr,
+  useCreateTagMutation,
   useGetCategoriesMutation,
   useGetTagsMutation,
   useGetTransactionMutation,
@@ -20,6 +29,7 @@ import {
 import { getError } from "../../../utils/error";
 import Skeleton from "react-loading-skeleton";
 import { LuMinusSquare } from "react-icons/lu";
+import { formatDate } from "../../../components/FormateDateTime/FormatDateTime";
 
 const TransactionComponents = ({
   show,
@@ -52,6 +62,13 @@ const TransactionComponents = ({
       isLoading: { getTransactionLoading },
     },
   ] = useGetTransactionMutation();
+  const [
+    createTag,
+    {
+      isLoading: { tagLoading },
+    },
+  ] = useCreateTagMutation();
+
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedCategoryName, setSelectedCategoryName] = useState("");
@@ -68,6 +85,8 @@ const TransactionComponents = ({
   const [isBill, setIsBill] = useState(false);
 
   const [transaction, setTransaction] = useState({});
+
+  const [tagName, setTagName] = useState("");
 
   useEffect(() => {
     if (active === 5) {
@@ -132,13 +151,13 @@ const TransactionComponents = ({
   const getSingleTransation = async () => {
     try {
       const { transaction } = await getTransaction(transactionId).unwrap();
-      console.log(transaction);
       setTransaction(transaction);
     } catch (error) {
       getError(error);
     }
   };
 
+  // ======== category required ========
   const handleCategory = (e) => {
     e.preventDefault();
     try {
@@ -152,6 +171,7 @@ const TransactionComponents = ({
     }
   };
 
+  // ======== update transaction ========
   const handleUpdateTransaction = async () => {
     const transData = {
       category: selectedCategory,
@@ -165,7 +185,21 @@ const TransactionComponents = ({
         transactionId,
         transData: transData,
       }).unwrap();
-      hide();
+      hide(false);
+    } catch (error) {
+      getError(error);
+    }
+  };
+
+  // ======== create tags ========
+  const handleCreateTag = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("tag_name", tagName);
+    try {
+      const data = await createTag(formData).unwrap();
+      hide(false);
+      activeLink(1);
     } catch (error) {
       getError(error);
     }
@@ -175,7 +209,7 @@ const TransactionComponents = ({
     <ModalWindow show={show} onHide={hide}>
       {active === 1 && (
         <>
-          <div className="d-flex">
+          <div className="d-flex justify-content-between">
             <IoArrowBackCircleOutline
               color="rgba(92, 182, 249, 1)"
               cursor={"pointer"}
@@ -184,44 +218,61 @@ const TransactionComponents = ({
             />
             <div
               style={{
-                margin: "auto",
+                margin: "auto 120px",
                 fontWeight: 600,
                 fontSize: "18px",
                 color: "rgba(55, 73, 87, 1)",
               }}
-              className="text-center"
             >
-              {/* 2 Mar 2024 */}
-              {transaction?.date}
+              {formatDate(transaction?.date)}
             </div>
 
-            <button onClick={handleUpdateTransaction}>Update</button>
+            <button
+              className="px-2 py-1"
+              style={{
+                backgroundColor: "white",
+                color: "var(--primary-color)",
+                border: "1px solid #D2EBFD",
+                borderRadius: "18px",
+                fontSize: "12px",
+                fontWeight: 600,
+              }}
+              onClick={handleUpdateTransaction}
+            >
+              {!transactionLoading ? "update" : <Spinner size="sm" />}
+            </button>
           </div>
 
-          <Card style={{ borderRadius: "10px" }} className="mt-4">
-            <Card.Body>
-              <div className="text-center">
-                <div style={{ marginTop: "-45px" }}>
-                  <Image src="/icons/Rectangle 116.png" alt="..." />
-                </div>
-                <h3 style={{ fontWeight: 700, color: "var(--primary-color)" }}>
-                  ${transaction?.amount}
-                </h3>
+          {!getTransactionLoading ? (
+            <Card style={{ borderRadius: "15px" }} className="mt-4">
+              <Card.Body>
+                <div className="text-center">
+                  <div style={{ marginTop: "-45px" }}>
+                    <Image src="/icons/Rectangle 116.png" alt="..." />
+                  </div>
+                  <h3
+                    style={{ fontWeight: 700, color: "var(--primary-color)" }}
+                  >
+                    ${transaction?.amount}
+                  </h3>
 
-                <hr />
-                <p
-                  style={{
-                    color: "#5CB6F9",
-                    fontSize: "12px",
-                    fontWeight: 400,
-                  }}
-                >
-                  {transaction?.description}
-                </p>
-                <hr />
-              </div>
-            </Card.Body>
-          </Card>
+                  <hr />
+                  <p
+                    style={{
+                      color: "#5CB6F9",
+                      fontSize: "12px",
+                      fontWeight: 400,
+                    }}
+                  >
+                    {transaction?.description}
+                  </p>
+                  <hr />
+                </div>
+              </Card.Body>
+            </Card>
+          ) : (
+            <Skeleton className="rounded-1" height={"150px"} width={"100%"} />
+          )}
 
           <div className="mt-3">
             <div
@@ -265,12 +316,16 @@ const TransactionComponents = ({
               <div className="d-flex align-items-center gap-2">
                 <div
                   className="py-1 px-2"
-                  style={{
-                    color: "var(--primary-color)",
-                    fontSize: "12px",
-                    borderRadius: "10px",
-                    backgroundColor: "#004AAD14",
-                  }}
+                  style={
+                    selectedTagName
+                      ? {
+                          color: "var(--primary-color)",
+                          fontSize: "12px",
+                          borderRadius: "10px",
+                          backgroundColor: "#004AAD14",
+                        }
+                      : {}
+                  }
                 >
                   {selectedTagName && selectedTagName}
                 </div>
@@ -708,24 +763,21 @@ const TransactionComponents = ({
             </div>
           </div>
 
-          <Form className="mt-3">
+          <Form className="mt-3" onSubmit={handleCreateTag}>
             <Form.Label
               style={{ color: "var(--primary-color)", fontWeight: 600 }}
             >
               Name
             </Form.Label>
-            <FormField type={"text"} placeholder={"Enter name"} />
-
-            <Form.Label
-              style={{ color: "var(--primary-color)", fontWeight: 600 }}
-            >
-              Category name
-            </Form.Label>
-            <FormField type={"text"} placeholder={"Enter name"} />
+            <FormField
+              onChange={(e) => setTagName(e.target.value)}
+              type={"text"}
+              required
+              placeholder={"Enter name"}
+            />
 
             <div className="d-flex justify-content-center mt-2">
               <button
-                onClick={() => hide(false)}
                 className="w-75"
                 style={{
                   backgroundColor: "var(--primary-color)",
@@ -737,7 +789,7 @@ const TransactionComponents = ({
                   color: "white",
                 }}
               >
-                Create
+                {!tagLoading ? "Create" : <Spinner size="sm" />}
               </button>
             </div>
           </Form>
@@ -888,30 +940,48 @@ const TransactionComponents = ({
           <p className="text-primary font-bold">Selected Transaction</p>
 
           <Card>
-            <Card.Body>
-              <div className="d-flex justify-content-between align-items-center">
-                <div className="d-flex align-items-center gap-2">
+            <div className="d-flex justify-content-between align-items-center p-1">
+              <div className="w-75">
+                <div className="d-flex gap-2">
                   <img
                     style={{
-                      width: "15px",
-                      height: "15px",
+                      width: "25px",
+                      height: "25px",
                       borderRadius: "50%",
                       objectFit: "contain",
-                      color: "var(--primary-color)",
                     }}
-                    src={selectedBucketImage && imgAddr + selectedBucketImage}
+                    src={"/icons/Rectangle 116.png"}
                     alt="..."
                   />
-                  <div>{selectedCategoryName}</div>
-                </div>
-                <div
-                  onClick={() => activeLink(5)}
-                  className="text-primary font-bold"
-                >
-                  Change
+                  <div>
+                    <div style={{ fontSize: "12px", fontWeight: 500 }}>
+                      {transaction?.description}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: "12px",
+                        fontWeight: 500,
+                        color: "var(--primary-color)",
+                      }}
+                    >
+                      {selectedCategoryName && selectedCategoryName}{" "}
+                      <span style={{ color: "black" }}>
+                        {selectedBucketName && selectedBucketName}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </Card.Body>
+
+              <div className="text-primary text-end font-bold">
+                <div className="text-primary" style={{ fontWeight: 600 }}>
+                  ${transaction?.amount}
+                </div>
+                <div style={{ fontSize: "12px", fontWeight: 500 }}>
+                  {formatDate(transaction?.date)}
+                </div>
+              </div>
+            </div>
           </Card>
 
           <p className="text-primary font-bold">Bucket</p>

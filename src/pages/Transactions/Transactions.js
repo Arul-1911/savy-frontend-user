@@ -8,7 +8,8 @@ import Calendar from "../../components/Calendar/Calendar";
 import Filter from "../../components/Filter/Filter";
 import { getError } from "../../utils/error";
 import { useGetTransactionsMutation } from "../../features/apiSlice";
-import { formatTime } from "../../components/FormateDateTime/FormatDateTime";
+import { formatDate } from "../../components/FormateDateTime/FormatDateTime";
+import Skeleton from "react-loading-skeleton";
 
 const Transactions = () => {
   const [transactionModal, setTransactionModal] = useState(false);
@@ -18,14 +19,16 @@ const Transactions = () => {
   const [getTransactions, { isLoading }] = useGetTransactionsMutation();
   const [transactions, setTransactions] = useState([]);
   const [transactionId, setTransactionId] = useState("");
+  const [date, setDate] = useState("");
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     getAllTransactions();
-  }, []);
+  }, [date, query]);
 
   const getAllTransactions = async () => {
     try {
-      const { transactions } = await getTransactions().unwrap();
+      const { transactions } = await getTransactions({ query, date }).unwrap();
       setTransactions(transactions);
     } catch (error) {
       getError(error);
@@ -36,6 +39,8 @@ const Transactions = () => {
     setTransactionModal(true);
     setTransactionId(tranId);
   };
+
+  const skeletonArray = [1, 2, 3, 4, 5, 6, 7];
 
   return (
     <MotionDiv>
@@ -53,7 +58,7 @@ const Transactions = () => {
             <DashboardCard>
               <div className="d-flex align-items-cente gap-3">
                 <div className="w-25">
-                  <SearchField />
+                  <SearchField placeholder="Search" onSearch={setQuery} />
                 </div>
                 <Image
                   onClick={() => setOpenCalendar(true)}
@@ -85,67 +90,66 @@ const Transactions = () => {
                 />
               </div>
 
-              {/* <div
-                className="mt-4"
-                style={{
-                  color: "var(--primary-color)",
-                  fontWeight: 600,
-                  fontSize: "16px",
-                }}
-              >
-                Today
-              </div> */}
-
               <ul className="market mt-2">
-                {transactions?.map((tran, idx) => {
-                  return (
-                    <li
-                      style={{ cursor: "pointer" }}
-                      onClick={() => handleTransaction(tran._id)}
-                      key={tran?._id}
-                      className="d-flex justify-content-between align-items-center "
-                    >
-                      <div className="d-flex align-items-center gap-2">
-                        <Image
-                          width={"50px"}
-                          height={"50px"}
-                          style={{ borderRadius: "50%" }}
-                          src={"/icons/Rectangle 116.png"}
-                          alt="..."
-                        />
-                        <div>
-                          <div
-                            style={{
-                              fontSize: "rgba(55, 73, 87, 1)",
-                              fontSize: "16px",
-                            }}
-                          >
-                            {tran?.description}
+                {!isLoading
+                  ? transactions?.map((tran, idx) => {
+                      return (
+                        <li
+                          style={{ cursor: "pointer" }}
+                          onClick={() => handleTransaction(tran._id)}
+                          key={tran?._id}
+                          className="d-flex justify-content-between align-items-center "
+                        >
+                          <div className="d-flex align-items-center gap-2">
+                            <Image
+                              width={"50px"}
+                              height={"50px"}
+                              style={{ borderRadius: "50%" }}
+                              src={"/icons/Rectangle 116.png"}
+                              alt="..."
+                            />
+                            <div>
+                              <div
+                                style={{
+                                  fontSize: "rgba(55, 73, 87, 1)",
+                                  fontSize: "16px",
+                                }}
+                              >
+                                {tran?.description}
+                              </div>
+                              <div
+                                style={{
+                                  fontSize: "rgba(55, 73, 87, 0.7)",
+                                  fontSize: "12px",
+                                  fontWeight: 400,
+                                }}
+                              >
+                                at {formatDate(tran?.date)}
+                              </div>
+                            </div>
                           </div>
-                          <div
-                            style={{
-                              fontSize: "rgba(55, 73, 87, 0.7)",
-                              fontSize: "12px",
-                              fontWeight: 400,
-                            }}
-                          >
-                            at {formatTime(tran?.date)}
-                          </div>
-                        </div>
-                      </div>
 
-                      <div
-                        style={{
-                          color: "var(--primary-color)",
-                          fontSize: "20px",
-                          fontWeight: 800,
-                        }}
-                      >
-                        {tran?.amount}
-                      </div>
-                    </li>
-                  );
-                })}
+                          <div
+                            style={{
+                              color: "var(--primary-color)",
+                              fontSize: "20px",
+                              fontWeight: 800,
+                            }}
+                          >
+                            {tran?.amount}
+                          </div>
+                        </li>
+                      );
+                    })
+                  : skeletonArray?.map((_, i) => (
+                      <li key={i} className={`p-2 `}>
+                        <Skeleton
+                          className="rounded-1"
+                          height={"40px"}
+                          width={"100%"}
+                        />
+                      </li>
+                    ))}
               </ul>
             </DashboardCard>
           </Col>
@@ -159,7 +163,12 @@ const Transactions = () => {
           transactionId={transactionId}
         />
 
-        <Calendar show={openCalendar} hide={setOpenCalendar} />
+        <Calendar
+          show={openCalendar}
+          hide={setOpenCalendar}
+          date={date}
+          setDate={setDate}
+        />
         <Filter show={openFilter} hide={setOpenFilter} />
       </Container>
     </MotionDiv>

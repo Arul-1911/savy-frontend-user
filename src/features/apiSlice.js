@@ -140,8 +140,8 @@ export const apiSlice = createApi({
 
     // ====== Transactions =======
     getTransactions: builder.mutation({
-      query: () => ({
-        url: "/user/get-transactions",
+      query: ({ query, date }) => ({
+        url: `/user/get-transactions?keyword=${query}&date=${date}`,
         method: "GET",
       }),
     }),
@@ -162,6 +162,14 @@ export const apiSlice = createApi({
     }),
 
     // ====== Tags =======
+    createTag: builder.mutation({
+      query: (data) => ({
+        url: "/tag/create-tag",
+        method: "POST",
+        body: data,
+      }),
+    }),
+
     getTags: builder.mutation({
       query: () => ({
         url: "/tag/get-tags",
@@ -198,5 +206,6 @@ export const {
   useGetTransactionMutation,
   useUpdateTransactionMutation,
 
+  useCreateTagMutation,
   useGetTagsMutation,
 } = apiSlice;

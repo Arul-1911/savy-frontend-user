@@ -15,7 +15,7 @@ const Calendar = ({ show, hide, already, activeLink, setDate, date }) => {
     if (newDate) {
       const formattedDate = dayjs(newDate).format("YYYY-MM-DD");
       setDate(formattedDate);
-      activeLink(already);
+      // activeLink(already);
     }
   };
 

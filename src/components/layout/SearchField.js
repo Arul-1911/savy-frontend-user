@@ -5,16 +5,16 @@ import { FaSearch } from "react-icons/fa";
 const SearchField = ({
   label,
   onSearch,
-  setQuery,
-  query,
+  // setQuery,
+  // query,
   placeholder = "Search",
   disabled = false,
 }) => {
-  // const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // onSearch(query);
+    onSearch(query);
   };
 
   return (
@@ -47,19 +47,20 @@ const SearchField = ({
             disabled={disabled}
             onChange={(e) => setQuery(e.target.value)}
           />
-          <InputGroup.Text
+          {/* <InputGroup.Text
             color="rgba(92, 182, 249, 1)"
-            style={{
-              backgroundColor: "rgba(92, 182, 249, 1)",
-              color: "white",
-              borderRadius: "50%",
-              zIndex:2
-            }}
+            // style={{
+            //   backgroundColor: "rgba(92, 182, 249, 1)",
+            //   color: "white",
+            //   borderRadius: "50%",
+            //   zIndex: 2,
+            // }}
             className="border-0"
-          >
-            <FaSearch size={14}  />
-          </InputGroup.Text>
-          {/* <Button variant="outline-success" type="submit">Search</Button> */}
+          > */}
+          <Button variant="outline-success" type="submit">
+            <FaSearch type="submit" size={14} />
+          </Button>
+          {/* </InputGroup.Text> */}
         </InputGroup>
       </Form.Group>
     </Form>

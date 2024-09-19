@@ -7,3 +7,9 @@ exports.formatTime = (isoString) => {
 
   return `${hours}:${minutes}`; // Combine hours and minutes
 };
+
+exports.formatDate = (isoDateString) => {
+  const date = new Date(isoDateString);
+  const options = { day: "numeric", month: "short", year: "numeric" }; // For '2 Mar 2024'
+  return date.toLocaleDateString("en-GB", options);
+};
