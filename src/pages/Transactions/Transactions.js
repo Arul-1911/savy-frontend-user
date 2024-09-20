@@ -44,133 +44,126 @@ const Transactions = () => {
 
   return (
     <MotionDiv>
-      <Container>
-        <h3
-          style={{
-            fontWeight: 600,
-          }}
-        >
-          Transactions
-        </h3>
+      <h3
+        style={{
+          fontWeight: 600,
+        }}
+      >
+        Transactions
+      </h3>
+      <DashboardCard>
+        <div className="d-flex align-items-center flex-wrap gap-3">
+          <div>
+            <SearchField placeholder="Search" onSearch={setQuery} />
+          </div>
+          <Image
+            onClick={() => setOpenCalendar(true)}
+            style={{
+              color: "rgba(92, 182, 249, 1)",
+              fontWeight: 600,
+              fontSize: "16px",
+              backgroundColor: "rgba(242, 249, 255, 1)",
+              padding: "10px",
+              borderRadius: "20px",
+              cursor: "pointer",
+            }}
+            src="/icons/calendar.png"
+            alt="..."
+          />
+          <Image
+            onClick={() => setOpenFilter(true)}
+            style={{
+              color: "rgba(92, 182, 249, 1)",
+              fontWeight: 600,
+              fontSize: "16px",
+              backgroundColor: "rgba(242, 249, 255, 1)",
+              padding: "10px",
+              borderRadius: "20px",
+              cursor: "pointer",
+            }}
+            src="/icons/Filter.png"
+            alt="..."
+          />
+        </div>
 
-        <Row className="mt-4">
-          <Col>
-            <DashboardCard>
-              <div className="d-flex align-items-cente gap-3">
-                <div className="w-25">
-                  <SearchField placeholder="Search" onSearch={setQuery} />
-                </div>
-                <Image
-                  onClick={() => setOpenCalendar(true)}
-                  style={{
-                    color: "rgba(92, 182, 249, 1)",
-                    fontWeight: 600,
-                    fontSize: "16px",
-                    backgroundColor: "rgba(242, 249, 255, 1)",
-                    padding: "10px",
-                    borderRadius: "20px",
-                    cursor: "pointer",
-                  }}
-                  src="/icons/calendar.png"
-                  alt="..."
-                />
-                <Image
-                  onClick={() => setOpenFilter(true)}
-                  style={{
-                    color: "rgba(92, 182, 249, 1)",
-                    fontWeight: 600,
-                    fontSize: "16px",
-                    backgroundColor: "rgba(242, 249, 255, 1)",
-                    padding: "10px",
-                    borderRadius: "20px",
-                    cursor: "pointer",
-                  }}
-                  src="/icons/Filter.png"
-                  alt="..."
-                />
-              </div>
-
-              <ul className="market mt-2">
-                {!isLoading
-                  ? transactions?.map((tran, idx) => {
-                      return (
-                        <li
-                          style={{ cursor: "pointer" }}
-                          onClick={() => handleTransaction(tran._id)}
-                          key={tran?._id}
-                          className="d-flex justify-content-between align-items-center "
+        <ul className="market mt-2">
+          {!isLoading
+            ? transactions?.map((tran, idx) => {
+                return (
+                  <li
+                    style={{ cursor: "pointer" }}
+                    onClick={() => handleTransaction(tran._id)}
+                    key={tran?._id}
+                    className="d-flex justify-content-between align-items-center "
+                  >
+                    <div className="d-flex  gap-2">
+                      <Image
+                        width={"50px"}
+                        height={"50px"}
+                        style={{ borderRadius: "50%" }}
+                        src={"/icons/Rectangle 116.png"}
+                        alt="..."
+                      />
+                      <div>
+                        <div
+                          style={{
+                            fontSize: "rgba(55, 73, 87, 1)",
+                            fontSize: "16px",
+                          }}
                         >
-                          <div className="d-flex align-items-center gap-2">
-                            <Image
-                              width={"50px"}
-                              height={"50px"}
-                              style={{ borderRadius: "50%" }}
-                              src={"/icons/Rectangle 116.png"}
-                              alt="..."
-                            />
-                            <div>
-                              <div
-                                style={{
-                                  fontSize: "rgba(55, 73, 87, 1)",
-                                  fontSize: "16px",
-                                }}
-                              >
-                                {tran?.description}
-                              </div>
-                              <div
-                                style={{
-                                  fontSize: "rgba(55, 73, 87, 0.7)",
-                                  fontSize: "12px",
-                                  fontWeight: 400,
-                                }}
-                              >
-                                at {formatDate(tran?.date)}
-                              </div>
-                            </div>
-                          </div>
+                          {tran?.description}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: "rgba(55, 73, 87, 0.7)",
+                            fontSize: "12px",
+                            fontWeight: 400,
+                          }}
+                        >
+                          at {formatDate(tran?.date)}
+                        </div>
+                      </div>
+                    </div>
 
-                          <div
-                            style={{
-                              color: "var(--primary-color)",
-                              fontSize: "20px",
-                              fontWeight: 800,
-                            }}
-                          >
-                            {tran?.amount}
-                          </div>
-                        </li>
-                      );
-                    })
-                  : skeletonArray?.map((_, i) => (
-                      <li key={i} className={`p-2 `}>
-                        <Skeleton
-                          className="rounded-1"
-                          height={"40px"}
-                          width={"100%"}
-                        />
-                      </li>
-                    ))}
-              </ul>
-            </DashboardCard>
-          </Col>
-        </Row>
+                    <div
+                      style={{
+                        color: "var(--primary-color)",
+                        fontSize: "20px",
+                        fontWeight: 800,
+                      }}
+                    >
+                      ${tran?.amount}
+                    </div>
+                  </li>
+                );
+              })
+            : skeletonArray?.map((_, i) => (
+                <li key={i} className={`p-2 `}>
+                  <Skeleton
+                    className="rounded-1"
+                    height={"40px"}
+                    width={"100%"}
+                  />
+                </li>
+              ))}
+        </ul>
+      </DashboardCard>
 
-        <TransactionComponents
-          show={transactionModal}
-          hide={setTransactionModal}
-          active={activeTransaction}
-          activeLink={setActiveTransaction}
-          transactionId={transactionId}
-        />
+      <TransactionComponents
+        show={transactionModal}
+        hide={setTransactionModal}
+        active={activeTransaction}
+        activeLink={setActiveTransaction}
+        transactionId={transactionId}
+      />
 
-        <Calendar
-          show={openCalendar}
-          hide={setOpenCalendar}
-          date={date}
-          setDate={setDate}
-        />
-        <Filter show={openFilter} hide={setOpenFilter} />
-      </Container>
+      <Calendar
+        show={openCalendar}
+        hide={setOpenCalendar}
+        date={date}
+        setDate={setDate}
+      />
+      <Filter show={openFilter} hide={setOpenFilter} />
     </MotionDiv>
   );
 };

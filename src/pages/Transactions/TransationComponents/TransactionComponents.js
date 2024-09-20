@@ -209,7 +209,7 @@ const TransactionComponents = ({
     <ModalWindow show={show} onHide={hide}>
       {active === 1 && (
         <>
-          <div className="d-flex justify-content-between">
+          <div className="d-flex align-items-center flex-wrap justify-content-between">
             <IoArrowBackCircleOutline
               color="rgba(92, 182, 249, 1)"
               cursor={"pointer"}
@@ -218,7 +218,7 @@ const TransactionComponents = ({
             />
             <div
               style={{
-                margin: "auto 120px",
+                // margin: "auto 120px",
                 fontWeight: 600,
                 fontSize: "18px",
                 color: "rgba(55, 73, 87, 1)",
@@ -228,7 +228,7 @@ const TransactionComponents = ({
             </div>
 
             <button
-              className="px-2 py-1"
+              // className="px-2 py-1"
               style={{
                 backgroundColor: "white",
                 color: "var(--primary-color)",
