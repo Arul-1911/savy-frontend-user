@@ -78,7 +78,7 @@ const PieCharts = ({ COLORS, data, cornerRadius, In, height, width }) => {
   return (
     <PieChart width={width} height={height}>
       <defs>
-        {COLORS.map((color, index) => (
+        {COLORS?.map((color, index) => (
           <linearGradient id={`color${index}`} key={index}>
             <stop offset="5%" stopColor={color.start} stopOpacity={1} />
             <stop offset="95%" stopColor={color.end} stopOpacity={1} />
@@ -99,7 +99,7 @@ const PieCharts = ({ COLORS, data, cornerRadius, In, height, width }) => {
         cornerRadius={cornerRadius}
         paddingAngle={5}
       >
-        {data.map((entry, index) => (
+        {data?.map((entry, index) => (
           <Cell
             key={`cell-${index}`}
             fill={`url(#color${index})`}

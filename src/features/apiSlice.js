@@ -131,6 +131,14 @@ export const apiSlice = createApi({
       }),
     }),
 
+    getCashflowMoneyIn: builder.mutation({
+      query: ({ date, filter }) => ({
+        url: `/user/get-cashflow-data-in?date=${date}&filter=${filter}`,
+        method: "GET",
+      }),
+    }),
+
+    // ====== Dashboard =======
     dashboardData: builder.mutation({
       query: () => ({
         url: "/user/get-graph-data",
@@ -199,6 +207,7 @@ export const {
   useGetSubscriptionsMutation,
 
   useGetCashflowMutation,
+  useGetCashflowMoneyInMutation,
 
   useDashboardDataMutation,
 

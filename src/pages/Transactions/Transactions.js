@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Col, Container, Image, Row } from "react-bootstrap";
+import { Image } from "react-bootstrap";
 import DashboardCard from "../../components/layout/DasboardCard";
 import SearchField from "../../components/layout/SearchField";
 import { MotionDiv } from "../../components";

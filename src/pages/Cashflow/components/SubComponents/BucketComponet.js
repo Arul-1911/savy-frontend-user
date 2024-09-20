@@ -43,7 +43,7 @@ const BucketComponet = ({ show, hide, onChange }) => {
         </div>
         <hr />
         <div
-          onClick={() => handleChange("Categories")}
+          onClick={() => handleChange("Category")}
           style={{
             fontWeight: 600,
             color: "var(--primary-color)",
@@ -54,7 +54,7 @@ const BucketComponet = ({ show, hide, onChange }) => {
         </div>
         <hr />
         <div
-          onClick={() => handleChange("Transactions")}
+          onClick={() => handleChange("Transaction")}
           style={{
             fontWeight: 600,
             color: "var(--primary-color)",
@@ -76,7 +76,7 @@ const BucketComponet = ({ show, hide, onChange }) => {
         </div>
         <hr />
         <div
-          onClick={() => handleChange("Tags")}
+          onClick={() => handleChange("Tag")}
           style={{
             fontWeight: 600,
             color: "var(--primary-color)",

@@ -11,11 +11,12 @@ import { useGetCashflowMutation } from "../../features/apiSlice";
 import { getError } from "../../utils/error";
 
 const CashFlow = () => {
+  const [getCashflow, { isLoading }] = useGetCashflowMutation();
+
   const [accountPortfolioActive, setAccountPortfolioActive] = useState(1);
 
   const [settingModal, setSettingModal] = useState(false);
 
-  const [getCashflow, { isLoading }] = useGetCashflowMutation();
   const [overView, setOverview] = useState({});
 
   useEffect(() => {
@@ -133,7 +134,9 @@ const CashFlow = () => {
         {accountPortfolioActive === 1 && (
           <OverView data={overView} loading={isLoading} />
         )}
-        {accountPortfolioActive === 2 && <MoneyIn />}
+        {accountPortfolioActive === 2 && (
+          <MoneyIn accountPortfolioActive={accountPortfolioActive} />
+        )}
         {accountPortfolioActive === 3 && <MoneyOut />}
         {accountPortfolioActive === 4 && <NetWorth />}
 
