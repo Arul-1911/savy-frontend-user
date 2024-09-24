@@ -138,10 +138,9 @@ export const apiSlice = createApi({
       }),
     }),
 
-    // ====== Dashboard =======
-    dashboardData: builder.mutation({
-      query: () => ({
-        url: "/user/get-graph-data",
+    getCashflowMoneyOut: builder.mutation({
+      query: ({ date, filter }) => ({
+        url: `/user/get-cashflow-data-out?date=${date}&filter=${filter}`,
         method: "GET",
       }),
     }),
@@ -184,6 +183,14 @@ export const apiSlice = createApi({
         method: "GET",
       }),
     }),
+
+    // ====== Dashboard =======
+    dashboardData: builder.mutation({
+      query: () => ({
+        url: "/user/get-graph-data",
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -208,6 +215,7 @@ export const {
 
   useGetCashflowMutation,
   useGetCashflowMoneyInMutation,
+  useGetCashflowMoneyOutMutation,
 
   useDashboardDataMutation,
 

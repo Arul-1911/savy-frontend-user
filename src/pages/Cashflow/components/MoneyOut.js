@@ -1,52 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DashboardCard from "../../../components/layout/DasboardCard";
 import { IoIosArrowUp } from "react-icons/io";
 import { Col, Row, Image } from "react-bootstrap";
-import { CiCalendar } from "react-icons/ci";
+// import { CiCalendar } from "react-icons/ci";
 import { IoInformationCircleOutline } from "react-icons/io5";
-import SearchField from "../../../components/layout/SearchField";
+// import SearchField from "../../../components/layout/SearchField";
 import BucketComponet from "./SubComponents/BucketComponet";
 import ExcludeTransaction from "./SubComponents/ExcludeTransaction";
 import PieCharts from "../../../components/Charts/PieChart";
 import BarsChart from "../../../components/Charts/BarsChart";
-
-const data1 = [
-  {
-    name: "More than last period",
-    value: 7000,
-  },
-  {
-    name: "Last period",
-    value: 4567,
-  },
-];
+import { getError } from "../../../utils/error";
+import {
+  imgAddr,
+  useGetCashflowMoneyOutMutation,
+} from "../../../features/apiSlice";
+import Skeleton from "react-loading-skeleton";
 
 const COLORS = [
   { start: "rgba(92, 182, 249, 1)", end: "rgba(0, 74, 173, 1)" },
   { start: "rgba(58, 195, 172, 1)", end: "rgba(58, 195, 172, 1)" },
-];
-
-const data3 = [
-  {
-    name: "Shopping",
-    value: 7000,
-  },
-  {
-    name: "Food",
-    value: 4567,
-  },
-  {
-    name: "Bills",
-    value: 2398,
-  },
-  {
-    name: "Benzin",
-    value: 3908,
-  },
-  {
-    name: "Others",
-    value: 4800,
-  },
 ];
 
 const COLORS1 = [
@@ -57,35 +29,30 @@ const COLORS1 = [
   { start: "rgba(36, 204, 167, 0.2)", end: "rgba(36, 204, 167, 0.2)" },
 ];
 
-const MoneyInvsOutData = [
-  { name: "02 Dec - 01 Jan", uv: 4000 },
-  { name: "02 Jan - 01 Feb", uv: 3000 },
-  { name: "02 Feb - 01 Mar", uv: 2000 },
-  { name: "02 Mar - Today", uv: 1000 },
-];
-
-const MoneyOut = () => {
+const MoneyOut = ({ accountPortfolioActive }) => {
+  const [getCashflowMoneyOut, { isLoading }] = useGetCashflowMoneyOutMutation();
   const [bucketOpen, setBucketOpen] = useState(false);
   const [excludeTransactionModal, setExcludeTransactionModal] = useState(false);
   const [selectBucketName, setSelectBucketName] = useState("Bucket");
+  const [moneyOut, setMoneyOut] = useState({});
 
-  const recentTransactions = [
-    {
-      icon: "/icons/Merchant 1.png",
-      text: "Carlin & Gazzard polvere nom 33 receipt",
-      parcentage: "99.69%",
-    },
-    {
-      icon: "/icons/Merchant 1.png",
-      text: "Carlin & Gazzard polvere nom 33 receipt",
-      parcentage: "99.69%",
-    },
-    {
-      icon: "/icons/Merchant 1.png",
-      text: "Carlin & Gazzard polvere nom 33 receipt",
-      parcentage: "99.69%",
-    },
-  ];
+  useEffect(() => {
+    if (accountPortfolioActive === 3) {
+      getMoneyOutData();
+    }
+  }, [accountPortfolioActive, selectBucketName]);
+
+  const getMoneyOutData = async () => {
+    try {
+      const { moneyOut } = await getCashflowMoneyOut({
+        date: "last_month",
+        filter: selectBucketName.toLowerCase(),
+      }).unwrap();
+      setMoneyOut(moneyOut);
+    } catch (error) {
+      getError(error);
+    }
+  };
 
   return (
     <div>
@@ -116,9 +83,9 @@ const MoneyOut = () => {
                 border: "1px solid rgba(92, 182, 249, 1)",
               }}
             >
-              {selectBucketName === "Bucket" ? "Bucket" : "Categories"}
+              {selectBucketName}
             </button>
-
+            {/* 
             <button
               className="d-flex gap-2 align-items-center"
               style={{
@@ -133,7 +100,7 @@ const MoneyOut = () => {
               }}
             >
               Past month <IoIosArrowUp size={18} />
-            </button>
+            </button> */}
           </div>
 
           <Row className="d-flex gap-4 px-2 mt-3">
@@ -146,63 +113,101 @@ const MoneyOut = () => {
               >
                 Total
               </div>
-              <h3
-                className="mt-2"
-                style={{ fontWeight: 600, color: "rgba(0, 74, 173, 1)" }}
-              >
-                {selectBucketName === "Tags" ? 0 : "-$1,820.00"}
-              </h3>
+              {!isLoading ? (
+                <h3
+                  className="mt-2"
+                  style={{ fontWeight: 600, color: "rgba(0, 74, 173, 1)" }}
+                >
+                  ${moneyOut?.total}
+                </h3>
+              ) : (
+                <Skeleton
+                  className="rounded-2"
+                  height={"40px"}
+                  width={"100%"}
+                />
+              )}
               <hr />
 
-              <div className="d-flex justify-content-between align-items-center">
-                <div
-                  style={{
-                    color: "rgba(55, 73, 87, 0.7)",
-                    fontSize: "12px",
-                  }}
-                >
-                  More than last period
-                </div>
-                <div
-                  style={{
-                    color: "rgba(55, 73, 87, 1)",
-                    fontSize: "14px",
-                    fontWeight: 600,
-                  }}
-                >
-                  {selectBucketName === "Tags" ? 0 : "$5,459.75"}
-                </div>
+              <div
+                className={
+                  !isLoading &&
+                  "d-flex justify-content-between align-items-center"
+                }
+              >
+                {!isLoading ? (
+                  <>
+                    <div
+                      style={{
+                        color: "rgba(55, 73, 87, 0.7)",
+                        fontSize: "12px",
+                      }}
+                    >
+                      {moneyOut?.last_period?.key}
+                    </div>
+                    <div
+                      style={{
+                        color: "rgba(55, 73, 87, 1)",
+                        fontSize: "14px",
+                        fontWeight: 600,
+                      }}
+                    >
+                      ${moneyOut?.last_period?.amount}
+                    </div>
+                  </>
+                ) : (
+                  <Skeleton
+                    className="rounded-2"
+                    height={"40px"}
+                    width={"100%"}
+                  />
+                )}
               </div>
 
-              <div className="mt-3 d-flex justify-content-between align-items-center">
-                <div
-                  style={{
-                    color: "rgba(55, 73, 87, 0.7)",
-                    fontSize: "12px",
-                  }}
-                >
-                  Last period
-                </div>
-                <div
-                  style={{
-                    color: "rgba(55, 73, 87, 1)",
-                    fontSize: "14px",
-                    fontWeight: 600,
-                  }}
-                >
-                  {selectBucketName === "Tags" ? 0 : "$5,459.75"}
-                </div>
+              <div
+                className={
+                  !isLoading &&
+                  "mt-3 d-flex justify-content-between align-items-center"
+                }
+              >
+                {!isLoading ? (
+                  <>
+                    <div
+                      style={{
+                        color: "rgba(55, 73, 87, 0.7)",
+                        fontSize: "12px",
+                      }}
+                    >
+                      Last period
+                    </div>
+                    <div
+                      style={{
+                        color: "rgba(55, 73, 87, 1)",
+                        fontSize: "14px",
+                        fontWeight: 600,
+                      }}
+                    >
+                      ${moneyOut?.last}
+                    </div>
+                  </>
+                ) : (
+                  <Skeleton
+                    className="rounded-2"
+                    height={"40px"}
+                    width={"100%"}
+                  />
+                )}
               </div>
             </Col>
 
             <Col>
-              {selectBucketName !== "Tags" ? (
+              {!isLoading ? (
                 <>
                   {selectBucketName === "Bucket" && (
                     <div className="d-flex justify-content-center mt-2">
                       <PieCharts
                         COLORS={COLORS}
-                        data={data1}
+                        data={MoneyOut?.graphData}
                         cornerRadius={2}
                         In={true}
                         width={420}
@@ -211,11 +216,11 @@ const MoneyOut = () => {
                     </div>
                   )}
 
-                  {selectBucketName === "Categories" && (
+                  {selectBucketName === "Category" && (
                     <div className="d-flex justify-content-center mt-2">
                       <PieCharts
                         COLORS={COLORS1}
-                        data={data3}
+                        data={MoneyOut?.graphData}
                         cornerRadius={2}
                         In={true}
                         width={420}
@@ -227,7 +232,7 @@ const MoneyOut = () => {
                   {selectBucketName === "Transactions" && (
                     <div className="d-flex justify-content-center">
                       <BarsChart
-                        data={MoneyInvsOutData}
+                        data={MoneyOut?.graphData}
                         width={500}
                         height={220}
                         barWidth={70}
@@ -246,7 +251,20 @@ const MoneyOut = () => {
                     <div className="d-flex justify-content-center mt-2">
                       <PieCharts
                         COLORS={COLORS1}
-                        data={data3}
+                        data={MoneyOut?.graphData}
+                        cornerRadius={2}
+                        In={true}
+                        width={420}
+                        height={200}
+                      />
+                    </div>
+                  )}
+
+                  {selectBucketName === "Tag" && (
+                    <div className="d-flex justify-content-center mt-2">
+                      <PieCharts
+                        COLORS={COLORS1}
+                        data={moneyOut?.graphData}
                         cornerRadius={2}
                         In={true}
                         width={420}
@@ -256,16 +274,11 @@ const MoneyOut = () => {
                   )}
                 </>
               ) : (
-                <div
-                  style={{
-                    color: "rgba(55, 73, 87, 1)",
-                    fontSize: "14px",
-                    fontWeight: 400,
-                  }}
-                  className="text-center"
-                >
-                  No tags have been tracked for this period
-                </div>
+                <Skeleton
+                  className="rounded-2"
+                  height={"200px"}
+                  width={"100%"}
+                />
               )}
             </Col>
           </Row>
@@ -286,8 +299,8 @@ const MoneyOut = () => {
               {selectBucketName}
             </div>
 
-            <div className="d-flex align-items-center  gap-3">
-              <div className="w-25">
+            <div className="d-flex align-items-center gap-3">
+              {/* <div className="w-25">
                 <SearchField />
               </div>
               <button
@@ -304,7 +317,7 @@ const MoneyOut = () => {
                 }}
               >
                 <CiCalendar size={18} /> 8 feb today
-              </button>
+              </button> */}
 
               <button
                 className="d-flex gap-2 align-items-center"
@@ -323,33 +336,42 @@ const MoneyOut = () => {
               </button>
             </div>
 
-            {selectBucketName !== "Tags" ? (
-              <ul className="market mt-2">
-                {recentTransactions?.map((data, idx) => {
+            <ul className="market mt-2">
+              {!isLoading ? (
+                moneyOut?.data?.map((data, idx) => {
                   return (
                     <li
                       key={idx}
-                      className="d-flex justify-content-between align-items-center "
+                      className="d-flex justify-content-between align-items-center"
                     >
-                      <div className="d-flex align-items-center gap-2">
+                      <div className="d-flex align-items-center gap-2 w-50 text-truncate">
                         <Image
-                          width={"50px"}
-                          height={"50px"}
-                          style={{ borderRadius: "50%" }}
-                          src={data?.icon}
+                          width={"25px"}
+                          height={"25px"}
+                          style={{ borderRadius: "50%", objectFit: "contain" }}
+                          src={
+                            data?.image
+                              ? imgAddr + data?.image
+                              : "/icons/Merchant 1.png"
+                          }
                           alt="..."
                         />
 
                         <div
                           style={{
+                            fontSize: "rgba(55, 73, 87, 1)",
                             fontSize: "16px",
                           }}
                         >
-                          {data?.text}
+                          {selectBucketName !== "Transaction"
+                            ? data?.name
+                            : data?.description}
                         </div>
                       </div>
 
-                      <div>{data?.parcentage}</div>
+                      {selectBucketName !== "Transaction" && (
+                        <div>{data?.percent}%</div>
+                      )}
 
                       <div
                         style={{
@@ -358,25 +380,24 @@ const MoneyOut = () => {
                           fontWeight: 800,
                         }}
                       >
-                        -20.00 $
+                        {selectBucketName !== "Transaction"
+                          ? data?.value
+                          : data?.amount}{" "}
+                        $
                       </div>
                     </li>
                   );
-                })}
-              </ul>
-            ) : (
-              <div
-                style={{
-                  color: "rgba(55, 73, 87, 1)",
-                  fontSize: "14px",
-                  fontWeight: 400,
-                  marginTop: "20px",
-                }}
-                className="text-center"
-              >
-                No tags have been tracked for this period
-              </div>
-            )}
+                })
+              ) : (
+                <li>
+                  <Skeleton
+                    className="rounded-2 mb-2"
+                    height={"40px"}
+                    width={"100%"}
+                  />
+                </li>
+              )}
+            </ul>
           </DashboardCard>
         </Col>
       </Row>

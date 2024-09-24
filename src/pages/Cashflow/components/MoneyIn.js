@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import DashboardCard from "../../../components/layout/DasboardCard";
 import { IoIosArrowUp } from "react-icons/io";
 import { Col, Row, Image } from "react-bootstrap";
-import { CiCalendar } from "react-icons/ci";
+// import { CiCalendar } from "react-icons/ci";
 import { IoInformationCircleOutline } from "react-icons/io5";
-import SearchField from "../../../components/layout/SearchField";
+// import SearchField from "../../../components/layout/SearchField";
 import BucketComponet from "./SubComponents/BucketComponet";
 import ExcludeTransaction from "./SubComponents/ExcludeTransaction";
 import PieCharts from "../../../components/Charts/PieChart";
@@ -14,40 +14,7 @@ import {
   useGetCashflowMoneyInMutation,
 } from "../../../features/apiSlice";
 import { getError } from "../../../utils/error";
-
-const data1 = [
-  {
-    name: "More than last period",
-    value: 7000,
-  },
-  {
-    name: "Last period",
-    value: 4567,
-  },
-];
-
-const data3 = [
-  {
-    name: "Shopping",
-    value: 7000,
-  },
-  {
-    name: "Food",
-    value: 4567,
-  },
-  {
-    name: "Bills",
-    value: 2398,
-  },
-  {
-    name: "Benzin",
-    value: 3908,
-  },
-  {
-    name: "Others",
-    value: 4800,
-  },
-];
+import Skeleton from "react-loading-skeleton";
 
 const COLORS1 = [
   { start: "rgba(36, 204, 167, 1)", end: "rgba(74, 86, 226, 1)" },
@@ -62,13 +29,6 @@ const COLORS = [
   { start: "rgba(58, 195, 172, 1)", end: "rgba(58, 195, 172, 1)" },
 ];
 
-const MoneyInvsOutData = [
-  { name: "02 Dec - 01 Jan", uv: 4000 },
-  { name: "02 Jan - 01 Feb", uv: 3000 },
-  { name: "02 Feb - 01 Mar", uv: 2000 },
-  { name: "02 Mar - Today", uv: 1000 },
-];
-
 const MoneyIn = ({ accountPortfolioActive }) => {
   const [getCashflowMoneyIn, { isLoading: inLoading }] =
     useGetCashflowMoneyInMutation();
@@ -76,24 +36,6 @@ const MoneyIn = ({ accountPortfolioActive }) => {
   const [selectBucketName, setSelectBucketName] = useState("Bucket");
   const [moneyIn, setMoneyIn] = useState({});
   const [excludeTransactionModal, setExcludeTransactionModal] = useState(false);
-
-  const recentTransactions = [
-    {
-      icon: "/icons/Merchant 1.png",
-      text: "Carlin & Gazzard polvere nom 33 receipt",
-      parcentage: "99.69%",
-    },
-    {
-      icon: "/icons/Merchant 1.png",
-      text: "Carlin & Gazzard polvere nom 33 receipt",
-      parcentage: "99.69%",
-    },
-    {
-      icon: "/icons/Merchant 1.png",
-      text: "Carlin & Gazzard polvere nom 33 receipt",
-      parcentage: "99.69%",
-    },
-  ];
 
   useEffect(() => {
     if (accountPortfolioActive === 2) {
@@ -172,124 +114,174 @@ const MoneyIn = ({ accountPortfolioActive }) => {
               >
                 Total
               </div>
-              <h3
-                className="mt-2"
-                style={{ fontWeight: 600, color: "rgba(0, 74, 173, 1)" }}
-              >
-                ${moneyIn?.total}
-              </h3>
+              {!inLoading ? (
+                <h3
+                  className="mt-2"
+                  style={{ fontWeight: 600, color: "rgba(0, 74, 173, 1)" }}
+                >
+                  ${moneyIn?.total}
+                </h3>
+              ) : (
+                <Skeleton
+                  className="rounded-2"
+                  height={"40px"}
+                  width={"100%"}
+                />
+              )}
               <hr />
 
-              <div className="d-flex justify-content-between align-items-center">
-                <div
-                  style={{
-                    color: "rgba(55, 73, 87, 0.7)",
-                    fontSize: "12px",
-                  }}
-                >
-                  {moneyIn?.last_period?.key}
-                </div>
-                <div
-                  style={{
-                    color: "rgba(55, 73, 87, 1)",
-                    fontSize: "14px",
-                    fontWeight: 600,
-                  }}
-                >
-                  ${moneyIn?.last_period?.amount}
-                </div>
+              <div
+                className={
+                  !inLoading
+                    ? "d-flex justify-content-between align-items-center"
+                    : ""
+                }
+              >
+                {!inLoading ? (
+                  <>
+                    <div
+                      style={{
+                        color: "rgba(55, 73, 87, 0.7)",
+                        fontSize: "12px",
+                      }}
+                    >
+                      {moneyIn?.last_period?.key}
+                    </div>
+                    <div
+                      style={{
+                        color: "rgba(55, 73, 87, 1)",
+                        fontSize: "14px",
+                        fontWeight: 600,
+                      }}
+                    >
+                      ${moneyIn?.last_period?.amount}
+                    </div>
+                  </>
+                ) : (
+                  <Skeleton
+                    className="rounded-2"
+                    height={"40px"}
+                    width={"100%"}
+                  />
+                )}
               </div>
 
-              <div className="mt-3 d-flex justify-content-between align-items-center">
-                <div
-                  style={{
-                    color: "rgba(55, 73, 87, 0.7)",
-                    fontSize: "12px",
-                  }}
-                >
-                  Last period
-                </div>
-                <div
-                  style={{
-                    color: "rgba(55, 73, 87, 1)",
-                    fontSize: "14px",
-                    fontWeight: 600,
-                  }}
-                >
-                  ${moneyIn?.last}
-                </div>
+              <div
+                className={
+                  !inLoading
+                    ? "mt-3 d-flex justify-content-between align-items-center"
+                    : ""
+                }
+              >
+                {!inLoading ? (
+                  <>
+                    <div
+                      style={{
+                        color: "rgba(55, 73, 87, 0.7)",
+                        fontSize: "12px",
+                      }}
+                    >
+                      Last period
+                    </div>
+                    <div
+                      style={{
+                        color: "rgba(55, 73, 87, 1)",
+                        fontSize: "14px",
+                        fontWeight: 600,
+                      }}
+                    >
+                      ${moneyIn?.last}
+                    </div>
+                  </>
+                ) : (
+                  <Skeleton
+                    className="rounded-2"
+                    height={"40px"}
+                    width={"100%"}
+                  />
+                )}
               </div>
             </Col>
 
             <Col>
-              {selectBucketName === "Bucket" && (
-                <div className="d-flex justify-content-center mt-2">
-                  <PieCharts
-                    COLORS={COLORS}
-                    data={moneyIn?.graphData}
-                    cornerRadius={2}
-                    In={true}
-                    width={420}
-                    height={200}
-                  />
-                </div>
-              )}
+              {!inLoading ? (
+                <>
+                  {selectBucketName === "Bucket" && (
+                    <div className="d-flex justify-content-center mt-2">
+                      <PieCharts
+                        COLORS={COLORS}
+                        data={moneyIn?.graphData}
+                        cornerRadius={2}
+                        In={true}
+                        width={420}
+                        height={200}
+                      />
+                    </div>
+                  )}
 
-              {selectBucketName === "Category" && (
-                <div className="d-flex justify-content-center mt-2">
-                  <PieCharts
-                    COLORS={COLORS1}
-                    data={moneyIn?.graphData}
-                    cornerRadius={2}
-                    In={true}
-                    width={420}
-                    height={200}
-                  />
-                </div>
-              )}
+                  {selectBucketName === "Category" && (
+                    <div className="d-flex justify-content-center mt-2">
+                      <PieCharts
+                        COLORS={COLORS1}
+                        data={moneyIn?.graphData}
+                        cornerRadius={2}
+                        In={true}
+                        width={420}
+                        height={200}
+                      />
+                    </div>
+                  )}
 
-              {selectBucketName === "Transaction" && (
-                <div className="d-flex justify-content-center">
-                  <BarsChart
-                    data={moneyIn?.graphData}
-                    width={500}
-                    height={220}
-                    barWidth={70}
-                    gradient={true}
-                    gradientNumber={4}
-                    cashFlow={true}
-                    barGrad1={"rgba(226, 242, 255, 1)"}
-                    barGrad2={"rgba(226, 242, 255, 1)"}
-                    barGrad3={"rgba(226, 242, 255, 1)"}
-                    barGrad4={"rgba(0, 74, 173, 1)"}
-                  />
-                </div>
-              )}
+                  {selectBucketName === "Transaction" && (
+                    <div className="d-flex justify-content-center">
+                      <BarsChart
+                        data={moneyIn?.graphData}
+                        width={500}
+                        height={220}
+                        barWidth={70}
+                        gradient={true}
+                        gradientNumber={4}
+                        cashFlow={true}
+                        barGrad1={"rgba(226, 242, 255, 1)"}
+                        barGrad2={"rgba(226, 242, 255, 1)"}
+                        barGrad3={"rgba(226, 242, 255, 1)"}
+                        barGrad4={"rgba(0, 74, 173, 1)"}
+                      />
+                    </div>
+                  )}
 
-              {selectBucketName === "Merchant" && (
-                <div className="d-flex justify-content-center mt-2">
-                  <PieCharts
-                    COLORS={COLORS1}
-                    data={moneyIn?.graphData}
-                    cornerRadius={2}
-                    In={true}
-                    width={420}
-                    height={200}
-                  />
-                </div>
-              )}
+                  {selectBucketName === "Merchant" && (
+                    <div className="d-flex justify-content-center mt-2">
+                      <PieCharts
+                        COLORS={COLORS1}
+                        data={moneyIn?.graphData}
+                        cornerRadius={2}
+                        In={true}
+                        width={420}
+                        height={200}
+                      />
+                    </div>
+                  )}
 
-              {selectBucketName === "Tag" && (
-                <div className="d-flex justify-content-center mt-2">
-                  <PieCharts
-                    COLORS={COLORS1}
-                    data={moneyIn?.graphData}
-                    cornerRadius={2}
-                    In={true}
-                    width={420}
-                    height={200}
-                  />
-                </div>
+                  {selectBucketName === "Tag" && (
+                    <div className="d-flex justify-content-center mt-2">
+                      <PieCharts
+                        COLORS={COLORS1}
+                        data={moneyIn?.graphData}
+                        cornerRadius={2}
+                        In={true}
+                        width={420}
+                        height={200}
+                      />
+                    </div>
+                  )}
+                </>
+              ) : (
+                <Skeleton
+                  className="rounded-2"
+                  height={"200px"}
+                  width={"100%"}
+                />
               )}
             </Col>
           </Row>
@@ -299,7 +291,7 @@ const MoneyIn = ({ accountPortfolioActive }) => {
       <Row className="mt-3 ">
         <Col>
           <DashboardCard>
-            <div className="d-flex align-items-center  gap-3">
+            <div className="d-flex align-items-center gap-3">
               <div
                 style={{
                   color: "rgba(0, 39, 91, 1)",
@@ -347,56 +339,66 @@ const MoneyIn = ({ accountPortfolioActive }) => {
             </div>
 
             <ul className="market mt-2">
-              {moneyIn?.data?.map((data, idx) => {
-                return (
-                  <li
-                    key={idx}
-                    className="d-flex justify-content-between align-items-center "
-                  >
-                    <div className="d-flex align-items-center gap-2">
-                      <Image
-                        width={"25px"}
-                        height={"25px"}
-                        style={{ borderRadius: "50%", objectFit: "contain" }}
-                        src={
-                          data?.image
-                            ? imgAddr + data?.image
-                            : "/icons/Merchant 1.png"
-                        }
-                        alt="..."
-                      />
+              {!inLoading ? (
+                moneyIn?.data?.map((data, idx) => {
+                  return (
+                    <li
+                      key={idx}
+                      className="d-flex justify-content-between align-items-center w-50 text-truncate"
+                    >
+                      <div className="d-flex align-items-center gap-2">
+                        <Image
+                          width={"25px"}
+                          height={"25px"}
+                          style={{ borderRadius: "50%", objectFit: "contain" }}
+                          src={
+                            data?.image
+                              ? imgAddr + data?.image
+                              : "/icons/Merchant 1.png"
+                          }
+                          alt="..."
+                        />
+
+                        <div
+                          style={{
+                            fontSize: "rgba(55, 73, 87, 1)",
+                            fontSize: "16px",
+                          }}
+                        >
+                          {selectBucketName !== "Transaction"
+                            ? data?.name
+                            : data?.description}
+                        </div>
+                      </div>
+
+                      {selectBucketName !== "Transaction" && (
+                        <div>{data?.percent}%</div>
+                      )}
 
                       <div
                         style={{
-                          fontSize: "rgba(55, 73, 87, 1)",
-                          fontSize: "16px",
+                          color: "var(--primary-color)",
+                          fontSize: "20px",
+                          fontWeight: 800,
                         }}
                       >
                         {selectBucketName !== "Transaction"
-                          ? data?.name
-                          : data?.description}
+                          ? data?.value
+                          : data?.amount}{" "}
+                        $
                       </div>
-                    </div>
-
-                    {selectBucketName !== "Transaction" && (
-                      <div>{data?.percent}%</div>
-                    )}
-
-                    <div
-                      style={{
-                        color: "var(--primary-color)",
-                        fontSize: "20px",
-                        fontWeight: 800,
-                      }}
-                    >
-                      {selectBucketName !== "Transaction"
-                        ? data?.value
-                        : data?.amount}{" "}
-                      $
-                    </div>
-                  </li>
-                );
-              })}
+                    </li>
+                  );
+                })
+              ) : (
+                <li>
+                  <Skeleton
+                    className="rounded-2 mb-2"
+                    height={"40px"}
+                    width={"100%"}
+                  />
+                </li>
+              )}
             </ul>
           </DashboardCard>
         </Col>

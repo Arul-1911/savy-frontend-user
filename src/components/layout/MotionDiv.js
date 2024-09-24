@@ -11,7 +11,7 @@ export default function MotionDiv(props) {
       transition={{ duration: 0.75, ease: "easeInOut" }}
       exit={{ x: "100%" }}
     >
-      <Container fluid className="py-3 px-4">
+      <Container fluid className="py-3 px-0">
         {props.children}
       </Container>
     </motion.div>
