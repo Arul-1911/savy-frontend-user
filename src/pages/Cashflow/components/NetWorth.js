@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DashboardCard from "../../../components/layout/DasboardCard";
 import { IoIosArrowUp } from "react-icons/io";
 import { Col, Row, Image } from "react-bootstrap";
@@ -6,19 +6,11 @@ import { CiCalendar } from "react-icons/ci";
 import { IoInformationCircleOutline } from "react-icons/io5";
 import SearchField from "../../../components/layout/SearchField";
 import ExcludeTransaction from "./SubComponents/ExcludeTransaction";
-import {
-  BarChart,
-  Bar,
-  Cell,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ReferenceLine,
-  ResponsiveContainer,
-} from "recharts";
+import { ResponsiveContainer } from "recharts";
 import BarsChart from "../../../components/Charts/BarsChart";
+import { getError } from "../../../utils/error";
+import { useGetCashflowNetMutation } from "../../../features/apiSlice";
+import BucketComponet from "./SubComponents/BucketComponet";
 
 const data = [
   {
@@ -47,8 +39,11 @@ const data = [
   },
 ];
 
-const NetWorth = () => {
+const NetWorth = ({ accountPortfolioActive }) => {
+  const [getCashflowNet, { isLoading }] = useGetCashflowNetMutation();
   const [excludeTransactionModal, setExcludeTransactionModal] = useState(false);
+  const [selectBucketName, setSelectBucketName] = useState("Merchent");
+  const [bucketOpen, setBucketOpen] = useState(false);
 
   const recentTransactions = [
     {
@@ -68,6 +63,24 @@ const NetWorth = () => {
     },
   ];
 
+  useEffect(() => {
+    if (accountPortfolioActive) {
+      getNetData();
+    }
+  }, [accountPortfolioActive]);
+
+  const getNetData = async () => {
+    try {
+      const data = await getCashflowNet({
+        date: "last_month",
+        filter: selectBucketName.toLowerCase(),
+      }).unwrap();
+      console.log(data);
+    } catch (error) {
+      getError(error);
+    }
+  };
+
   return (
     <div>
       <div className="mt-4">
@@ -79,10 +92,13 @@ const NetWorth = () => {
               }}
             >
               Statistics /{" "}
-              <span style={{ color: "rgba(0, 39, 91, 0.6)" }}>Bucket</span>
+              <span style={{ color: "rgba(0, 39, 91, 0.6)" }}>
+                {selectBucketName}
+              </span>
             </h3>
             <button
               className="d-flex gap-2 align-items-center"
+              onClick={() => setBucketOpen(true)}
               style={{
                 padding: "8px",
                 backgroundColor: "rgba(242, 249, 255, 1)",
@@ -94,10 +110,10 @@ const NetWorth = () => {
                 border: "1px solid rgba(92, 182, 249, 1)",
               }}
             >
-              Bucket <IoIosArrowUp size={18} />
+              {selectBucketName} <IoIosArrowUp size={18} />
             </button>
 
-            <button
+            {/* <button
               className="d-flex gap-2 align-items-center"
               style={{
                 padding: "8px",
@@ -111,7 +127,7 @@ const NetWorth = () => {
               }}
             >
               Past month <IoIosArrowUp size={18} />
-            </button>
+            </button> */}
           </div>
 
           <Row className="d-flex flex-wrap gap-4 px-2 mt-3">
@@ -326,6 +342,13 @@ const NetWorth = () => {
           </DashboardCard>
         </Col>
       </Row>
+
+      {/* Bucket  */}
+      <BucketComponet
+        onChange={setSelectBucketName}
+        show={bucketOpen}
+        hide={setBucketOpen}
+      />
 
       {/* Bucket  */}
       <ExcludeTransaction

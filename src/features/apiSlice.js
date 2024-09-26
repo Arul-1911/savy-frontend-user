@@ -93,7 +93,7 @@ export const apiSlice = createApi({
     }),
 
     getBudgets: builder.mutation({
-      query: (data) => ({
+      query: () => ({
         url: "/budget/get-budgets",
         method: "GET",
       }),
@@ -112,6 +112,13 @@ export const apiSlice = createApi({
         url: "/bill/create-bill",
         method: "POST",
         body: data,
+      }),
+    }),
+
+    getBills: builder.mutation({
+      query: () => ({
+        url: "/bill/get-bills",
+        method: "GET",
       }),
     }),
 
@@ -141,6 +148,13 @@ export const apiSlice = createApi({
     getCashflowMoneyOut: builder.mutation({
       query: ({ date, filter }) => ({
         url: `/user/get-cashflow-data-out?date=${date}&filter=${filter}`,
+        method: "GET",
+      }),
+    }),
+
+    getCashflowNet: builder.mutation({
+      query: ({ date, filter }) => ({
+        url: `/user/get-cashflow-data-net?date=${date}&filter=${filter}`,
         method: "GET",
       }),
     }),
@@ -210,12 +224,14 @@ export const {
   useGetCategoriesMutation,
 
   useCreateBillMutation,
+  useGetBillsMutation,
 
   useGetSubscriptionsMutation,
 
   useGetCashflowMutation,
   useGetCashflowMoneyInMutation,
   useGetCashflowMoneyOutMutation,
+  useGetCashflowNetMutation,
 
   useDashboardDataMutation,
 

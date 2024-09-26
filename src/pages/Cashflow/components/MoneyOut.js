@@ -83,7 +83,7 @@ const MoneyOut = ({ accountPortfolioActive }) => {
                 border: "1px solid rgba(92, 182, 249, 1)",
               }}
             >
-              {selectBucketName}
+              {selectBucketName} <IoIosArrowUp size={18} />
             </button>
             {/* 
             <button

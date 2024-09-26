@@ -140,7 +140,9 @@ const CashFlow = () => {
         {accountPortfolioActive === 3 && (
           <MoneyOut accountPortfolioActive={accountPortfolioActive} />
         )}
-        {accountPortfolioActive === 4 && <NetWorth />}
+        {accountPortfolioActive === 4 && (
+          <NetWorth accountPortfolioActive={accountPortfolioActive} />
+        )}
 
         {/* Settings  */}
         <CashFlowSettings show={settingModal} hide={setSettingModal} />

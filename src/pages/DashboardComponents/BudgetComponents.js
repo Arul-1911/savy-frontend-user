@@ -23,6 +23,7 @@ import {
   useSaveBudgetMutation,
 } from "../../features/apiSlice";
 import { LuMinusSquare } from "react-icons/lu";
+import Skeleton from "react-loading-skeleton";
 
 const BudgetComponents = ({ show, hide, active, activeLink }) => {
   const [alreadyActiveFilter, setAlreadyActiveFilter] = useState(0);
@@ -80,12 +81,16 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
   };
 
   useEffect(() => {
-    if (show) {
-      getAllCategories();
-      getAllPaydays();
+    if (active === 1) {
       getAllBudget();
+    } else if (active === 2) {
+      getAllCategories();
+    } else if (active === 3) {
+      {
+        getAllPaydays();
+      }
     }
-  }, [show]);
+  }, [active]);
 
   // ======= Getting all categories =======
   const getAllCategories = async () => {
@@ -110,8 +115,8 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
   // ======= Getting all budget =======
   const getAllBudget = async () => {
     try {
-      const { data } = await getBudgets().unwrap();
-      setBudgets(data?.budgets);
+      const { budgets } = await getBudgets().unwrap();
+      setBudgets(budgets);
     } catch (error) {
       getError(error);
     }
@@ -249,32 +254,56 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
             </div>
           </div>
 
-          <Card className="mt-3" style={{ borderRadius: "20px" }}>
+          <Card className="mt-3" style={{ borderRadius: "10px" }}>
             <Card.Body>
-              {!getBudgetLoading ? (
-                budgets?.map((data) => {
-                  return (
-                    <div
-                      key={data?._id}
-                      className="mt-2"
-                      style={{
-                        backgroundColor: "rgba(245, 247, 248, 1)",
-                        padding: "8px",
-                        borderRadius: "10px",
-                      }}
-                    >
-                      <div className=" d-flex justify-content-between align-items-center">
-                        <div className="d-flex gap-2 align-items-center">
-                          <Image src="/images/Rectangle 116.png" alt="..." />
+              {budgets?.length > 0 ? (
+                !getBudgetLoading ? (
+                  budgets?.map((data) => {
+                    return (
+                      <div
+                        key={data?._id}
+                        className="mt-2"
+                        style={{
+                          backgroundColor: "rgba(245, 247, 248, 1)",
+                          padding: "8px",
+                          borderRadius: "10px",
+                        }}
+                      >
+                        <div className=" d-flex justify-content-between align-items-center">
+                          <div className="d-flex gap-2 align-items-center">
+                            <Image src="/images/Rectangle 116.png" alt="..." />
+                            <div>
+                              <div
+                                style={{
+                                  fontWeight: 600,
+                                  color: "rgba(55, 73, 87, 1)",
+                                  fontSize: "12px",
+                                }}
+                              >
+                                Cafe & Coffee
+                              </div>
+                              <div
+                                style={{
+                                  fontWeight: 400,
+                                  color: "rgba(159, 175, 198, 1)",
+                                  fontSize: "12px",
+                                }}
+                              >
+                                $20 spent of 50
+                              </div>
+                            </div>
+                          </div>
+
                           <div>
                             <div
+                              className="text-end"
                               style={{
-                                fontWeight: 600,
-                                color: "rgba(55, 73, 87, 1)",
+                                color: "var(--primary-color)",
                                 fontSize: "12px",
+                                fontWeight: 600,
                               }}
                             >
-                              Cafe & Coffee
+                              ${data?.budget_amount}
                             </div>
                             <div
                               style={{
@@ -283,46 +312,35 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                                 fontSize: "12px",
                               }}
                             >
-                              $20 spent of 50
+                              remaining
                             </div>
                           </div>
                         </div>
-
-                        <div>
-                          <div
-                            style={{
-                              color: "var(--primary-color)",
-                              fontSize: "12px",
-                              fontWeight: 600,
-                            }}
-                          >
-                            ${data?.budget_amount}
-                          </div>
-                          <div
-                            style={{
-                              fontWeight: 400,
-                              color: "rgba(159, 175, 198, 1)",
-                              fontSize: "12px",
-                            }}
-                          >
-                            remaining
-                          </div>
+                        <div className="mt-1">
+                          <ProgressBar
+                            now={40}
+                            label={`${100}%`}
+                            visuallyHidden
+                          />
                         </div>
                       </div>
-                      <div className="mt-1">
-                        <ProgressBar
-                          now={40}
-                          label={`${100}%`}
-                          visuallyHidden
+                    );
+                  })
+                ) : (
+                  [1, 2, 3].map((_, idx) => {
+                    return (
+                      <div key={idx}>
+                        <Skeleton
+                          className="rounded-2"
+                          height={"40px"}
+                          width={"100%"}
                         />
                       </div>
-                    </div>
-                  );
-                })
+                    );
+                  })
+                )
               ) : (
-                <div className="text-center">
-                  <Spinner size="sm" />
-                </div>
+                <div className="text-center">No budget found</div>
               )}
             </Card.Body>
           </Card>
@@ -434,43 +452,55 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
               }}
             >
               <Card.Body>
-                {!isLoading ? (
-                  categories?.map((data, idx) => {
-                    return (
-                      <div
-                        key={data?._id}
-                        className="d-flex justify-content-between align-items-center mt-2"
-                      >
+                {categories.length > 0 ? (
+                  !isLoading ? (
+                    categories?.map((data, idx) => {
+                      return (
                         <div
-                          className="w-100 py-2 px-1"
-                          style={{
-                            backgroundColor:
-                              activeCat?.selectedIndex === idx
-                                ? "rgba(233, 246, 252, 1)"
-                                : activeCat?.hoverIndex === idx
-                                ? "rgba(233, 246, 252, 0.5)"
-                                : "white",
-                            cursor: "pointer",
-                            borderRadius: "5px",
-                          }}
-                          onMouseEnter={() => activeCategory(idx)}
-                          onMouseLeave={notActiveCategory}
-                          onClick={() => handleCategoryClick(idx, data)}
+                          key={data?._id}
+                          className="d-flex justify-content-between align-items-center mt-2"
                         >
-                          <div style={{ fontSize: "14px", fontWeight: 600 }}>
-                            {data?.name}
-                          </div>
-                          <div style={{ fontSize: "10px", fontWeight: 400 }}>
-                            Lifestyle
+                          <div
+                            className="w-100 py-2 px-1"
+                            style={{
+                              backgroundColor:
+                                activeCat?.selectedIndex === idx
+                                  ? "rgba(233, 246, 252, 1)"
+                                  : activeCat?.hoverIndex === idx
+                                  ? "rgba(233, 246, 252, 0.5)"
+                                  : "white",
+                              cursor: "pointer",
+                              borderRadius: "5px",
+                            }}
+                            onMouseEnter={() => activeCategory(idx)}
+                            onMouseLeave={notActiveCategory}
+                            onClick={() => handleCategoryClick(idx, data)}
+                          >
+                            <div style={{ fontSize: "14px", fontWeight: 600 }}>
+                              {data?.name}
+                            </div>
+                            <div style={{ fontSize: "10px", fontWeight: 400 }}>
+                              Lifestyle
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    );
-                  })
+                      );
+                    })
+                  ) : (
+                    [1, 2, 3, 4, 5, 6].map((_, idx) => {
+                      return (
+                        <div key={idx}>
+                          <Skeleton
+                            className="rounded-2"
+                            height={"40px"}
+                            width={"100%"}
+                          />
+                        </div>
+                      );
+                    })
+                  )
                 ) : (
-                  <div className="text-center">
-                    <Spinner size="sm" />
-                  </div>
+                  <div className="text-center">No categories found</div>
                 )}
               </Card.Body>
             </Card>
@@ -574,47 +604,63 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
               }}
             >
               <Card.Body>
-                {!paydayLoading ? (
-                  paydays?.map((data) => {
-                    return (
-                      <div
-                        key={data?._id}
-                        className="d-flex justify-content-between align-items-center mt-2"
-                      >
-                        <div className="d-flex gap-2">
-                          <div>
-                            <input
-                              type="radio"
-                              checked={selectPayday?._id === data?._id}
-                              onChange={() => setSelectPayday(data)}
-                            />
-                          </div>
-                          <div>
-                            <div style={{ fontSize: "14px", fontWeight: 600 }}>
-                              {data?.source}
-                            </div>
-                            <div style={{ fontSize: "12px", fontWeight: 400 }}>
-                              ${data?.amount}
-                            </div>
-                          </div>
-                        </div>
-
+                {paydays?.length > 0 ? (
+                  !paydayLoading ? (
+                    paydays?.map((data) => {
+                      return (
                         <div
-                          style={{
-                            fontSize: "12px",
-                            fontWeight: 600,
-                            color: "var(--primary-color)",
-                          }}
+                          key={data?._id}
+                          className="d-flex justify-content-between align-items-center mt-2"
                         >
-                          ${data?.amount}
+                          <div className="d-flex gap-2">
+                            <div>
+                              <input
+                                type="radio"
+                                checked={selectPayday?._id === data?._id}
+                                onChange={() => setSelectPayday(data)}
+                              />
+                            </div>
+                            <div>
+                              <div
+                                style={{ fontSize: "14px", fontWeight: 600 }}
+                              >
+                                {data?.source}
+                              </div>
+                              <div
+                                style={{ fontSize: "12px", fontWeight: 400 }}
+                              >
+                                ${data?.amount}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div
+                            style={{
+                              fontSize: "12px",
+                              fontWeight: 600,
+                              color: "var(--primary-color)",
+                            }}
+                          >
+                            ${data?.amount}
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })
+                      );
+                    })
+                  ) : (
+                    [1, 2, 3, 4, 5, 6].map((_, idx) => {
+                      return (
+                        <div key={idx}>
+                          <Skeleton
+                            className="rounded-2"
+                            height={"40px"}
+                            width={"100%"}
+                          />
+                        </div>
+                      );
+                    })
+                  )
                 ) : (
-                  <div className="text-center">
-                    <Spinner size="sm" />
-                  </div>
+                  <div className="text-center">No paydays found</div>
                 )}
               </Card.Body>
             </Card>

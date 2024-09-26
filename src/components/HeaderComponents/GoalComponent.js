@@ -133,70 +133,74 @@ const GoalComponent = ({ show, hide, active, activeLink }) => {
             </p>
             <Card style={{ borderRadius: "20px" }}>
               <Card.Body>
-                {!goalsLoading ? (
-                  goals?.map((data) => {
-                    return (
-                      <div
-                        className="mt-2"
-                        key={data?._id}
-                        style={{
-                          backgroundColor: "rgba(245, 247, 248, 1)",
-                          padding: "8px",
-                          borderRadius: "10px",
-                        }}
-                      >
-                        <div className=" d-flex justify-content-between align-items-center">
-                          <div className="d-flex gap-2 align-items-center">
-                            <Image
-                              src={"/images/Rectangle 116.png"}
-                              alt="..."
-                            />
-                            <div>
-                              <div
-                                style={{
-                                  fontWeight: 600,
-                                  color: "rgba(55, 73, 87, 1)",
-                                  fontSize: "12px",
-                                }}
-                              >
-                                {data?.description}
-                              </div>
-                              <div
-                                style={{
-                                  fontWeight: 600,
-                                  color: "rgba(159, 175, 198, 1)",
-                                  fontSize: "12px",
-                                }}
-                              >
-                                ${data.amount} Collected
+                {goals?.length > 0 ? (
+                  !goalsLoading ? (
+                    goals?.map((data) => {
+                      return (
+                        <div
+                          className="mt-2"
+                          key={data?._id}
+                          style={{
+                            backgroundColor: "rgba(245, 247, 248, 1)",
+                            padding: "8px",
+                            borderRadius: "10px",
+                          }}
+                        >
+                          <div className=" d-flex justify-content-between align-items-center">
+                            <div className="d-flex gap-2 align-items-center">
+                              <Image
+                                src={"/images/Rectangle 116.png"}
+                                alt="..."
+                              />
+                              <div>
+                                <div
+                                  style={{
+                                    fontWeight: 600,
+                                    color: "rgba(55, 73, 87, 1)",
+                                    fontSize: "12px",
+                                  }}
+                                >
+                                  {data?.description}
+                                </div>
+                                <div
+                                  style={{
+                                    fontWeight: 600,
+                                    color: "rgba(159, 175, 198, 1)",
+                                    fontSize: "12px",
+                                  }}
+                                >
+                                  ${data.amount} Collected
+                                </div>
                               </div>
                             </div>
-                          </div>
 
-                          <div
-                            style={{
-                              color: "var(--primary-color)",
-                              fontSize: "12px",
-                              fontWeight: 600,
-                            }}
-                          >
-                            ${data?.amount}
+                            <div
+                              style={{
+                                color: "var(--primary-color)",
+                                fontSize: "12px",
+                                fontWeight: 600,
+                              }}
+                            >
+                              ${data?.amount}
+                            </div>
+                          </div>
+                          <div className="mt-1">
+                            <ProgressBar
+                              now={data?.amount}
+                              label={`${100}%`}
+                              visuallyHidden
+                            />
                           </div>
                         </div>
-                        <div className="mt-1">
-                          <ProgressBar
-                            now={data?.amount}
-                            label={`${100}%`}
-                            visuallyHidden
-                          />
-                        </div>
-                      </div>
-                    );
-                  })
+                      );
+                    })
+                  ) : (
+                    <div className="text-center">
+                      <Spinner size="sm" />
+                    </div>
+                  )
                 ) : (
-                  <div className="text-center">
-                    <Spinner size="sm" />
-                  </div>
+                  <div className="text-center">No goals found</div>
                 )}
               </Card.Body>
             </Card>

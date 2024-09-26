@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ModalWindow from "../modals/ModalWindow";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import {
@@ -16,17 +16,24 @@ import { Filter2SVG } from "../svg/Filter2SVG";
 import Calendar from "../Calendar/Calendar";
 import Filter from "../Filter/Filter";
 import { getError } from "../../utils/error";
-import { useCreatePaydayMutation } from "../../features/apiSlice";
+import {
+  useCreatePaydayMutation,
+  useGetPaydaysMutation,
+} from "../../features/apiSlice";
+import Skeleton from "react-loading-skeleton";
 
 const PayDayComponent = ({ show, hide, active, activeLink }) => {
+  const [getPaydays, { isLoading: getPaydayLoading }] = useGetPaydaysMutation();
+  const [createPayday, { isLoading }] = useCreatePaydayMutation();
+
   const [alreadyActiveFilter, setAlreadyActiveFilter] = useState(0);
   const [alreadyActiveCalendar, setAlreadyActiveCalendar] = useState(0);
-  const [createPayday, { isLoading }] = useCreatePaydayMutation();
 
   const [paydayName, setPaydayName] = useState("");
   const [payDayDate, setPaydayDate] = useState(null);
   const [selectPayDayPeriod, setSelectPayDayPeriod] = useState("");
   const [amount, setAmount] = useState("");
+  const [paydays, setPaydays] = useState([]);
 
   const paydayPeriod = [
     {
@@ -70,6 +77,19 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
     }
   };
 
+  useEffect(() => {
+    if (active === 3) getAllPadays();
+  }, [active]);
+
+  const getAllPadays = async () => {
+    try {
+      const { paydays } = await getPaydays().unwrap();
+      setPaydays(paydays);
+    } catch (error) {
+      getError(error);
+    }
+  };
+
   return (
     <>
       <ModalWindow show={show} onHide={hide}>
@@ -95,7 +115,7 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
               </div>
             </div>
 
-            <Card className="mt-3" style={{ borderRadius: "20px" }}>
+            <Card className="mt-3" style={{ borderRadius: "10px" }}>
               <Card.Body>
                 <div className="d-flex align-items-center justify-content-between">
                   <div>
@@ -488,184 +508,97 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
               </div>
             </div>
 
-            <Card className="mt-3" style={{ borderRadius: "20px" }}>
+            <Card className="mt-3" style={{ borderRadius: "10px" }}>
               <Card.Body>
-                <div
-                  className="mt-2"
-                  style={{
-                    backgroundColor: "rgba(245, 247, 248, 1)",
-                    padding: "8px",
-                    borderRadius: "10px",
-                  }}
-                >
-                  <div className=" d-flex justify-content-between align-items-center">
-                    <div className="d-flex gap-2 align-items-center">
-                      <Image src="/images/Rectangle 116.png" alt="..." />
-                      <div>
+                {paydays?.length > 0 ? (
+                  !getPaydayLoading ? (
+                    paydays?.map((data) => {
+                      return (
                         <div
+                          key={data?._id}
+                          className="mt-2"
                           style={{
-                            fontWeight: 600,
-                            color: "rgba(55, 73, 87, 1)",
-                            fontSize: "12px",
+                            backgroundColor: "rgba(245, 247, 248, 1)",
+                            padding: "8px",
+                            borderRadius: "10px",
                           }}
                         >
-                          Cafe & Coffee
-                        </div>
-                        <div
-                          style={{
-                            fontWeight: 400,
-                            color: "rgba(159, 175, 198, 1)",
-                            fontSize: "12px",
-                          }}
-                        >
-                          $20 spent of 50
-                        </div>
-                      </div>
-                    </div>
+                          <div className=" d-flex justify-content-between align-items-center">
+                            <div className="d-flex gap-2 align-items-center">
+                              <Image
+                                src="/images/Rectangle 116.png"
+                                alt="..."
+                              />
+                              <div>
+                                <div
+                                  style={{
+                                    fontWeight: 600,
+                                    color: "rgba(55, 73, 87, 1)",
+                                    fontSize: "12px",
+                                  }}
+                                >
+                                  {data?.source}
+                                </div>
+                                <div
+                                  style={{
+                                    fontWeight: 400,
+                                    color: "rgba(159, 175, 198, 1)",
+                                    fontSize: "12px",
+                                  }}
+                                >
+                                  $20 spent of 50
+                                </div>
+                              </div>
+                            </div>
 
-                    <div>
-                      <div
-                        style={{
-                          color: "var(--primary-color)",
-                          fontSize: "12px",
-                          fontWeight: 600,
-                        }}
-                      >
-                        $30.00
-                      </div>
-                      <div
-                        style={{
-                          fontWeight: 400,
-                          color: "rgba(159, 175, 198, 1)",
-                          fontSize: "12px",
-                        }}
-                      >
-                        remaining
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-1">
-                    <ProgressBar now={40} label={`${100}%`} visuallyHidden />
-                  </div>
-                </div>
-
-                <div
-                  className="mt-2"
-                  style={{
-                    backgroundColor: "rgba(245, 247, 248, 1)",
-                    padding: "8px",
-                    borderRadius: "10px",
-                  }}
-                >
-                  <div className=" d-flex justify-content-between align-items-center">
-                    <div className="d-flex gap-2 align-items-center">
-                      <Image src="/images/Rectangle 116.png" alt="..." />
-                      <div>
-                        <div
-                          style={{
-                            fontWeight: 600,
-                            color: "rgba(55, 73, 87, 1)",
-                            fontSize: "12px",
-                          }}
-                        >
-                          Cafe & Coffee
+                            <div>
+                              <div
+                                className="text-end"
+                                style={{
+                                  color: "var(--primary-color)",
+                                  fontSize: "12px",
+                                  fontWeight: 600,
+                                }}
+                              >
+                                ${data?.amount}
+                              </div>
+                              <div
+                                style={{
+                                  fontWeight: 400,
+                                  color: "rgba(159, 175, 198, 1)",
+                                  fontSize: "12px",
+                                }}
+                              >
+                                remaining
+                              </div>
+                            </div>
+                          </div>
+                          <div className="mt-1">
+                            <ProgressBar
+                              now={40}
+                              label={`${100}%`}
+                              visuallyHidden
+                            />
+                          </div>
                         </div>
-                        <div
-                          style={{
-                            fontWeight: 400,
-                            color: "rgba(159, 175, 198, 1)",
-                            fontSize: "12px",
-                          }}
-                        >
-                          $20 spent of 50
+                      );
+                    })
+                  ) : (
+                    [paydays?.length].map((_, idx) => {
+                      return (
+                        <div key={idx}>
+                          <Skeleton
+                            className="rounded-2"
+                            height={"40px"}
+                            width={"100%"}
+                          />
                         </div>
-                      </div>
-                    </div>
-
-                    <div>
-                      <div
-                        style={{
-                          color: "var(--primary-color)",
-                          fontSize: "12px",
-                          fontWeight: 600,
-                        }}
-                      >
-                        $30.00
-                      </div>
-                      <div
-                        style={{
-                          fontWeight: 400,
-                          color: "rgba(159, 175, 198, 1)",
-                          fontSize: "12px",
-                        }}
-                      >
-                        remaining
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-1">
-                    <ProgressBar now={40} label={`${100}%`} visuallyHidden />
-                  </div>
-                </div>
-
-                <div
-                  className="mt-2"
-                  style={{
-                    backgroundColor: "rgba(245, 247, 248, 1)",
-                    padding: "8px",
-                    borderRadius: "10px",
-                  }}
-                >
-                  <div className=" d-flex justify-content-between align-items-center">
-                    <div className="d-flex gap-2 align-items-center">
-                      <Image src="/images/Rectangle 116.png" alt="..." />
-                      <div>
-                        <div
-                          style={{
-                            fontWeight: 600,
-                            color: "rgba(55, 73, 87, 1)",
-                            fontSize: "12px",
-                          }}
-                        >
-                          Cafe & Coffee
-                        </div>
-                        <div
-                          style={{
-                            fontWeight: 400,
-                            color: "rgba(159, 175, 198, 1)",
-                            fontSize: "12px",
-                          }}
-                        >
-                          $20 spent of 50
-                        </div>
-                      </div>
-                    </div>
-
-                    <div>
-                      <div
-                        style={{
-                          color: "var(--primary-color)",
-                          fontSize: "12px",
-                          fontWeight: 600,
-                        }}
-                      >
-                        $30.00
-                      </div>
-                      <div
-                        style={{
-                          fontWeight: 400,
-                          color: "rgba(159, 175, 198, 1)",
-                          fontSize: "12px",
-                        }}
-                      >
-                        remaining
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-1">
-                    <ProgressBar now={40} label={`${100}%`} visuallyHidden />
-                  </div>
-                </div>
+                      );
+                    })
+                  )
+                ) : (
+                  <div className="text-center">No paydays found</div>
+                )}
               </Card.Body>
             </Card>
 

@@ -88,24 +88,22 @@ export default function LoginScreen() {
 
         <Row>
           <Col>
-            {isLoading ? (
-              <Button type="submit" className="float-sm-end" disabled>
+            <Button
+              type="submit"
+              className="float-sm-end w-100 "
+              style={{
+                background: "var(--primary-color)",
+                fontWeight: 700,
+                fontSize: "12px",
+                padding: "10px",
+              }}
+            >
+              {!isLoading ? (
+                "Continue"
+              ) : (
                 <Spinner animation="border" size="sm" />
-              </Button>
-            ) : (
-              <Button
-                type="submit"
-                className="float-sm-end w-100 "
-                style={{
-                  background: "var(--primary-color)",
-                  fontWeight: 700,
-                  fontSize: "12px",
-                  padding: "10px",
-                }}
-              >
-                Continue
-              </Button>
-            )}
+              )}
+            </Button>
           </Col>
 
           <Link

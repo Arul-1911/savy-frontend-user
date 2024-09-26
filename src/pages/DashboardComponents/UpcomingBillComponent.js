@@ -18,14 +18,20 @@ import Calendar from "../../components/Calendar/Calendar";
 import { CiSquareMinus } from "react-icons/ci";
 import {
   useCreateBillMutation,
+  useGetBillsMutation,
   useGetBudgetsMutation,
   useGetCategoriesMutation,
-  useSaveBudgetMutation,
 } from "../../features/apiSlice";
 import { getError } from "../../utils/error";
 import { LuMinusSquare } from "react-icons/lu";
+import Skeleton from "react-loading-skeleton";
 
 const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
+  const [getCategories, { isLoading }] = useGetCategoriesMutation();
+  const [getBudgets, { isLoading: budgetLoading }] = useGetBudgetsMutation();
+  const [createBill, { isLoading: billLoading }] = useCreateBillMutation();
+  const [getBills, { isLoading: getBillsLoading }] = useGetBillsMutation();
+
   const [selectActivePeriod, setSelectActivePeriod] = useState(0);
   const [activePopularCat, setActivePopularCat] = useState(0);
   const [activeCat, setActiveCat] = useState(null);
@@ -33,15 +39,12 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
 
   const [openCalendar, setOpenCalendar] = useState(false);
 
-  const [getCategories, { isLoading }] = useGetCategoriesMutation();
-  const [getBudgets, { isLoading: budgetLoading }] = useGetBudgetsMutation();
-  const [createBill, { isLoading: billLoading }] = useCreateBillMutation();
-
   const [categories, setCategories] = useState([]);
   const [budgets, setBudgets] = useState([]);
   const [selectCategory, setSelectCategory] = useState("");
   const [selectBudget, setSelectBudget] = useState("");
   const [amount, setAmount] = useState("");
+  const [bills, setBills] = useState([]);
 
   const periods = [
     "Next 7 days",
@@ -105,17 +108,30 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
   };
 
   useEffect(() => {
-    if (show) {
+    if (active === 1) {
+      getAllBills();
+    } else if (active === 3) {
       getAllCategories();
+    } else if (active === 4) {
       getAllBudget();
     }
-  }, [show]);
+  }, [active]);
+
+  const getAllBills = async () => {
+    try {
+      const { bills } = await getBills().unwrap();
+      setBills(bills);
+    } catch (error) {
+      getError(error);
+    }
+  };
 
   // ======= Getting all categories =======
   const getAllCategories = async () => {
     try {
-      const { data } = await getCategories();
-      setCategories(data?.categorys);
+      const { categorys } = await getCategories().unwrap();
+      console.log(categorys);
+      setCategories(categorys);
     } catch (error) {
       getError(error);
     }
@@ -124,8 +140,8 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
   // ======= Getting all budget =======
   const getAllBudget = async () => {
     try {
-      const { data } = await getBudgets().unwrap();
-      setBudgets(data?.budgets);
+      const { budgets } = await getBudgets().unwrap();
+      setBudgets(budgets);
     } catch (error) {
       getError(error);
     }
@@ -248,184 +264,93 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
             </div>
           </div>
 
-          <Card className="mt-3" style={{ borderRadius: "20px" }}>
+          <Card className="mt-3" style={{ borderRadius: "10px" }}>
             <Card.Body>
-              <div
-                className="mt-2"
-                style={{
-                  backgroundColor: "rgba(245, 247, 248, 1)",
-                  padding: "8px",
-                  borderRadius: "10px",
-                }}
-              >
-                <div className=" d-flex justify-content-between align-items-center">
-                  <div className="d-flex gap-2 align-items-center">
-                    <Image src="/images/Rectangle 116.png" alt="..." />
-                    <div>
+              {bills?.length > 0 ? (
+                !getBillsLoading ? (
+                  bills?.map((data) => {
+                    return (
                       <div
+                        className="mt-2"
                         style={{
-                          fontWeight: 600,
-                          color: "rgba(55, 73, 87, 1)",
-                          fontSize: "12px",
+                          backgroundColor: "rgba(245, 247, 248, 1)",
+                          padding: "8px",
+                          borderRadius: "10px",
                         }}
                       >
-                        Cafe & Coffee
-                      </div>
-                      <div
-                        style={{
-                          fontWeight: 400,
-                          color: "rgba(159, 175, 198, 1)",
-                          fontSize: "12px",
-                        }}
-                      >
-                        $20 spent of 50
-                      </div>
-                    </div>
-                  </div>
+                        <div className=" d-flex justify-content-between align-items-center">
+                          <div className="d-flex gap-2 align-items-center">
+                            <Image src="/images/Rectangle 116.png" alt="..." />
+                            <div>
+                              <div
+                                style={{
+                                  fontWeight: 600,
+                                  color: "rgba(55, 73, 87, 1)",
+                                  fontSize: "12px",
+                                }}
+                              >
+                                Cafe & Coffee
+                              </div>
+                              <div
+                                style={{
+                                  fontWeight: 400,
+                                  color: "rgba(159, 175, 198, 1)",
+                                  fontSize: "12px",
+                                }}
+                              >
+                                $20 spent of 50
+                              </div>
+                            </div>
+                          </div>
 
-                  <div>
-                    <div
-                      style={{
-                        color: "var(--primary-color)",
-                        fontSize: "12px",
-                        fontWeight: 600,
-                      }}
-                    >
-                      $30.00
-                    </div>
-                    <div
-                      style={{
-                        fontWeight: 400,
-                        color: "rgba(159, 175, 198, 1)",
-                        fontSize: "12px",
-                      }}
-                    >
-                      remaining
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-1">
-                  <ProgressBar now={40} label={`${100}%`} visuallyHidden />
-                </div>
-              </div>
-
-              <div
-                className="mt-2"
-                style={{
-                  backgroundColor: "rgba(245, 247, 248, 1)",
-                  padding: "8px",
-                  borderRadius: "10px",
-                }}
-              >
-                <div className=" d-flex justify-content-between align-items-center">
-                  <div className="d-flex gap-2 align-items-center">
-                    <Image src="/images/Rectangle 116.png" alt="..." />
-                    <div>
-                      <div
-                        style={{
-                          fontWeight: 600,
-                          color: "rgba(55, 73, 87, 1)",
-                          fontSize: "12px",
-                        }}
-                      >
-                        Cafe & Coffee
+                          <div>
+                            <div
+                              className="text-end"
+                              style={{
+                                color: "var(--primary-color)",
+                                fontSize: "12px",
+                                fontWeight: 600,
+                              }}
+                            >
+                              ${data?.budget_amount}
+                            </div>
+                            <div
+                              style={{
+                                fontWeight: 400,
+                                color: "rgba(159, 175, 198, 1)",
+                                fontSize: "12px",
+                              }}
+                            >
+                              remaining
+                            </div>
+                          </div>
+                        </div>
+                        <div className="mt-1">
+                          <ProgressBar
+                            now={40}
+                            label={`${100}%`}
+                            visuallyHidden
+                          />
+                        </div>
                       </div>
-                      <div
-                        style={{
-                          fontWeight: 400,
-                          color: "rgba(159, 175, 198, 1)",
-                          fontSize: "12px",
-                        }}
-                      >
-                        $20 spent of 50
+                    );
+                  })
+                ) : (
+                  [1, 2, 3].map((_, idx) => {
+                    return (
+                      <div key={idx}>
+                        <Skeleton
+                          className="rounded-2"
+                          height={"40px"}
+                          width={"100%"}
+                        />
                       </div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <div
-                      style={{
-                        color: "var(--primary-color)",
-                        fontSize: "12px",
-                        fontWeight: 600,
-                      }}
-                    >
-                      $30.00
-                    </div>
-                    <div
-                      style={{
-                        fontWeight: 400,
-                        color: "rgba(159, 175, 198, 1)",
-                        fontSize: "12px",
-                      }}
-                    >
-                      remaining
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-1">
-                  <ProgressBar now={40} label={`${100}%`} visuallyHidden />
-                </div>
-              </div>
-
-              <div
-                className="mt-2"
-                style={{
-                  backgroundColor: "rgba(245, 247, 248, 1)",
-                  padding: "8px",
-                  borderRadius: "10px",
-                }}
-              >
-                <div className=" d-flex justify-content-between align-items-center">
-                  <div className="d-flex gap-2 align-items-center">
-                    <Image src="/images/Rectangle 116.png" alt="..." />
-                    <div>
-                      <div
-                        style={{
-                          fontWeight: 600,
-                          color: "rgba(55, 73, 87, 1)",
-                          fontSize: "12px",
-                        }}
-                      >
-                        Cafe & Coffee
-                      </div>
-                      <div
-                        style={{
-                          fontWeight: 400,
-                          color: "rgba(159, 175, 198, 1)",
-                          fontSize: "12px",
-                        }}
-                      >
-                        $20 spent of 50
-                      </div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <div
-                      style={{
-                        color: "var(--primary-color)",
-                        fontSize: "12px",
-                        fontWeight: 600,
-                      }}
-                    >
-                      $30.00
-                    </div>
-                    <div
-                      style={{
-                        fontWeight: 400,
-                        color: "rgba(159, 175, 198, 1)",
-                        fontSize: "12px",
-                      }}
-                    >
-                      remaining
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-1">
-                  <ProgressBar now={40} label={`${100}%`} visuallyHidden />
-                </div>
-              </div>
+                    );
+                  })
+                )
+              ) : (
+                <div className="text-center">No bills found</div>
+              )}
             </Card.Body>
           </Card>
 
@@ -597,43 +522,55 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
               }}
             >
               <Card.Body>
-                {!isLoading ? (
-                  categories?.map((data, idx) => {
-                    return (
-                      <div
-                        key={idx}
-                        className="d-flex justify-content-between align-items-center mt-2"
-                      >
+                {categories?.length > 0 ? (
+                  !isLoading ? (
+                    categories?.map((data, idx) => {
+                      return (
                         <div
-                          className="w-100 py-1 px-1"
-                          style={{
-                            backgroundColor:
-                              activeCat?.selectedIndex === idx
-                                ? "rgba(233, 246, 252, 1)"
-                                : activeCat?.hoverIndex === idx
-                                ? "rgba(233, 246, 252, 0.5)"
-                                : "white",
-                            cursor: "pointer",
-                            borderRadius: "5px",
-                          }}
-                          onMouseEnter={() => activeCategory(idx)}
-                          onMouseLeave={notActiveCategory}
-                          onClick={() => handleCategoryClick(idx, data)}
+                          key={idx}
+                          className="d-flex justify-content-between align-items-center mt-2"
                         >
-                          <div style={{ fontSize: "12px", fontWeight: 600 }}>
-                            {data?.name}
-                          </div>
-                          <div style={{ fontSize: "10px", fontWeight: 400 }}>
-                            Lifestyle
+                          <div
+                            className="w-100 py-1 px-1"
+                            style={{
+                              backgroundColor:
+                                activeCat?.selectedIndex === idx
+                                  ? "rgba(233, 246, 252, 1)"
+                                  : activeCat?.hoverIndex === idx
+                                  ? "rgba(233, 246, 252, 0.5)"
+                                  : "white",
+                              cursor: "pointer",
+                              borderRadius: "5px",
+                            }}
+                            onMouseEnter={() => activeCategory(idx)}
+                            onMouseLeave={notActiveCategory}
+                            onClick={() => handleCategoryClick(idx, data)}
+                          >
+                            <div style={{ fontSize: "12px", fontWeight: 600 }}>
+                              {data?.name}
+                            </div>
+                            <div style={{ fontSize: "10px", fontWeight: 400 }}>
+                              Lifestyle
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    );
-                  })
+                      );
+                    })
+                  ) : (
+                    [1, 2, 3, 4, 5, 6].map((_, idx) => {
+                      return (
+                        <div key={idx}>
+                          <Skeleton
+                            className="rounded-2"
+                            height={"40px"}
+                            width={"100%"}
+                          />
+                        </div>
+                      );
+                    })
+                  )
                 ) : (
-                  <div className="text-center">
-                    <Spinner size="sm" />
-                  </div>
+                  <div>No category found</div>
                 )}
               </Card.Body>
             </Card>
@@ -737,54 +674,64 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
               }}
             >
               <Card.Body>
-                {!budgetLoading ? (
-                  budgets?.map((data, idx) => {
-                    return (
-                      <div
-                        key={idx}
-                        className="d-flex justify-content-between align-items-center mt-2 w-100 py-2 px-1"
-                        style={{
-                          backgroundColor:
-                            activeBudget?.selectedIndex === idx
-                              ? "rgba(233, 246, 252, 1)"
-                              : activeBudget?.hoverIndex === idx
-                              ? "rgba(233, 246, 252, 0.5)"
-                              : "white",
-                          cursor: "pointer",
-                          borderRadius: "5px",
-                        }}
-                        onMouseEnter={() => activeBudgets(idx)}
-                        onMouseLeave={notActiveBudgets}
-                        onClick={() => handleBudgetClick(idx, data)}
-                      >
-                        <div className="d-flex gap-2">
-                          <div>
-                            <div style={{ fontSize: "12px", fontWeight: 600 }}>
-                              Restaurant
-                            </div>
-                            <div style={{ fontSize: "10px", fontWeight: 400 }}>
-                              ${data?.budget_amount}
+                {!budgetLoading
+                  ? budgets?.map((data, idx) => {
+                      return (
+                        <div
+                          key={idx}
+                          className="d-flex justify-content-between align-items-center mt-2 w-100 py-2 px-1"
+                          style={{
+                            backgroundColor:
+                              activeBudget?.selectedIndex === idx
+                                ? "rgba(233, 246, 252, 1)"
+                                : activeBudget?.hoverIndex === idx
+                                ? "rgba(233, 246, 252, 0.5)"
+                                : "white",
+                            cursor: "pointer",
+                            borderRadius: "5px",
+                          }}
+                          onMouseEnter={() => activeBudgets(idx)}
+                          onMouseLeave={notActiveBudgets}
+                          onClick={() => handleBudgetClick(idx, data)}
+                        >
+                          <div className="d-flex gap-2">
+                            <div>
+                              <div
+                                style={{ fontSize: "12px", fontWeight: 600 }}
+                              >
+                                Restaurant
+                              </div>
+                              <div
+                                style={{ fontSize: "10px", fontWeight: 400 }}
+                              >
+                                ${data?.budget_amount}
+                              </div>
                             </div>
                           </div>
-                        </div>
 
-                        <div
-                          style={{
-                            fontSize: "12px",
-                            fontWeight: 600,
-                            color: "var(--primary-color)",
-                          }}
-                        >
-                          ${data?.budget_amount}
+                          <div
+                            style={{
+                              fontSize: "12px",
+                              fontWeight: 600,
+                              color: "var(--primary-color)",
+                            }}
+                          >
+                            ${data?.budget_amount}
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })
-                ) : (
-                  <div className="text-center">
-                    <Spinner size="sm" />
-                  </div>
-                )}
+                      );
+                    })
+                  : [1, 2, 3, 4, 5, 6].map((_, idx) => {
+                      return (
+                        <div key={idx}>
+                          <Skeleton
+                            className="rounded-2"
+                            height={"40px"}
+                            width={"100%"}
+                          />
+                        </div>
+                      );
+                    })}
               </Card.Body>
             </Card>
 

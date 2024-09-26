@@ -12,7 +12,7 @@ import {
 import { MotionDiv } from "../components";
 import DashboardCard from "../components/layout/DasboardCard";
 import "./Dashboard.css";
-import SearchField from "../components/layout/SearchField";
+// import SearchField from "../components/layout/SearchField";
 import { Link } from "react-router-dom";
 import BudgetComponents from "./DashboardComponents/BudgetComponents";
 import UpcomingBillComponents from "./DashboardComponents/UpcomingBillComponent";
@@ -20,7 +20,7 @@ import PieCharts from "../components/Charts/PieChart";
 import BarsChart from "../components/Charts/BarsChart";
 import { useDashboardDataMutation } from "../features/apiSlice";
 import { getError } from "../utils/error";
-import { formatTime } from "../components/FormateDateTime/FormatDateTime";
+import { formatDate } from "../components/FormateDateTime/FormatDateTime";
 import Skeleton from "react-loading-skeleton";
 
 const data = [
@@ -1094,7 +1094,7 @@ export default function Dashboard() {
                                   fontWeight: 400,
                                 }}
                               >
-                                at {formatTime(data?.time)}
+                                at {formatDate(data?.date)}
                               </div>
                             </div>
                           </div>
