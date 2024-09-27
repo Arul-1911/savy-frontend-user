@@ -22,7 +22,6 @@ export default function LoginScreen() {
     e.preventDefault();
     try {
       const data = await loginUser({ email, password }).unwrap();
-      console.log(data);
       dispatch(setAccessToken(data?.token));
       dispatch(setUser(data?.user));
       navigate("/user/dashboard");
@@ -65,6 +64,7 @@ export default function LoginScreen() {
           type={"email"}
           onChange={(e) => setEmail(e.target.value)}
           value={email}
+          required
         />
 
         <FormField
@@ -72,6 +72,7 @@ export default function LoginScreen() {
           placeholder={"Password"}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          required
         />
 
         <p

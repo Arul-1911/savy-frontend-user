@@ -21,6 +21,7 @@ const Transactions = () => {
   const [transactionId, setTransactionId] = useState("");
   const [date, setDate] = useState("");
   const [query, setQuery] = useState("");
+  const skeletonArray = [1, 2, 3, 4, 5, 6, 7];
 
   useEffect(() => {
     getAllTransactions();
@@ -40,7 +41,10 @@ const Transactions = () => {
     setTransactionId(tranId);
   };
 
-  const skeletonArray = [1, 2, 3, 4, 5, 6, 7];
+  const clearAllFilter = () => {
+    setQuery("");
+    setDate("");
+  };
 
   return (
     <MotionDiv>
@@ -84,11 +88,26 @@ const Transactions = () => {
             src="/icons/Filter.png"
             alt="..."
           />
+
+          <button
+            className="px-3 py-1"
+            style={{
+              backgroundColor: "#004AAD14",
+              color: "var(--primary-color)",
+              border: "1px solid #D2EBFD",
+              borderRadius: "18px",
+              fontSize: "12px",
+              fontWeight: 600,
+            }}
+            onClick={clearAllFilter}
+          >
+            Clear All
+          </button>
         </div>
 
         <ul className="market mt-2">
           {!isLoading
-            ? transactions?.map((tran, idx) => {
+            ? transactions?.map((tran) => {
                 return (
                   <li
                     style={{ cursor: "pointer" }}

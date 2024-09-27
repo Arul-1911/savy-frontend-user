@@ -6,9 +6,9 @@ import { useUserRegistrationMutation } from "../features/apiSlice";
 import LoginCard from "../components/layout/LoginCard";
 
 export default function Passcode() {
+  const [userRegistration, { isLoading }] = useUserRegistrationMutation();
   const [code, setCode] = useState("");
   const [confirmCode, setConfirmCode] = useState("");
-  const [userRegistration, { isLoading }] = useUserRegistrationMutation();
 
   const handlePasscode = async (e) => {
     e.preventDefault();
@@ -62,6 +62,7 @@ export default function Passcode() {
           maxLength={6}
           onChange={(e) => setCode(e.target.value)}
           value={code}
+          required
         />
 
         <FormField
@@ -70,6 +71,7 @@ export default function Passcode() {
           value={confirmCode}
           maxLength={6}
           onChange={(e) => setConfirmCode(e.target.value)}
+          required
         />
 
         <p
@@ -86,24 +88,18 @@ export default function Passcode() {
 
         <Row>
           <Col>
-            {isLoading ? (
-              <Button type="submit" className="float-sm-end" disabled>
-                <Spinner animation="border" size="sm" />
-              </Button>
-            ) : (
-              <Button
-                type="submit"
-                className="float-sm-end w-100 "
-                style={{
-                  background: "var(--primary-color)",
-                  fontWeight: 700,
-                  fontSize: "12px",
-                  padding: "10px",
-                }}
-              >
-                Continue
-              </Button>
-            )}
+            <Button
+              type="submit"
+              className="float-sm-end w-100 "
+              style={{
+                background: "var(--primary-color)",
+                fontWeight: 700,
+                fontSize: "12px",
+                padding: "10px",
+              }}
+            >
+              {isLoading ? <Spinner size="sm" /> : "Continue"}
+            </Button>
           </Col>
         </Row>
       </Form>

@@ -3,7 +3,6 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import { AdminProtectedRoute } from "./routes";
 import { Header, SideNavBar, NotFound } from "./components";
 import { useDispatch, useSelector } from "react-redux";
-
 import GetStart from "./pages/GetStart";
 import {
   LoginScreen,

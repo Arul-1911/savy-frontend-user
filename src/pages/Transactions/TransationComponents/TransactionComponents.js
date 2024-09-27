@@ -30,6 +30,7 @@ import { getError } from "../../../utils/error";
 import Skeleton from "react-loading-skeleton";
 import { LuMinusSquare } from "react-icons/lu";
 import { formatDate } from "../../../components/FormateDateTime/FormatDateTime";
+import { getSuccess } from "../../../utils/success";
 
 const TransactionComponents = ({
   show,
@@ -185,6 +186,7 @@ const TransactionComponents = ({
         transactionId,
         transData: transData,
       }).unwrap();
+      getSuccess(data?.success);
       hide(false);
     } catch (error) {
       getError(error);
@@ -198,12 +200,16 @@ const TransactionComponents = ({
     formData.append("tag_name", tagName);
     try {
       const data = await createTag(formData).unwrap();
+      getSuccess(data?.message);
       hide(false);
       activeLink(1);
+      setTagName("");
     } catch (error) {
       getError(error);
     }
   };
+
+  console.log(tagLoading);
 
   return (
     <ModalWindow show={show} onHide={hide}>

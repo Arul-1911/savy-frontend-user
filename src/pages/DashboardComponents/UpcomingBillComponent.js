@@ -17,6 +17,7 @@ import "../Dashboard.css";
 import Calendar from "../../components/Calendar/Calendar";
 import { CiSquareMinus } from "react-icons/ci";
 import {
+  imgAddr,
   useCreateBillMutation,
   useGetBillsMutation,
   useGetBudgetsMutation,
@@ -25,6 +26,7 @@ import {
 import { getError } from "../../utils/error";
 import { LuMinusSquare } from "react-icons/lu";
 import Skeleton from "react-loading-skeleton";
+import { getSuccess } from "../../utils/success";
 
 const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
   const [getCategories, { isLoading }] = useGetCategoriesMutation();
@@ -107,6 +109,32 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
     setSelectBudget(value);
   };
 
+  // required category
+  const handleChangeCategory = () => {
+    try {
+      if (!selectCategory) {
+        throw new Error("Category is required");
+      } else {
+        activeLink(4);
+      }
+    } catch (error) {
+      getError(error);
+    }
+  };
+
+  // required budget
+  const handleChangeBudget = () => {
+    try {
+      if (!selectBudget) {
+        throw new Error("Budget is required");
+      } else {
+        activeLink(5);
+      }
+    } catch (error) {
+      getError(error);
+    }
+  };
+
   useEffect(() => {
     if (active === 1) {
       getAllBills();
@@ -130,7 +158,6 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
   const getAllCategories = async () => {
     try {
       const { categorys } = await getCategories().unwrap();
-      console.log(categorys);
       setCategories(categorys);
     } catch (error) {
       getError(error);
@@ -147,7 +174,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
     }
   };
 
-  const handleBudget = async (e) => {
+  const handleCreateBill = async (e) => {
     e.preventDefault();
     try {
       const budgetData = {
@@ -155,9 +182,14 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
         budget: selectBudget._id,
         budget_amount: amount,
       };
-      await createBill(budgetData).unwrap();
+      const data = await createBill(budgetData).unwrap();
+      getSuccess(data?.message);
       hide(true);
       activeLink(1);
+      setActiveCat(null);
+      setActiveBudget(null);
+      setSelectBudget("");
+      setSelectCategory("");
     } catch (error) {
       getError(error);
     }
@@ -167,7 +199,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
     <ModalWindow show={show} onHide={hide}>
       {active === 1 && (
         <>
-          <div className="d-flex">
+          <div className="d-flex align-items-center">
             <IoArrowBackCircleOutline
               color="rgba(92, 182, 249, 1)"
               cursor={"pointer"}
@@ -176,7 +208,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
             />
             <div
               style={{
-                margin: "auto",
+                margin: "auto 180px",
                 fontWeight: 600,
                 fontSize: "18px",
                 color: "rgba(55, 73, 87, 1)",
@@ -546,11 +578,29 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                             onMouseLeave={notActiveCategory}
                             onClick={() => handleCategoryClick(idx, data)}
                           >
-                            <div style={{ fontSize: "12px", fontWeight: 600 }}>
-                              {data?.name}
-                            </div>
-                            <div style={{ fontSize: "10px", fontWeight: 400 }}>
-                              Lifestyle
+                            <div className="d-flex align-items-center gap-3">
+                              <img
+                                style={{
+                                  objectFit: "contain",
+                                  width: "25px",
+                                  height: "25px",
+                                  borderRadius: "50%",
+                                }}
+                                src={imgAddr + data?.image}
+                                alt="..."
+                              />
+                              <div>
+                                <div
+                                  style={{ fontSize: "12px", fontWeight: 600 }}
+                                >
+                                  {data?.name}
+                                </div>
+                                <div
+                                  style={{ fontSize: "10px", fontWeight: 400 }}
+                                >
+                                  Lifestyle
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -570,7 +620,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                     })
                   )
                 ) : (
-                  <div>No category found</div>
+                  <div className="text-center">No category found</div>
                 )}
               </Card.Body>
             </Card>
@@ -578,7 +628,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
             <div className="text-center">
               <button
                 className="w-75 mt-3"
-                onClick={() => activeLink(4)}
+                onClick={handleChangeCategory}
                 style={{
                   backgroundColor: "var(--primary-color)",
                   padding: "10px",
@@ -738,7 +788,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
             <div className="text-center">
               <button
                 className="w-75 mt-3"
-                onClick={() => activeLink(5)}
+                onClick={handleChangeBudget}
                 style={{
                   backgroundColor: "var(--primary-color)",
                   padding: "10px",
@@ -769,7 +819,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
       )}
 
       {active === 5 && (
-        <Form onSubmit={handleBudget}>
+        <Form onSubmit={handleCreateBill}>
           <div className="d-flex">
             <IoArrowBackCircleOutline
               color="rgba(92, 182, 249, 1)"
@@ -793,10 +843,14 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
           <Card style={{ borderRadius: "10px" }} className="mt-4">
             <div className="text-center">
               <Image
-                style={{ marginTop: "-30px" }}
+                style={{
+                  marginTop: "-30px",
+                  backgroundColor: "white",
+                  objectFit: "contain",
+                }}
                 width={"45px"}
                 height={"45px"}
-                src="/icons/Merchent 3.png"
+                src={imgAddr + selectCategory?.image}
                 alt="..."
               />
               <div style={{ color: "var(--primary-color)", fontWeight: 600 }}>

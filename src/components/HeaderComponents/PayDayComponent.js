@@ -16,6 +16,7 @@ import { Filter2SVG } from "../svg/Filter2SVG";
 import Calendar from "../Calendar/Calendar";
 import Filter from "../Filter/Filter";
 import { getError } from "../../utils/error";
+import { getSuccess } from "../../utils/success";
 import {
   useCreatePaydayMutation,
   useGetPaydaysMutation,
@@ -54,6 +55,21 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
     },
   ];
 
+  useEffect(() => {
+    if (active === 3) getAllPadays();
+  }, [active]);
+
+  // ========= get paydays ===========
+  const getAllPadays = async () => {
+    try {
+      const { paydays } = await getPaydays().unwrap();
+      setPaydays(paydays);
+    } catch (error) {
+      getError(error);
+    }
+  };
+
+  // ========= create payday ===========
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -65,7 +81,11 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
     };
 
     try {
-      await createPayday(paydayData).unwrap();
+      if (!payDayDate || !selectPayDayPeriod) {
+        throw new Error("All fields are required!");
+      }
+      const data = await createPayday(paydayData).unwrap();
+      getSuccess(data?.message);
       setPaydayName("");
       setPaydayDate(null);
       setSelectPayDayPeriod("");
@@ -77,25 +97,36 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
     }
   };
 
-  useEffect(() => {
-    if (active === 3) getAllPadays();
-  }, [active]);
+  // ========= edit payday ===========
+  // const handleEditPayday = async (e) => {
+  //   e.preventDefault();
 
-  const getAllPadays = async () => {
-    try {
-      const { paydays } = await getPaydays().unwrap();
-      setPaydays(paydays);
-    } catch (error) {
-      getError(error);
-    }
-  };
+  //   const paydayData = {
+  //     source: paydayName,
+  //     pay_date: payDayDate,
+  //     pay_period: selectPayDayPeriod,
+  //     amount: amount,
+  //   };
+
+  //   try {
+  //     await createPayday(paydayData).unwrap();
+  //     // setEditPaydayName("");
+  //     // setEditPaydayDate(null);
+  //     // setEditSelectPayDayPeriod("");
+  //     // setEditAmount("");
+  //     hide(false);
+  //     activeLink(1);
+  //   } catch (error) {
+  //     getError(error);
+  //   }
+  // };
 
   return (
     <>
       <ModalWindow show={show} onHide={hide}>
         {active === 1 && (
           <>
-            <div className="d-flex">
+            <div className="d-flex align-items-center">
               <IoArrowBackCircleOutline
                 color="rgba(92, 182, 249, 1)"
                 cursor={"pointer"}
@@ -104,7 +135,7 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
               />
               <div
                 style={{
-                  margin: "auto",
+                  margin: "auto 170px",
                   fontWeight: 600,
                   fontSize: "18px",
                   color: "rgba(55, 73, 87, 1)",
@@ -431,7 +462,7 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
 
         {active === 3 && (
           <>
-            <div className="d-flex">
+            <div className="d-flex align-items-center">
               <IoArrowBackCircleOutline
                 color="rgba(92, 182, 249, 1)"
                 cursor={"pointer"}
@@ -440,7 +471,7 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
               />
               <div
                 style={{
-                  margin: "auto",
+                  margin: "auto 180px",
                   fontWeight: 600,
                   fontSize: "18px",
                   color: "rgba(55, 73, 87, 1)",
@@ -584,7 +615,7 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
                       );
                     })
                   ) : (
-                    [paydays?.length].map((_, idx) => {
+                    [1, 2, 3].map((_, idx) => {
                       return (
                         <div key={idx}>
                           <Skeleton
@@ -602,7 +633,7 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
               </Card.Body>
             </Card>
 
-            <div className="d-flex justify-content-center mt-3">
+            {/* <div className="d-flex justify-content-center mt-3">
               <button
                 onClick={() => activeLink(2)}
                 className="w-75"
@@ -618,7 +649,7 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
               >
                 Edit
               </button>
-            </div>
+            </div> */}
           </>
         )}
 

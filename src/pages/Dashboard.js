@@ -18,7 +18,10 @@ import BudgetComponents from "./DashboardComponents/BudgetComponents";
 import UpcomingBillComponents from "./DashboardComponents/UpcomingBillComponent";
 import PieCharts from "../components/Charts/PieChart";
 import BarsChart from "../components/Charts/BarsChart";
-import { useDashboardDataMutation } from "../features/apiSlice";
+import {
+  useDashboardDataMutation,
+  useGetBillsMutation,
+} from "../features/apiSlice";
 import { getError } from "../utils/error";
 import { formatDate } from "../components/FormateDateTime/FormatDateTime";
 import Skeleton from "react-loading-skeleton";
@@ -55,6 +58,8 @@ const COLORS = [
 ];
 
 export default function Dashboard() {
+  const [dashboardData, { isLoading }] = useDashboardDataMutation();
+  const [getBills, { isLoading: billLoading }] = useGetBillsMutation();
   const [accountPortfolioActive, setAccountPortfolioActive] = useState(1);
   const [expenseActive, setExpenseActive] = useState(1);
 
@@ -64,8 +69,8 @@ export default function Dashboard() {
   const [showBills, setShowBills] = useState(false);
   const [showActiveBills, setShowActiveBills] = useState(1);
 
-  const [dashboardData, { isLoading }] = useDashboardDataMutation();
   const [dashboard, setDashboard] = useState({});
+  const [bills, setBills] = useState();
 
   const upcomingPayments = [
     {
@@ -91,6 +96,21 @@ export default function Dashboard() {
   useEffect(() => {
     getDashboardData();
   }, []);
+
+  useEffect(() => {
+    if (expenseActive === 2) {
+      getUpcomingBills();
+    }
+  }, [expenseActive]);
+
+  const getUpcomingBills = async () => {
+    try {
+      const { bills } = await getBills().unwrap();
+      setBills(bills);
+    } catch (error) {
+      getError(error);
+    }
+  };
 
   const getDashboardData = async () => {
     try {
@@ -537,59 +557,69 @@ export default function Dashboard() {
 
                   {expenseActive === 2 && (
                     <>
-                      {upcomingPayments.map((paymt) => {
-                        return (
-                          <div
-                            className="d-flex align-items-center justify-content-between mt-2"
-                            style={{
-                              borderRadius: "10px",
-                              backgroundColor: "rgba(245, 247, 248, 1)",
-                              padding: "10px",
-                            }}
-                          >
-                            <div className="d-flex align-items-center gap-2">
-                              <Image
-                                style={{
-                                  objectFit: "contain",
-                                  width: "40px",
-                                  height: "40px",
-                                  borderRadius: "50%",
-                                }}
-                                src={paymt?.icons}
-                                alt="..."
-                              />
-                              <div>
-                                <div
-                                  style={{
-                                    fontSize: "12px",
-                                    color: "rgba(55, 73, 87, 1)",
-                                    fontWeight: 600,
-                                  }}
-                                >
-                                  {paymt?.text}
-                                </div>
-                                <div
-                                  style={{
-                                    fontSize: "10px",
-                                    color: "rgba(55, 73, 87, 0.8)",
-                                  }}
-                                >
-                                  {paymt?.subText}
-                                </div>
-                              </div>
-                            </div>
+                      {!billLoading ? (
+                        bills?.slice(0, 4)?.map((paymt) => {
+                          return (
                             <div
+                              className="d-flex align-items-center justify-content-between mt-2"
                               style={{
-                                fontSize: "14px",
-                                color: "var(--primary-color)",
-                                fontWeight: 600,
+                                borderRadius: "10px",
+                                backgroundColor: "rgba(245, 247, 248, 1)",
+                                padding: "10px",
                               }}
                             >
-                              {paymt?.amount}
+                              <div className="d-flex align-items-center gap-2">
+                                <Image
+                                  style={{
+                                    objectFit: "contain",
+                                    width: "40px",
+                                    height: "40px",
+                                    borderRadius: "50%",
+                                  }}
+                                  src="/icons/disnep.png"
+                                  alt="..."
+                                />
+                                <div>
+                                  <div
+                                    style={{
+                                      fontSize: "12px",
+                                      color: "rgba(55, 73, 87, 1)",
+                                      fontWeight: 600,
+                                    }}
+                                  >
+                                    {paymt?.category}
+                                  </div>
+                                  <div
+                                    style={{
+                                      fontSize: "10px",
+                                      color: "rgba(55, 73, 87, 0.8)",
+                                    }}
+                                  >
+                                    {paymt?.category}
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                style={{
+                                  fontSize: "14px",
+                                  color: "var(--primary-color)",
+                                  fontWeight: 600,
+                                }}
+                              >
+                                ${paymt?.budget_amount}
+                              </div>
                             </div>
-                          </div>
-                        );
-                      })}
+                          );
+                        })
+                      ) : (
+                        <Col className={`p-2`}>
+                          <Skeleton
+                            className="rounded-2"
+                            height={"250px"}
+                            width={"100%"}
+                          />
+                        </Col>
+                      )}
                     </>
                   )}
 
@@ -638,7 +668,7 @@ export default function Dashboard() {
                                 fontWeight: 700,
                               }}
                             >
-                              $20,000.00
+                              ${dashboard?.card1?.["Total amount"]}
                             </div>
                           </Col>
 
@@ -667,7 +697,7 @@ export default function Dashboard() {
                                 fontWeight: 700,
                               }}
                             >
-                              $20,000.00
+                              ${dashboard?.card1?.["Total amount"]}
                             </div>
                           </Col>
                         </Row>
@@ -710,7 +740,7 @@ export default function Dashboard() {
                               <div
                                 style={{ fontSize: "14px", fontWeight: 600 }}
                               >
-                                $1,900
+                                ${dashboard?.card1?.moneyInVsMoneyOut[0].uv}
                               </div>
                               <div
                                 style={{ fontSize: "12px", fontWeight: 400 }}
@@ -728,7 +758,7 @@ export default function Dashboard() {
                               <div
                                 style={{ fontSize: "14px", fontWeight: 600 }}
                               >
-                                -$3,286
+                                ${dashboard?.card1?.moneyInVsMoneyOut[1].uv}
                               </div>
                               <div
                                 style={{ fontSize: "12px", fontWeight: 400 }}

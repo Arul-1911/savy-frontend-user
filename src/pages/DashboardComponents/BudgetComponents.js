@@ -17,6 +17,7 @@ import { IoIosSettings } from "react-icons/io";
 import { FiEdit } from "react-icons/fi";
 import { getError } from "../../utils/error";
 import {
+  imgAddr,
   useGetBudgetsMutation,
   useGetCategoriesMutation,
   useGetPaydaysMutation,
@@ -24,6 +25,7 @@ import {
 } from "../../features/apiSlice";
 import { LuMinusSquare } from "react-icons/lu";
 import Skeleton from "react-loading-skeleton";
+import { getSuccess } from "../../utils/success";
 
 const BudgetComponents = ({ show, hide, active, activeLink }) => {
   const [alreadyActiveFilter, setAlreadyActiveFilter] = useState(0);
@@ -123,11 +125,27 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
   };
 
   const handleCheckCat = () => {
-    if (selectCategory !== "") activeLink(3);
+    try {
+      if (!selectCategory) {
+        throw new Error("Category is required!");
+      } else {
+        activeLink(3);
+      }
+    } catch (error) {
+      getError(error);
+    }
   };
 
   const handleCheckPayday = () => {
-    if (selectPayday) activeLink(5);
+    try {
+      if (!selectPayday) {
+        throw new Error("Payday is required!");
+      } else {
+        activeLink(5);
+      }
+    } catch (error) {
+      getError(error);
+    }
   };
 
   // ======= Format date =======
@@ -153,8 +171,11 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
     };
     try {
       const data = await saveBudget(budgetData).unwrap();
-      console.log(data);
+      getSuccess(data?.message);
       activeLink(7);
+      setActiveCat(null);
+      setSelectCategory("");
+      setSelectPayday("");
     } catch (error) {
       getError(error);
     }
@@ -182,19 +203,19 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
               Budget Setup
             </div>
             <div
-              style={{
-                backgroundColor: "rgba(245, 247, 248, 1)",
-                borderRadius: "100%",
-                height: "30px",
-                width: "30px",
-                padding: "2px",
-              }}
+            // style={{
+            //   backgroundColor: "rgba(245, 247, 248, 1)",
+            //   borderRadius: "100%",
+            //   height: "30px",
+            //   width: "30px",
+            //   padding: "2px",
+            // }}
             >
-              <IoIosSettings
+              {/* <IoIosSettings
                 size={25}
                 cursor={"pointer"}
                 color="rgba(92, 182, 249, 1)"
-              />
+              /> */}
             </div>
           </div>
 
@@ -423,12 +444,26 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                             : { backgroundColor: "none" }
                         }
                       >
-                        <div style={{ fontSize: "14px", fontWeight: 600 }}>
-                          {data?.name}
+                        <div className="d-flex align-items-center gap-3">
+                          <img
+                            style={{
+                              width: "25px",
+                              height: "25px",
+                              borderRadius: "50%",
+                              objectFit: "contain",
+                            }}
+                            src={imgAddr + data?.image}
+                            alt="..."
+                          />
+                          <div>
+                            <div style={{ fontSize: "14px", fontWeight: 600 }}>
+                              {data?.name}
+                            </div>
+                            <div style={{ fontSize: "12px", fontWeight: 400 }}>
+                              Lifestyle
+                            </div>
+                          </div>
                         </div>
-                        {/* <div style={{ fontSize: "12px", fontWeight: 400 }}>
-                          {data?.subText}
-                        </div> */}
                       </div>
                     </div>
                   );
@@ -452,7 +487,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
               }}
             >
               <Card.Body>
-                {categories.length > 0 ? (
+                {categories?.length > 0 ? (
                   !isLoading ? (
                     categories?.map((data, idx) => {
                       return (
@@ -476,11 +511,29 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                             onMouseLeave={notActiveCategory}
                             onClick={() => handleCategoryClick(idx, data)}
                           >
-                            <div style={{ fontSize: "14px", fontWeight: 600 }}>
-                              {data?.name}
-                            </div>
-                            <div style={{ fontSize: "10px", fontWeight: 400 }}>
-                              Lifestyle
+                            <div className="d-flex align-items-center gap-3">
+                              <img
+                                style={{
+                                  width: "25px",
+                                  height: "25px",
+                                  borderRadius: "50%",
+                                  objectFit: "contain",
+                                }}
+                                src={imgAddr + data?.image}
+                                alt="..."
+                              />
+                              <div>
+                                <div
+                                  style={{ fontSize: "14px", fontWeight: 600 }}
+                                >
+                                  {data?.name}
+                                </div>
+                                <div
+                                  style={{ fontSize: "10px", fontWeight: 400 }}
+                                >
+                                  Lifestyle
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -564,9 +617,9 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                       <div style={{ fontSize: "14px", fontWeight: 600 }}>
                         {selectCategory?.name}
                       </div>
-                      {/* <div style={{ fontSize: "12px", fontWeight: 400 }}>
+                      <div style={{ fontSize: "12px", fontWeight: 400 }}>
                         Lifestyle
-                      </div> */}
+                      </div>
                     </div>
                   </div>
                   <div
@@ -731,7 +784,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
             />
             <div
               style={{
-                margin: "auto",
+                margin: "auto 160px",
                 fontWeight: 600,
                 fontSize: "16px",
                 color: "rgba(55, 73, 87, 1)",
@@ -745,14 +798,18 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
           <Card style={{ borderRadius: "10px" }} className="mt-4">
             <div className="text-center">
               <Image
-                style={{ marginTop: "-30px" }}
+                style={{
+                  marginTop: "-30px",
+                  backgroundColor: "white",
+                  objectFit: "contain",
+                }}
                 width={"45px"}
                 height={"45px"}
-                src="/icons/Merchent 3.png"
+                src={imgAddr + selectCategory?.image}
                 alt="..."
               />
               <div style={{ color: "var(--primary-color)", fontWeight: 600 }}>
-                Cafes & Coffee
+                {selectCategory?.name}
               </div>
               <div
                 style={{
@@ -853,11 +910,11 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                 <div className="d-flex justify-content-between align-items-center mt-2">
                   <div className="d-flex gap-2">
                     <div>
-                      <input type="checkbox" />
+                      <LuMinusSquare />
                     </div>
                     <div>
                       <div style={{ fontSize: "14px", fontWeight: 600 }}>
-                        Cafes & Coffee
+                        {selectCategory?.name}
                       </div>
                       <div style={{ fontSize: "12px", fontWeight: 400 }}>
                         Lifestyle
@@ -865,10 +922,12 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                     </div>
                   </div>
                   <div
+                    onClick={() => activeLink(2)}
                     style={{
                       fontSize: "14px",
                       fontWeight: 600,
                       color: "var(--primary-color)",
+                      cursor: "pointer",
                     }}
                   >
                     Changes
@@ -907,7 +966,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
             />
             <div
               style={{
-                margin: "auto",
+                margin: "auto 160px",
                 fontWeight: 600,
                 fontSize: "16px",
                 color: "rgba(55, 73, 87, 1)",
@@ -921,14 +980,18 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
           <Card style={{ borderRadius: "10px" }} className="mt-4">
             <div className="text-center">
               <Image
-                style={{ marginTop: "-30px" }}
+                style={{
+                  marginTop: "-30px",
+                  backgroundColor: "white",
+                  objectFit: "contain",
+                }}
                 width={"45px"}
                 height={"45px"}
-                src="/icons/Merchent 3.png"
+                src={imgAddr + selectCategory?.image}
                 alt="..."
               />
               <div style={{ color: "var(--primary-color)", fontWeight: 600 }}>
-                Cafes & Coffee
+                {selectCategory?.name}
               </div>
               <div
                 style={{
@@ -1097,7 +1160,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
             />
             <div
               style={{
-                margin: "auto",
+                margin: "auto 160px",
                 fontWeight: 600,
                 fontSize: "16px",
                 color: "rgba(55, 73, 87, 1)",
@@ -1111,14 +1174,18 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
           <Card style={{ borderRadius: "10px" }} className="mt-4">
             <div className="text-center">
               <Image
-                style={{ marginTop: "-30px" }}
+                style={{
+                  marginTop: "-30px",
+                  backgroundColor: "white",
+                  objectFit: "contain",
+                }}
                 width={"45px"}
                 height={"45px"}
-                src="/icons/Merchent 3.png"
+                src={imgAddr + selectCategory?.image}
                 alt="..."
               />
               <div style={{ color: "var(--primary-color)", fontWeight: 600 }}>
-                Cafes & Coffee
+                {selectCategory?.name}
               </div>
               <div
                 style={{
