@@ -38,6 +38,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
   const [activePopularCat, setActivePopularCat] = useState(0);
   const [activeCat, setActiveCat] = useState(null);
   const [activeBudget, setActiveBudget] = useState(null);
+  const [alreadyActiveCalendar, setAlreadyActiveCalendar] = useState(0);
 
   const [openCalendar, setOpenCalendar] = useState(false);
 
@@ -47,6 +48,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
   const [selectBudget, setSelectBudget] = useState("");
   const [amount, setAmount] = useState("");
   const [bills, setBills] = useState([]);
+  const [date, setDate] = useState();
 
   const periods = [
     "Next 7 days",
@@ -181,6 +183,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
         category: selectCategory._id,
         budget: selectBudget._id,
         budget_amount: amount,
+        date: date ? date : "",
       };
       const data = await createBill(budgetData).unwrap();
       getSuccess(data?.message);
@@ -598,7 +601,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                                 <div
                                   style={{ fontSize: "10px", fontWeight: 400 }}
                                 >
-                                  Lifestyle
+                                  {data?.bucket?.name}
                                 </div>
                               </div>
                             </div>
@@ -620,7 +623,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                     })
                   )
                 ) : (
-                  <div className="text-center">No category found</div>
+                  <div className="text-center">No category found!</div>
                 )}
               </Card.Body>
             </Card>
@@ -685,7 +688,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                         {selectCategory?.name}
                       </div>
                       <div style={{ fontSize: "12px", fontWeight: 400 }}>
-                        Lifestyle
+                        {selectCategory?.bucket?.name}
                       </div>
                     </div>
                   </div>
@@ -973,132 +976,144 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
 
       {active === 6 && (
         <>
-          <div className="d-flex">
-            <IoArrowBackCircleOutline
-              color="rgba(92, 182, 249, 1)"
-              cursor={"pointer"}
-              size={28}
-              onClick={() => activeLink(4)}
-            />
-            <div
-              style={{
-                margin: "auto 170px",
-                fontWeight: 600,
-                fontSize: "16px",
-                color: "rgba(55, 73, 87, 1)",
-              }}
-              className="text-center"
-            >
-              Add bills
-            </div>
-          </div>
-
-          <Card style={{ borderRadius: "10px" }} className="mt-4">
-            <div className="text-center">
-              <Image
-                style={{ marginTop: "-30px" }}
-                width={"45px"}
-                height={"45px"}
-                src="/icons/Merchent 3.png"
-                alt="..."
+          <Form onSubmit={handleCreateBill}>
+            <div className="d-flex">
+              <IoArrowBackCircleOutline
+                color="rgba(92, 182, 249, 1)"
+                cursor={"pointer"}
+                size={28}
+                onClick={() => activeLink(4)}
               />
-              <div style={{ color: "var(--primary-color)", fontWeight: 600 }}>
-                Electricity
-              </div>
               <div
                 style={{
-                  fontSize: "12px",
-                  fontWeight: 400,
-                  color: "rgba(191, 191, 191, 1)",
+                  margin: "auto 170px",
+                  fontWeight: 600,
+                  fontSize: "16px",
+                  color: "rgba(55, 73, 87, 1)",
                 }}
+                className="text-center"
               >
-                Recommended: $29.49
+                Add bills
               </div>
             </div>
 
-            <div className="px-3">
-              <FormField type={"text"} placeholder={"Enter budget"} />
-            </div>
-          </Card>
-
-          <div>
-            <div
-              className="my-3"
-              style={{ fontWeight: 600, color: "var(--primary-color)" }}
-            >
-              Select date
-            </div>
-            <InputGroup className="mb-3">
-              <Form.Control
-                className="form-field"
-                style={{ borderRight: "none" }}
-                placeholder="Select period"
-                aria-label="Username"
-                aria-describedby="basic-addon1"
-              />
-              <InputGroup.Text
-                onClick={() => setOpenCalendar(false)}
-                style={{ cursor: "pointer" }}
-                id="basic-addon1"
-                className="grp_input"
-              >
-                <CalendarSVG />
-              </InputGroup.Text>
-            </InputGroup>
-          </div>
-
-          <div>
-            <div
-              className="my-3"
-              style={{ fontWeight: 600, color: "var(--primary-color)" }}
-            >
-              Selected Category
-            </div>
-            <Card style={{ borderRadius: " 10px" }}>
-              <Card.Body>
-                <div className="d-flex justify-content-between align-items-center mt-2">
-                  <div className="d-flex gap-2">
-                    <div>
-                      <input type="checkbox" />
-                    </div>
-                    <div>
-                      <div style={{ fontSize: "14px", fontWeight: 600 }}>
-                        Cafes & Coffee
-                      </div>
-                      <div style={{ fontSize: "12px", fontWeight: 400 }}>
-                        Lifestyle
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "14px",
-                      fontWeight: 600,
-                      color: "var(--primary-color)",
-                    }}
-                  >
-                    Changes
-                  </div>
+            <Card style={{ borderRadius: "10px" }} className="mt-4">
+              <div className="text-center">
+                <Image
+                  style={{ marginTop: "-30px" }}
+                  width={"45px"}
+                  height={"45px"}
+                  src="/icons/Merchent 3.png"
+                  alt="..."
+                />
+                <div style={{ color: "var(--primary-color)", fontWeight: 600 }}>
+                  Electricity
                 </div>
-              </Card.Body>
-            </Card>
-          </div>
+                <div
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: 400,
+                    color: "rgba(191, 191, 191, 1)",
+                  }}
+                >
+                  Recommended: ${amount}
+                </div>
+              </div>
 
-          <div className="text-center">
-            <button
-              className="w-75 mt-3"
-              onClick={() => hide(false)}
-              style={{
-                backgroundColor: "var(--primary-color)",
-                padding: "10px",
-                color: "white",
-                border: "none",
-                borderRadius: "10px",
-              }}
-            >
-              Confirm
-            </button>
-          </div>
+              <div className="px-3">
+                <FormField
+                  type={"text"}
+                  onChange={(e) => setAmount(e.target.value)}
+                  value={amount}
+                  placeholder={"Enter budget"}
+                />
+              </div>
+            </Card>
+
+            <div>
+              <div
+                className="my-3"
+                style={{ fontWeight: 600, color: "var(--primary-color)" }}
+              >
+                Select date
+              </div>
+              <InputGroup className="mb-3">
+                <Form.Control
+                  className="form-field"
+                  style={{ borderRight: "none" }}
+                  placeholder="Select period"
+                  aria-label="Username"
+                  aria-describedby="basic-addon1"
+                  value={date}
+                />
+                <InputGroup.Text
+                  onClick={() => {
+                    activeLink(8);
+                    setAlreadyActiveCalendar(6);
+                  }}
+                  style={{ cursor: "pointer" }}
+                  id="basic-addon1"
+                  className="grp_input"
+                >
+                  <CalendarSVG />
+                </InputGroup.Text>
+              </InputGroup>
+            </div>
+
+            <div>
+              <div
+                className="my-3"
+                style={{ fontWeight: 600, color: "var(--primary-color)" }}
+              >
+                Selected Category
+              </div>
+              <Card style={{ borderRadius: " 10px" }}>
+                <Card.Body>
+                  <div className="d-flex justify-content-between align-items-center mt-2">
+                    <div className="d-flex gap-2">
+                      <div>
+                        <LuMinusSquare color="var(--primary-color)" />
+                      </div>
+                      <div>
+                        <div style={{ fontSize: "14px", fontWeight: 600 }}>
+                          {selectCategory?.name}
+                        </div>
+                        <div style={{ fontSize: "12px", fontWeight: 400 }}>
+                          {selectCategory?.bucket?.name}
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      onClick={() => activeLink(2)}
+                      style={{
+                        fontSize: "14px",
+                        fontWeight: 600,
+                        color: "var(--primary-color)",
+                      }}
+                    >
+                      Changes
+                    </div>
+                  </div>
+                </Card.Body>
+              </Card>
+            </div>
+
+            <div className="text-center">
+              <button
+                className="w-75 mt-3"
+                type="submit"
+                style={{
+                  backgroundColor: "var(--primary-color)",
+                  padding: "10px",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "10px",
+                }}
+              >
+                Confirm
+              </button>
+            </div>
+          </Form>
         </>
       )}
 
@@ -1399,8 +1414,18 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
           </div>
         </>
       )}
+      {active === 8 && (
+        <Calendar
+          already={alreadyActiveCalendar}
+          activeLink={activeLink}
+          active={active}
+          setDate={setDate}
+          date={date}
+          hide={true}
+        />
+      )}
 
-      <Calendar show={openCalendar} hide={setOpenCalendar} />
+      {/* <Calendar show={openCalendar} hide={setOpenCalendar} setDate={setDate} /> */}
     </ModalWindow>
   );
 };

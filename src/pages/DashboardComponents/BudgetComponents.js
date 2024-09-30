@@ -4,10 +4,12 @@ import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { Filter2SVG } from "../../components/svg/Filter2SVG";
 import {
   Card,
+  Col,
   Form,
   Image,
   InputGroup,
   ProgressBar,
+  Row,
   Spinner,
 } from "react-bootstrap";
 import { CalendarSVG } from "../../components/svg/CalendarSVG";
@@ -26,6 +28,7 @@ import {
 import { LuMinusSquare } from "react-icons/lu";
 import Skeleton from "react-loading-skeleton";
 import { getSuccess } from "../../utils/success";
+import FormField from "../../components/layout/FormField";
 
 const BudgetComponents = ({ show, hide, active, activeLink }) => {
   const [alreadyActiveFilter, setAlreadyActiveFilter] = useState(0);
@@ -46,6 +49,8 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
   const [selectPayday, setSelectPayday] = useState("");
   const [budget, setBudget] = useState("");
   const [bill, setBill] = useState(null);
+  const [date, setDate] = useState(null);
+  const [categoryName, setCategoryName] = useState("");
 
   const budgetPeriod = [
     {
@@ -162,20 +167,31 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
   };
 
   // ======= Create budget =======
-  const handleCreateBudget = async () => {
+  const handleCreateBudget = async (e) => {
+    e.preventDefault();
     const budgetData = {
       category: selectCategory?._id,
-      payday: selectPayday?._id,
+      payday: selectPayday ? selectPayday?._id : "",
       budget_amount: budget,
+      date: date ? date : "",
       is_bill: bill === "on" ? true : false,
     };
     try {
       const data = await saveBudget(budgetData).unwrap();
       getSuccess(data?.message);
-      activeLink(7);
+      activeLink(1);
       setActiveCat(null);
       setSelectCategory("");
       setSelectPayday("");
+    } catch (error) {
+      getError(error);
+    }
+  };
+
+  // ======== Create category ======
+  const handleCreateCategory = (e) => {
+    e.preventDefault();
+    try {
     } catch (error) {
       getError(error);
     }
@@ -185,7 +201,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
     <ModalWindow show={show} onHide={hide}>
       {active === 1 && (
         <>
-          <div className="d-flex justify-content-between">
+          <div className="d-flex align-items-center">
             <IoArrowBackCircleOutline
               color="rgba(92, 182, 249, 1)"
               cursor={"pointer"}
@@ -194,6 +210,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
             />
             <div
               style={{
+                margin: "auto 150px",
                 fontWeight: 600,
                 fontSize: "18px",
                 color: "rgba(55, 73, 87, 1)",
@@ -201,21 +218,6 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
               className="text-center"
             >
               Budget Setup
-            </div>
-            <div
-            // style={{
-            //   backgroundColor: "rgba(245, 247, 248, 1)",
-            //   borderRadius: "100%",
-            //   height: "30px",
-            //   width: "30px",
-            //   padding: "2px",
-            // }}
-            >
-              {/* <IoIosSettings
-                size={25}
-                cursor={"pointer"}
-                color="rgba(92, 182, 249, 1)"
-              /> */}
             </div>
           </div>
 
@@ -275,7 +277,14 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
             </div>
           </div>
 
-          <Card className="mt-3" style={{ borderRadius: "10px" }}>
+          <Card
+            className="mt-3"
+            style={{
+              borderRadius: "10px",
+              height: "250px",
+              overflowY: "scroll",
+            }}
+          >
             <Card.Body>
               {budgets?.length > 0 ? (
                 !getBudgetLoading ? (
@@ -292,7 +301,16 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                       >
                         <div className=" d-flex justify-content-between align-items-center">
                           <div className="d-flex gap-2 align-items-center">
-                            <Image src="/images/Rectangle 116.png" alt="..." />
+                            <Image
+                              style={{
+                                width: "25px",
+                                height: "25px",
+                                borderRadius: "50%",
+                                // objectFit: "contain",
+                              }}
+                              src={imgAddr + data?.category?.image}
+                              alt="..."
+                            />
                             <div>
                               <div
                                 style={{
@@ -301,7 +319,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                                   fontSize: "12px",
                                 }}
                               >
-                                Cafe & Coffee
+                                {data?.category?.name}
                               </div>
                               <div
                                 style={{
@@ -310,7 +328,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                                   fontSize: "12px",
                                 }}
                               >
-                                $20 spent of 50
+                                $20 spent of {data?.budget_amount}
                               </div>
                             </div>
                           </div>
@@ -337,18 +355,18 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                             </div>
                           </div>
                         </div>
-                        <div className="mt-1">
+                        {/* <div className="mt-1">
                           <ProgressBar
                             now={40}
                             label={`${100}%`}
                             visuallyHidden
                           />
-                        </div>
+                        </div> */}
                       </div>
                     );
                   })
                 ) : (
-                  [1, 2, 3].map((_, idx) => {
+                  [1, 2, 3, 4, 5].map((_, idx) => {
                     return (
                       <div key={idx}>
                         <Skeleton
@@ -361,7 +379,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                   })
                 )
               ) : (
-                <div className="text-center">No budget found</div>
+                <div className="text-center">No budget found!</div>
               )}
             </Card.Body>
           </Card>
@@ -386,25 +404,44 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
 
       {active === 2 && (
         <>
-          <div className="d-flex">
-            <IoArrowBackCircleOutline
-              color="rgba(92, 182, 249, 1)"
-              cursor={"pointer"}
-              size={28}
-              onClick={() => activeLink(1)}
-            />
-            <div
-              style={{
-                margin: "auto",
-                fontWeight: 600,
-                fontSize: "16px",
-                color: "rgba(55, 73, 87, 1)",
-              }}
-              className="text-center"
-            >
-              Budget Setup
-            </div>
-          </div>
+          <Row>
+            <Col>
+              <IoArrowBackCircleOutline
+                color="rgba(92, 182, 249, 1)"
+                cursor={"pointer"}
+                size={28}
+                onClick={() => activeLink(1)}
+              />
+            </Col>
+
+            <Col>
+              <div
+                style={{
+                  fontWeight: 600,
+                  fontSize: "16px",
+                  color: "rgba(55, 73, 87, 1)",
+                }}
+                className="text-center"
+              >
+                Budget Setup
+              </div>
+            </Col>
+
+            <Col className="text-end">
+              <button
+                onClick={() => activeLink(10)}
+                style={{
+                  fontSize: "14px",
+                  backgroundColor: "white",
+                  color: "var(--primary-color)",
+                  border: "1px solid rgba(226, 242, 255, 1)",
+                  borderRadius: "20px",
+                }}
+              >
+                Create
+              </button>
+            </Col>
+          </Row>
 
           <div
             className="text-center mt-2 px-4"
@@ -418,7 +455,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
             organise widgets below.
           </div>
 
-          <div>
+          {/* <div>
             <div
               className="my-3"
               style={{ fontWeight: 600, color: "var(--primary-color)" }}
@@ -460,7 +497,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                               {data?.name}
                             </div>
                             <div style={{ fontSize: "12px", fontWeight: 400 }}>
-                              Lifestyle
+                              {data?.bucket?.name}
                             </div>
                           </div>
                         </div>
@@ -470,7 +507,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                 })}
               </Card.Body>
             </Card>
-          </div>
+          </div> */}
 
           <div>
             <div
@@ -517,7 +554,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                                   width: "25px",
                                   height: "25px",
                                   borderRadius: "50%",
-                                  objectFit: "contain",
+                                  // objectFit: "contain",
                                 }}
                                 src={imgAddr + data?.image}
                                 alt="..."
@@ -531,7 +568,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                                 <div
                                   style={{ fontSize: "10px", fontWeight: 400 }}
                                 >
-                                  Lifestyle
+                                  {data?.bucket?.name}
                                 </div>
                               </div>
                             </div>
@@ -601,7 +638,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
 
           <div>
             <div
-              className="my-3"
+              className="mt-3"
               style={{ fontWeight: 600, color: "var(--primary-color)" }}
             >
               Selected Category
@@ -609,7 +646,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
             <Card style={{ borderRadius: " 10px" }}>
               <Card.Body>
                 <div className="d-flex justify-content-between align-items-center mt-2">
-                  <div className="d-flex align-items-center gap-2">
+                  <div className="d-flex gap-2">
                     <div>
                       <LuMinusSquare color="var(--primary-color)" />
                     </div>
@@ -618,7 +655,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                         {selectCategory?.name}
                       </div>
                       <div style={{ fontSize: "12px", fontWeight: 400 }}>
-                        Lifestyle
+                        {selectCategory?.bucket?.name}
                       </div>
                     </div>
                   </div>
@@ -713,32 +750,10 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                     })
                   )
                 ) : (
-                  <div className="text-center">No paydays found</div>
+                  <div className="text-center">No paydays found!</div>
                 )}
               </Card.Body>
             </Card>
-
-            <div className="mt-2">
-              <div
-                style={{ color: "rgba(55, 73, 87, 0.7)", textAlign: "center" }}
-              >
-                Or
-              </div>
-              <div className="text-center">
-                <button
-                  className="w-25 mt-3"
-                  style={{
-                    backgroundColor: "white",
-                    padding: "10px",
-                    color: "var(--primary-color)",
-                    border: "1px solid rgba(226, 242, 255, 1)",
-                    borderRadius: "20px",
-                  }}
-                >
-                  Create
-                </button>
-              </div>
-            </div>
 
             <div className="text-center">
               <button
@@ -757,6 +772,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
 
               <button
                 className="w-75 mt-3"
+                disabled={selectPayday && true}
                 onClick={() => activeLink(4)}
                 style={{
                   color: "var(--primary-color)",
@@ -775,183 +791,189 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
 
       {active === 4 && (
         <>
-          <div className="d-flex">
-            <IoArrowBackCircleOutline
-              color="rgba(92, 182, 249, 1)"
-              cursor={"pointer"}
-              size={28}
-              onClick={() => activeLink(3)}
-            />
-            <div
-              style={{
-                margin: "auto 160px",
-                fontWeight: 600,
-                fontSize: "16px",
-                color: "rgba(55, 73, 87, 1)",
-              }}
-              className="text-center"
-            >
-              Budget Setup
-            </div>
-          </div>
-
-          <Card style={{ borderRadius: "10px" }} className="mt-4">
-            <div className="text-center">
-              <Image
-                style={{
-                  marginTop: "-30px",
-                  backgroundColor: "white",
-                  objectFit: "contain",
-                }}
-                width={"45px"}
-                height={"45px"}
-                src={imgAddr + selectCategory?.image}
-                alt="..."
+          <Form onSubmit={handleCreateBudget}>
+            <div className="d-flex">
+              <IoArrowBackCircleOutline
+                color="rgba(92, 182, 249, 1)"
+                cursor={"pointer"}
+                size={28}
+                onClick={() => activeLink(3)}
               />
-              <div style={{ color: "var(--primary-color)", fontWeight: 600 }}>
-                {selectCategory?.name}
-              </div>
               <div
                 style={{
-                  fontSize: "12px",
-                  fontWeight: 400,
-                  color: "rgba(191, 191, 191, 1)",
+                  margin: "auto 160px",
+                  fontWeight: 600,
+                  fontSize: "16px",
+                  color: "rgba(55, 73, 87, 1)",
                 }}
+                className="text-center"
               >
-                Recommended: $29.49
+                Budget Setup
               </div>
             </div>
 
-            <div className="px-3 mt-3 mb-2">
-              <Form.Control
-                className="form-field budget-field py-3"
-                style={{
-                  backgroundColor: "rgba(245, 247, 248, 1)",
-                  fontSize: "12px",
-                }}
-                placeholder="Enter budget"
-                aria-label="Username"
-                aria-describedby="basic-addon1"
-              />
-            </div>
-          </Card>
+            <Card style={{ borderRadius: "10px" }} className="mt-4">
+              <div className="text-center">
+                <Image
+                  style={{
+                    marginTop: "-30px",
+                    backgroundColor: "white",
+                    // objectFit: "contain",
+                    borderRadius: "50%",
+                  }}
+                  width={"45px"}
+                  height={"45px"}
+                  src={imgAddr + selectCategory?.image}
+                  alt="..."
+                />
+                <div style={{ color: "var(--primary-color)", fontWeight: 600 }}>
+                  {selectCategory?.name}
+                </div>
+                <div
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: 400,
+                    color: "rgba(191, 191, 191, 1)",
+                  }}
+                >
+                  Recommended: ${budget}
+                </div>
+              </div>
 
-          <div>
-            <div
-              className="my-3"
-              style={{ fontWeight: 600, color: "var(--primary-color)" }}
-            >
-              Select date
-            </div>
-            <InputGroup className="mb-3">
-              <Form.Control
-                className="form-field"
-                style={{ borderRight: "none" }}
-                placeholder="Select Date"
-                aria-label="Username"
-                aria-describedby="basic-addon1"
-              />
-              <InputGroup.Text
-                onClick={() => {
-                  activeLink(9);
-                  setAlreadyActiveCalendar(4);
-                }}
-                style={{ cursor: "pointer" }}
-                id="basic-addon1"
-                className="grp_input"
+              <div className="px-3 mt-3 mb-2">
+                <Form.Control
+                  className="form-field budget-field py-3"
+                  style={{
+                    backgroundColor: "rgba(245, 247, 248, 1)",
+                    fontSize: "12px",
+                  }}
+                  required
+                  value={budget}
+                  placeholder="Enter budget"
+                  onChange={(e) => setBudget(e.target.value)}
+                  aria-describedby="basic-addon1"
+                />
+              </div>
+            </Card>
+
+            <div>
+              <div
+                className="my-3"
+                style={{ fontWeight: 600, color: "var(--primary-color)" }}
               >
-                <CalendarSVG />
-              </InputGroup.Text>
-            </InputGroup>
-          </div>
-
-          <div>
-            <div
-              className="my-3"
-              style={{ fontWeight: 600, color: "var(--primary-color)" }}
-            >
-              Is this a bill ?
+                Select date
+              </div>
+              <InputGroup className="mb-3">
+                <Form.Control
+                  className="form-field"
+                  style={{ borderRight: "none" }}
+                  placeholder="Select Date"
+                  aria-label="Username"
+                  aria-describedby="basic-addon1"
+                  value={date}
+                  required
+                />
+                <InputGroup.Text
+                  onClick={() => {
+                    activeLink(9);
+                    setAlreadyActiveCalendar(4);
+                  }}
+                  style={{ cursor: "pointer" }}
+                  id="basic-addon1"
+                  className="grp_input"
+                >
+                  <CalendarSVG />
+                </InputGroup.Text>
+              </InputGroup>
             </div>
-            <Card style={{ borderRadius: " 10px" }}>
-              <Card.Body>
-                <div className="d-flex justify-content-between align-items-center mt-2">
-                  <div>
-                    <div style={{ fontSize: "14px", fontWeight: 600 }}>
-                      Bills
-                    </div>
-                    <div style={{ fontSize: "12px", fontWeight: 600 }}>
-                      Shall we consider these as bills?
-                    </div>
-                  </div>
 
-                  <div>
-                    <Form>
+            <div>
+              <div
+                className="my-3"
+                style={{ fontWeight: 600, color: "var(--primary-color)" }}
+              >
+                Is this a bill ?
+              </div>
+              <Card style={{ borderRadius: " 10px" }}>
+                <Card.Body>
+                  <div className="d-flex justify-content-between align-items-center mt-2">
+                    <div>
+                      <div style={{ fontSize: "14px", fontWeight: 600 }}>
+                        Bills
+                      </div>
+                      <div style={{ fontSize: "12px", fontWeight: 600 }}>
+                        Shall we consider these as bills?
+                      </div>
+                    </div>
+
+                    <div>
                       <Form.Check
                         className="custom-switch"
                         type="switch"
                         id="custom-switch"
+                        onChange={(e) => setBill(e.target.value)}
                       />
-                    </Form>
+                    </div>
                   </div>
-                </div>
-              </Card.Body>
-            </Card>
-          </div>
-
-          <div>
-            <div
-              className="my-3"
-              style={{ fontWeight: 600, color: "var(--primary-color)" }}
-            >
-              Selected Category
+                </Card.Body>
+              </Card>
             </div>
-            <Card style={{ borderRadius: " 10px" }}>
-              <Card.Body>
-                <div className="d-flex justify-content-between align-items-center mt-2">
-                  <div className="d-flex gap-2">
-                    <div>
-                      <LuMinusSquare />
-                    </div>
-                    <div>
-                      <div style={{ fontSize: "14px", fontWeight: 600 }}>
-                        {selectCategory?.name}
-                      </div>
-                      <div style={{ fontSize: "12px", fontWeight: 400 }}>
-                        Lifestyle
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    onClick={() => activeLink(2)}
-                    style={{
-                      fontSize: "14px",
-                      fontWeight: 600,
-                      color: "var(--primary-color)",
-                      cursor: "pointer",
-                    }}
-                  >
-                    Changes
-                  </div>
-                </div>
-              </Card.Body>
-            </Card>
-          </div>
 
-          <div className="text-center">
-            <button
-              className="w-75 mt-3"
-              onClick={() => hide(false)}
-              style={{
-                backgroundColor: "var(--primary-color)",
-                padding: "10px",
-                color: "white",
-                border: "none",
-                borderRadius: "10px",
-              }}
-            >
-              Create
-            </button>
-          </div>
+            <div>
+              <div
+                className="my-3"
+                style={{ fontWeight: 600, color: "var(--primary-color)" }}
+              >
+                Selected Category
+              </div>
+              <Card style={{ borderRadius: " 10px" }}>
+                <Card.Body>
+                  <div className="d-flex justify-content-between align-items-center mt-2">
+                    <div className="d-flex gap-2">
+                      <div>
+                        <LuMinusSquare color="var(--primary-color)" />
+                      </div>
+                      <div>
+                        <div style={{ fontSize: "14px", fontWeight: 600 }}>
+                          {selectCategory?.name}
+                        </div>
+                        <div style={{ fontSize: "12px", fontWeight: 400 }}>
+                          Lifestyle
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      onClick={() => activeLink(2)}
+                      style={{
+                        fontSize: "14px",
+                        fontWeight: 600,
+                        color: "var(--primary-color)",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Changes
+                    </div>
+                  </div>
+                </Card.Body>
+              </Card>
+            </div>
+
+            <div className="text-center">
+              <button
+                className="w-75 mt-3"
+                type="submit"
+                style={{
+                  backgroundColor: "var(--primary-color)",
+                  padding: "10px",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "10px",
+                }}
+              >
+                Create
+              </button>
+            </div>
+          </Form>
         </>
       )}
 
@@ -983,7 +1005,8 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                 style={{
                   marginTop: "-30px",
                   backgroundColor: "white",
-                  objectFit: "contain",
+                  // objectFit: "contain",
+                  borderRadius: "50%",
                 }}
                 width={"45px"}
                 height={"45px"}
@@ -1000,7 +1023,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                   color: "rgba(191, 191, 191, 1)",
                 }}
               >
-                Recommended: $29.49
+                Recommended: ${budget}
               </div>
             </div>
 
@@ -1040,13 +1063,11 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                   </div>
 
                   <div>
-                    <Form>
-                      <Form.Check
-                        onChange={(e) => setBill(e.target.value)}
-                        type="switch"
-                        id="custom-switch"
-                      />
-                    </Form>
+                    <Form.Check
+                      onChange={(e) => setBill(e.target.value)}
+                      type="switch"
+                      id="custom-switch"
+                    />
                   </div>
                 </div>
               </Card.Body>
@@ -1544,7 +1565,67 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
           already={alreadyActiveCalendar}
           activeLink={activeLink}
           active={active}
+          setDate={setDate}
+          date={date}
+          hide={true}
         />
+      )}
+
+      {active === 10 && (
+        <>
+          <div className="d-flex">
+            <div>
+              <IoArrowBackCircleOutline
+                color="rgba(92, 182, 249, 1)"
+                cursor={"pointer"}
+                size={28}
+                onClick={() => activeLink(2)}
+              />
+            </div>
+
+            <div
+              style={{
+                margin: "auto 160px",
+                fontWeight: 600,
+                fontSize: "16px",
+                color: "rgba(55, 73, 87, 1)",
+              }}
+              className="text-center"
+            >
+              Budget Setup
+            </div>
+          </div>
+
+          <Form className="mt-2" onSubmit={handleCreateCategory}>
+            <Form.Label
+              style={{ color: "var(--primary-color)", fontWeight: 600 }}
+            >
+              Name
+            </Form.Label>
+            <FormField
+              type={"text"}
+              value={categoryName}
+              onChange={(e) => setCategoryName(e.target.value)}
+              placeholder={"Enter name"}
+              required
+            />
+            <div className="text-center">
+              <button
+                className="w-75 mt-3"
+                onClick={() => hide(false)}
+                style={{
+                  backgroundColor: "var(--primary-color)",
+                  padding: "10px",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "10px",
+                }}
+              >
+                Add category
+              </button>
+            </div>
+          </Form>
+        </>
       )}
     </ModalWindow>
   );

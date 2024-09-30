@@ -19,6 +19,7 @@ import UpcomingBillComponents from "./DashboardComponents/UpcomingBillComponent"
 import PieCharts from "../components/Charts/PieChart";
 import BarsChart from "../components/Charts/BarsChart";
 import {
+  imgAddr,
   useDashboardDataMutation,
   useGetBillsMutation,
 } from "../features/apiSlice";
@@ -547,7 +548,7 @@ export default function Dashboard() {
                     <div className="d-flex justify-content-end">
                       <PieCharts
                         COLORS={COLORS}
-                        data={data}
+                        data={dashboard?.moneyOutGraph}
                         cornerRadius={10}
                         height={280}
                         width={500}
@@ -576,7 +577,7 @@ export default function Dashboard() {
                                     height: "40px",
                                     borderRadius: "50%",
                                   }}
-                                  src="/icons/disnep.png"
+                                  src={imgAddr + paymt?.category?.image}
                                   alt="..."
                                 />
                                 <div>
@@ -587,7 +588,7 @@ export default function Dashboard() {
                                       fontWeight: 600,
                                     }}
                                   >
-                                    {paymt?.category}
+                                    {paymt?.category?.name}
                                   </div>
                                   <div
                                     style={{
@@ -595,7 +596,7 @@ export default function Dashboard() {
                                       color: "rgba(55, 73, 87, 0.8)",
                                     }}
                                   >
-                                    {paymt?.category}
+                                    {/* {paymt?.category} */}
                                   </div>
                                 </div>
                               </div>
