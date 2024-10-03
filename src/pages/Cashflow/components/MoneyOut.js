@@ -17,11 +17,6 @@ import {
 import Skeleton from "react-loading-skeleton";
 
 const COLORS = [
-  { start: "rgba(92, 182, 249, 1)", end: "rgba(0, 74, 173, 1)" },
-  { start: "rgba(58, 195, 172, 1)", end: "rgba(58, 195, 172, 1)" },
-];
-
-const COLORS1 = [
   { start: "rgba(36, 204, 167, 1)", end: "rgba(74, 86, 226, 1)" },
   { start: "rgba(36, 204, 167, 1)", end: "rgba(36, 204, 167, 1)" },
   { start: "rgba(36, 204, 167, 0.7)", end: "rgba(36, 204, 167, 0.7)" },
@@ -207,7 +202,7 @@ const MoneyOut = ({ accountPortfolioActive }) => {
                     <div className="d-flex justify-content-center mt-2">
                       <PieCharts
                         COLORS={COLORS}
-                        data={MoneyOut?.graphData}
+                        data={moneyOut?.graphData}
                         cornerRadius={2}
                         In={true}
                         width={420}
@@ -219,8 +214,8 @@ const MoneyOut = ({ accountPortfolioActive }) => {
                   {selectBucketName === "Category" && (
                     <div className="d-flex justify-content-center mt-2">
                       <PieCharts
-                        COLORS={COLORS1}
-                        data={MoneyOut?.graphData}
+                        COLORS={COLORS}
+                        data={moneyOut?.graphData}
                         cornerRadius={2}
                         In={true}
                         width={420}
@@ -229,20 +224,24 @@ const MoneyOut = ({ accountPortfolioActive }) => {
                     </div>
                   )}
 
-                  {selectBucketName === "Transactions" && (
+                  {selectBucketName === "Transaction" && (
                     <div className="d-flex justify-content-center">
                       <BarsChart
-                        data={MoneyOut?.graphData}
+                        data={moneyOut?.graphData}
                         width={500}
                         height={220}
                         barWidth={70}
                         gradient={true}
                         cashFlow={true}
                         gradientNumber={4}
-                        barGrad1={"rgba(226, 242, 255, 1)"}
-                        barGrad2={"rgba(226, 242, 255, 1)"}
-                        barGrad3={"rgba(226, 242, 255, 1)"}
-                        barGrad4={"rgba(0, 74, 173, 1)"}
+                        barGrad1={"#004AAD"}
+                        barGrad2={"#3AC3AC"}
+                        barGrad3={"#004AAD"}
+                        barGrad4={"#DC5A5A"}
+                        // barGrad1={"rgba(226, 242, 255, 1)"}
+                        // barGrad2={"rgba(226, 242, 255, 1)"}
+                        // barGrad3={"rgba(226, 242, 255, 1)"}
+                        // barGrad4={"rgba(0, 74, 173, 1)"}
                       />
                     </div>
                   )}
@@ -250,8 +249,8 @@ const MoneyOut = ({ accountPortfolioActive }) => {
                   {selectBucketName === "Merchant" && (
                     <div className="d-flex justify-content-center mt-2">
                       <PieCharts
-                        COLORS={COLORS1}
-                        data={MoneyOut?.graphData}
+                        COLORS={COLORS}
+                        data={moneyOut?.graphData}
                         cornerRadius={2}
                         In={true}
                         width={420}
@@ -263,7 +262,7 @@ const MoneyOut = ({ accountPortfolioActive }) => {
                   {selectBucketName === "Tag" && (
                     <div className="d-flex justify-content-center mt-2">
                       <PieCharts
-                        COLORS={COLORS1}
+                        COLORS={COLORS}
                         data={moneyOut?.graphData}
                         cornerRadius={2}
                         In={true}
@@ -288,18 +287,17 @@ const MoneyOut = ({ accountPortfolioActive }) => {
       <Row className="mt-3 ">
         <Col>
           <DashboardCard>
-            <div
-              style={{
-                color: "rgba(0, 39, 91, 1)",
-                fontWeight: 600,
-                fontSize: "18px",
-                cursor: "pointer",
-              }}
-            >
-              {selectBucketName}
-            </div>
-
             <div className="d-flex align-items-center gap-3">
+              <div
+                style={{
+                  color: "rgba(0, 39, 91, 1)",
+                  fontWeight: 600,
+                  fontSize: "18px",
+                  cursor: "pointer",
+                }}
+              >
+                {selectBucketName}
+              </div>
               {/* <div className="w-25">
                 <SearchField />
               </div>
@@ -346,9 +344,9 @@ const MoneyOut = ({ accountPortfolioActive }) => {
                     >
                       <div className="d-flex align-items-center gap-2 w-50 text-truncate">
                         <Image
-                          width={"25px"}
-                          height={"25px"}
-                          style={{ borderRadius: "50%", objectFit: "contain" }}
+                          width={"35px"}
+                          height={"35px"}
+                          style={{ borderRadius: "50%", objectFit: "cover" }}
                           src={
                             data?.image
                               ? imgAddr + data?.image

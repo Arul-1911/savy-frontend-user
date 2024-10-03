@@ -25,8 +25,8 @@ const CashFlow = () => {
 
   const getCashflowData = async () => {
     try {
-      const { data } = await getCashflow();
-      setOverview(data?.cashFlowData);
+      const { overview } = await getCashflow().unwrap();
+      setOverview(overview);
     } catch (error) {
       getError(error);
     }

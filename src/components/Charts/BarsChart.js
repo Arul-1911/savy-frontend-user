@@ -27,6 +27,7 @@ const BarsChart = ({
   barGrad2,
   barGrad3,
   barGrad4,
+  color,
 }) => {
   const renderCustomizedLabel = (props) => {
     const { x, y, width, index } = props;

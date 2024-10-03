@@ -303,10 +303,10 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                           <div className="d-flex gap-2 align-items-center">
                             <Image
                               style={{
-                                width: "25px",
-                                height: "25px",
+                                width: "35px",
+                                height: "35px",
                                 borderRadius: "50%",
-                                // objectFit: "contain",
+                                objectFit: "cover",
                               }}
                               src={imgAddr + data?.category?.image}
                               alt="..."
@@ -551,10 +551,10 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                             <div className="d-flex align-items-center gap-3">
                               <img
                                 style={{
-                                  width: "25px",
-                                  height: "25px",
+                                  width: "35px",
+                                  height: "35px",
                                   borderRadius: "50%",
-                                  // objectFit: "contain",
+                                  objectFit: "cover",
                                 }}
                                 src={imgAddr + data?.image}
                                 alt="..."
@@ -638,14 +638,14 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
 
           <div>
             <div
-              className="mt-3"
+              className="m-2"
               style={{ fontWeight: 600, color: "var(--primary-color)" }}
             >
               Selected Category
             </div>
             <Card style={{ borderRadius: " 10px" }}>
               <Card.Body>
-                <div className="d-flex justify-content-between align-items-center mt-2">
+                <div className="d-flex justify-content-between align-items-center">
                   <div className="d-flex gap-2">
                     <div>
                       <LuMinusSquare color="var(--primary-color)" />
@@ -677,13 +677,13 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
 
           <div>
             <div
-              className="mt-1"
+              className="m-2"
               style={{ fontWeight: 600, color: "var(--primary-color)" }}
             >
               Select Payday
             </div>
 
-            <div style={{ fontSize: "12px", fontWeight: 400 }}>
+            <div className="m-2" style={{ fontSize: "12px", fontWeight: 400 }}>
               Select your payday cycle for to Avoid confusion
             </div>
             <Card
@@ -719,7 +719,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                               <div
                                 style={{ fontSize: "12px", fontWeight: 400 }}
                               >
-                                ${data?.amount}
+                                {data?.pay_period} days salary
                               </div>
                             </div>
                           </div>
@@ -737,7 +737,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                       );
                     })
                   ) : (
-                    [1, 2, 3, 4, 5, 6].map((_, idx) => {
+                    [1, 2, 3, 4].map((_, idx) => {
                       return (
                         <div key={idx}>
                           <Skeleton
@@ -818,7 +818,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                   style={{
                     marginTop: "-30px",
                     backgroundColor: "white",
-                    // objectFit: "contain",
+                    objectFit: "cover",
                     borderRadius: "50%",
                   }}
                   width={"45px"}
@@ -896,7 +896,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
               </div>
               <Card style={{ borderRadius: " 10px" }}>
                 <Card.Body>
-                  <div className="d-flex justify-content-between align-items-center mt-2">
+                  <div className="d-flex justify-content-between align-items-center">
                     <div>
                       <div style={{ fontSize: "14px", fontWeight: 600 }}>
                         Bills
@@ -928,7 +928,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
               </div>
               <Card style={{ borderRadius: " 10px" }}>
                 <Card.Body>
-                  <div className="d-flex justify-content-between align-items-center mt-2">
+                  <div className="d-flex justify-content-between align-items-center">
                     <div className="d-flex gap-2">
                       <div>
                         <LuMinusSquare color="var(--primary-color)" />
@@ -1005,7 +1005,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                 style={{
                   marginTop: "-30px",
                   backgroundColor: "white",
-                  // objectFit: "contain",
+                  objectFit: "cover",
                   borderRadius: "50%",
                 }}
                 width={"45px"}
@@ -1052,7 +1052,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
             </div>
             <Card style={{ borderRadius: " 10px" }}>
               <Card.Body>
-                <div className="d-flex justify-content-between align-items-center mt-2">
+                <div className="d-flex justify-content-between align-items-center">
                   <div>
                     <div style={{ fontSize: "14px", fontWeight: 600 }}>
                       Bills
@@ -1083,8 +1083,8 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
             </div>
             <Card style={{ borderRadius: " 10px" }}>
               <Card.Body>
-                <div className="d-flex justify-content-between align-items-center mt-2">
-                  <div className="d-flex align-items-center gap-2">
+                <div className="d-flex justify-content-between align-items-center">
+                  <div className="d-flex gap-2">
                     <div>
                       <LuMinusSquare color="var(--primary-color)" />
                     </div>
@@ -1092,9 +1092,9 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                       <div style={{ fontSize: "14px", fontWeight: 600 }}>
                         {selectCategory?.name}
                       </div>
-                      {/* <div style={{ fontSize: "12px", fontWeight: 400 }}>
-                        Lifestyle
-                      </div> */}
+                      <div style={{ fontSize: "12px", fontWeight: 400 }}>
+                        {selectCategory?.bucket?.name}
+                      </div>
                     </div>
                   </div>
                   <div
@@ -1122,17 +1122,17 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
             </div>
             <Card style={{ borderRadius: " 10px" }}>
               <Card.Body>
-                <div className="d-flex justify-content-between align-items-center mt-2">
+                <div className="d-flex justify-content-between align-items-center">
                   <div className="d-flex gap-2">
                     <div>
                       <LuMinusSquare color="var(--primary-color)" />
                     </div>
                     <div>
                       <div style={{ fontSize: "14px", fontWeight: 600 }}>
-                        {selectPayday?.pay_period} days salary
+                        {selectPayday?.source}
                       </div>
                       <div style={{ fontSize: "12px", fontWeight: 400 }}>
-                        {formatDate(selectPayday?.pay_date)}
+                        {selectPayday?.pay_period} days salary
                       </div>
                     </div>
                   </div>

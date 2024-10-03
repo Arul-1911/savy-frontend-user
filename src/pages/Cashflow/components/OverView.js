@@ -6,11 +6,7 @@ import { FaArrowUp } from "react-icons/fa6";
 import { IoArrowDownSharp } from "react-icons/io5";
 import BarsChart from "../../../components/Charts/BarsChart";
 import Skeleton from "react-loading-skeleton";
-
-const MoneyInvsOutData = [
-  { name: "Money In", uv: 4000 },
-  { name: "Money Out", uv: 3000 },
-];
+import { imgAddr } from "../../../features/apiSlice";
 
 const OverView = ({ data, loading }) => {
   const mostChangedCategory = [
@@ -78,7 +74,7 @@ const OverView = ({ data, loading }) => {
             >
               Statistics
             </h3>
-            <button
+            {/* <button
               className="d-flex gap-2 align-items-center"
               style={{
                 padding: "8px",
@@ -92,7 +88,7 @@ const OverView = ({ data, loading }) => {
               }}
             >
               Past month <IoIosArrowUp size={18} />
-            </button>
+            </button> */}
           </div>
 
           <Row className="d-flex gap-4 px-2 mt-3">
@@ -115,21 +111,21 @@ const OverView = ({ data, loading }) => {
                     >
                       Overspent
                     </div>
-                    <div
+                    {/* <div
                       style={{
                         color: "rgba(55, 73, 87, 0.7)",
                         fontSize: "12px",
                       }}
                     >
                       08 Dec - 07 Jan
-                    </div>
+                    </div> */}
                   </div>
                   <h3 style={{ fontWeight: 600, color: "rgba(0, 74, 173, 1)" }}>
                     $4,400
                   </h3>
                   <div className="d-flex justify-content-center">
                     <BarsChart
-                      data={MoneyInvsOutData}
+                      data={data?.MoneyInvsOutData}
                       width={340}
                       height={220}
                       barWidth={50}
@@ -231,14 +227,14 @@ const OverView = ({ data, loading }) => {
                     >
                       Money out
                     </div>
-                    <div
+                    {/* <div
                       style={{
                         color: "rgba(55, 73, 87, 0.7)",
                         fontSize: "12px",
                       }}
                     >
                       08 Dec - 07 Jan
-                    </div>
+                    </div> */}
                   </div>
                   <div className="d-flex justify-content-between align-items-center">
                     <h3
@@ -328,7 +324,7 @@ const OverView = ({ data, loading }) => {
             </div>
 
             <ul className="market mt-2">
-              {topCategory?.map((data, idx) => {
+              {data?.topCategory?.map((data, idx) => {
                 return (
                   <li
                     key={idx}
@@ -338,8 +334,12 @@ const OverView = ({ data, loading }) => {
                       <Image
                         width={"50px"}
                         height={"50px"}
-                        style={{ borderRadius: "50%" }}
-                        src={data?.icon}
+                        style={{ borderRadius: "50%", objectFit: "cover" }}
+                        src={
+                          data?.image
+                            ? imgAddr + data?.image
+                            : "/icons/Merchant 1.png"
+                        }
                         alt="..."
                       />
                       <div>
@@ -349,9 +349,9 @@ const OverView = ({ data, loading }) => {
                             fontSize: "16px",
                           }}
                         >
-                          {data?.text}
+                          {data?.category}
                         </div>
-                        <div
+                        {/* <div
                           style={{
                             fontSize: "rgba(55, 73, 87, 0.7)",
                             fontSize: "12px",
@@ -359,7 +359,7 @@ const OverView = ({ data, loading }) => {
                           }}
                         >
                           {data?.subTexet}
-                        </div>
+                        </div> */}
                       </div>
                     </div>
 
@@ -370,7 +370,7 @@ const OverView = ({ data, loading }) => {
                         fontWeight: 800,
                       }}
                     >
-                      -20.00 $
+                      {data?.value} $
                     </div>
                   </li>
                 );
@@ -405,7 +405,7 @@ const OverView = ({ data, loading }) => {
             </div>
 
             <ul className="market mt-2">
-              {mostChangedCategory?.map((data, idx) => {
+              {data?.topBucket?.map((data, idx) => {
                 return (
                   <li
                     key={idx}
@@ -415,8 +415,12 @@ const OverView = ({ data, loading }) => {
                       <Image
                         width={"50px"}
                         height={"50px"}
-                        style={{ borderRadius: "50%" }}
-                        src={data?.icon}
+                        style={{ borderRadius: "50%", objectFit: "cover" }}
+                        src={
+                          data?.image
+                            ? imgAddr + data?.image
+                            : "/icons/Merchant 1.png"
+                        }
                         alt="..."
                       />
                       <div>
@@ -426,9 +430,9 @@ const OverView = ({ data, loading }) => {
                             fontSize: "16px",
                           }}
                         >
-                          {data?.text}
+                          {data?.bucket}
                         </div>
-                        <div
+                        {/* <div
                           style={{
                             fontSize: "rgba(55, 73, 87, 0.7)",
                             fontSize: "12px",
@@ -436,7 +440,7 @@ const OverView = ({ data, loading }) => {
                           }}
                         >
                           {data?.subTexet}
-                        </div>
+                        </div> */}
                       </div>
                     </div>
 
@@ -448,9 +452,9 @@ const OverView = ({ data, loading }) => {
                           fontWeight: 800,
                         }}
                       >
-                        -20.00 $
+                        {data?.value} $
                       </div>
-                      <div
+                      {/* <div
                         style={{
                           color: "rgba(58, 195, 172, 1)",
                           fontWeight: 400,
@@ -460,7 +464,7 @@ const OverView = ({ data, loading }) => {
                         }}
                       >
                         <FaArrowUp /> 231.25%
-                      </div>
+                      </div> */}
                     </div>
                   </li>
                 );
@@ -471,7 +475,7 @@ const OverView = ({ data, loading }) => {
       </Row>
 
       <Row className="mt-2 g-2">
-        <Col>
+        <Col sm={6}>
           <DashboardCard>
             <div className="d-flex align-items-center justify-content-between">
               <div
@@ -497,7 +501,7 @@ const OverView = ({ data, loading }) => {
             </div>
 
             <ul className="market mt-2">
-              {data?.largeTransaction?.map((data, idx) => {
+              {data?.recentLargestTransactions?.map((data, idx) => {
                 return (
                   <li
                     key={idx}
@@ -508,7 +512,11 @@ const OverView = ({ data, loading }) => {
                         width={"50px"}
                         height={"50px"}
                         style={{ borderRadius: "50%" }}
-                        src="/icons/Merchant 1.png"
+                        src={
+                          data?.category?.image
+                            ? imgAddr + data?.category?.image
+                            : "/icons/Merchant 1.png"
+                        }
                         alt="..."
                       />
                       <div>
@@ -528,7 +536,7 @@ const OverView = ({ data, loading }) => {
                             fontWeight: 400,
                           }}
                         >
-                          {data?.direction}
+                          {data?.bucket?.name}
                         </div>
                       </div>
                     </div>
@@ -550,7 +558,7 @@ const OverView = ({ data, loading }) => {
                           fontSize: "12px",
                         }}
                       >
-                        {formatDate(data?.time)}
+                        {formatDate(data?.date)}
                       </div>
                     </div>
                   </li>
@@ -586,7 +594,7 @@ const OverView = ({ data, loading }) => {
             </div>
 
             <ul className="market mt-2">
-              {mostChangedCategory?.map((data, idx) => {
+              {data?.topMerchant?.map((data, idx) => {
                 return (
                   <li
                     key={idx}
@@ -597,7 +605,7 @@ const OverView = ({ data, loading }) => {
                         width={"50px"}
                         height={"50px"}
                         style={{ borderRadius: "50%" }}
-                        src={data?.icon}
+                        src={"/icons/Merchant 1.png"}
                         alt="..."
                       />
                       <div>
@@ -607,9 +615,9 @@ const OverView = ({ data, loading }) => {
                             fontSize: "16px",
                           }}
                         >
-                          {data?.text}
+                          {data?.merchant}
                         </div>
-                        <div
+                        {/* <div
                           style={{
                             fontSize: "rgba(55, 73, 87, 0.7)",
                             fontSize: "12px",
@@ -617,7 +625,7 @@ const OverView = ({ data, loading }) => {
                           }}
                         >
                           {data?.subTexet}
-                        </div>
+                        </div> */}
                       </div>
                     </div>
 
@@ -628,7 +636,7 @@ const OverView = ({ data, loading }) => {
                         fontWeight: 800,
                       }}
                     >
-                      -20.00 $
+                      {data?.value} $
                     </div>
                   </li>
                 );

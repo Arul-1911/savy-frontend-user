@@ -209,8 +209,6 @@ const TransactionComponents = ({
     }
   };
 
-  console.log(tagLoading);
-
   return (
     <ModalWindow show={show} onHide={hide}>
       {active === 1 && (

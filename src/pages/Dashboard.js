@@ -27,29 +27,6 @@ import { getError } from "../utils/error";
 import { formatDate } from "../components/FormateDateTime/FormatDateTime";
 import Skeleton from "react-loading-skeleton";
 
-const data = [
-  {
-    name: "Shopping",
-    value: 7000,
-  },
-  {
-    name: "Food",
-    value: 4567,
-  },
-  {
-    name: "Bills",
-    value: 2398,
-  },
-  {
-    name: "Benzin",
-    value: 3908,
-  },
-  {
-    name: "Others",
-    value: 4800,
-  },
-];
-
 const COLORS = [
   { start: "rgba(36, 204, 167, 1)", end: "rgba(74, 86, 226, 1)" },
   { start: "rgba(36, 204, 167, 1)", end: "rgba(36, 204, 167, 1)" },
@@ -229,19 +206,13 @@ export default function Dashboard() {
                       padding: "20px",
                     }}
                   >
-                    <div
-                      className="mt-5"
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                      }}
-                    >
+                    <div className="mt-5 d-flex align-items-center justify-content-between">
                       <div>
                         <div
                           style={{
                             color: "rgba(0, 74, 173, 0.7)",
-                            fontSize: "12px",
+                            fontSize: "16px",
+                            fontWeight: 600,
                           }}
                         >
                           Total amount
@@ -264,9 +235,6 @@ export default function Dashboard() {
                         alt="..."
                       />
                     </div>
-                    <div className="w-75">
-                      <ProgressBar now={60} label={`${60}%`} visuallyHidden />
-                    </div>
                   </div>
                 )}
 
@@ -280,19 +248,13 @@ export default function Dashboard() {
                       padding: "20px",
                     }}
                   >
-                    <div
-                      className="mt-5"
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                      }}
-                    >
+                    <div className="mt-5 d-flex align-items-center justify-content-between">
                       <div>
                         <div
                           style={{
                             color: "rgba(0, 74, 173, 0.7)",
-                            fontSize: "12px",
+                            fontSize: "16px",
+                            fontWeight: 600,
                           }}
                         >
                           Total amount
@@ -323,18 +285,12 @@ export default function Dashboard() {
                     className="mt-3"
                     style={{
                       backgroundColor: "rgba(245, 247, 248, 1)",
-                      height: "260px",
+                      height: "270px",
                       borderRadius: "10px",
                       padding: "20px",
                     }}
                   >
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                      }}
-                    >
+                    <div className="d-flex justify-content-between align-items-center">
                       <div>
                         <div
                           style={{
@@ -350,6 +306,7 @@ export default function Dashboard() {
                           width={200}
                           height={220}
                           moneyInvsOut={true}
+                          color={COLORS}
                           barWidth={45}
                           gradient={true}
                           gradientNumber={12}
@@ -378,6 +335,7 @@ export default function Dashboard() {
                             Total Money In:
                           </div>
                           <div
+                            className="text-end"
                             style={{
                               backgroundImage:
                                 "linear-gradient(270deg, #5CB6F9 0%, #004AAD 100%)",
@@ -409,6 +367,7 @@ export default function Dashboard() {
                             Money Out:
                           </div>
                           <div
+                            className="text-end"
                             style={{
                               backgroundImage:
                                 "linear-gradient(270deg, #DC5A5B -4.02%, #004AAD 105.17%)",
@@ -431,7 +390,7 @@ export default function Dashboard() {
                     className="mt-3"
                     style={{
                       backgroundColor: "rgba(245, 247, 248, 1)",
-                      height: "260px",
+                      height: "270px",
                       borderRadius: "10px",
                       padding: "20px",
                     }}
@@ -572,7 +531,7 @@ export default function Dashboard() {
                               <div className="d-flex align-items-center gap-2">
                                 <Image
                                   style={{
-                                    objectFit: "contain",
+                                    objectFit: "cover",
                                     width: "40px",
                                     height: "40px",
                                     borderRadius: "50%",
@@ -822,7 +781,7 @@ export default function Dashboard() {
                     </p>
                   </div>
 
-                  <div className="mt-4">
+                  <div className="mt-3">
                     <div
                       style={{
                         color: "rgba(116, 141, 174, 1)",
@@ -847,7 +806,7 @@ export default function Dashboard() {
                     </div>
                   </div>
 
-                  <div className="mt-5 d-flex justify-content-between">
+                  <div className="mt-4 d-flex justify-content-between">
                     <div
                       style={{
                         color: "rgba(121, 144, 176, 1)",
@@ -893,7 +852,7 @@ export default function Dashboard() {
                     Budget
                   </h4>
 
-                  <div className="mt-5 d-flex justify-content-between align-items-center">
+                  <div className="mt-4 d-flex justify-content-between align-items-center">
                     <div>
                       <h3
                         style={{
@@ -979,9 +938,9 @@ export default function Dashboard() {
                         </div>
                       </div>
                     </div>
-                    <div className="mt-1">
+                    {/* <div className="mt-1">
                       <ProgressBar now={60} label={`${60}%`} visuallyHidden />
-                    </div>
+                    </div> */}
                   </div>
 
                   <div className="mt-3 text-center">
@@ -1010,7 +969,7 @@ export default function Dashboard() {
                     Upcoming Bills
                   </h4>
 
-                  <div className="d-flex align-items-center flex-column mt-4">
+                  <div className="d-flex align-items-center flex-column mt-2">
                     <div
                       style={{
                         backgroundColor: "rgba(224, 234, 255, 1)",
@@ -1035,7 +994,7 @@ export default function Dashboard() {
                     </h3>
 
                     <div
-                      className="text-center px-5 mt-4"
+                      className="text-center px-5 mt-2"
                       style={{
                         fontWeight: 400,
                         fontSize: "16px",

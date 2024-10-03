@@ -16,17 +16,12 @@ import {
 import { getError } from "../../../utils/error";
 import Skeleton from "react-loading-skeleton";
 
-const COLORS1 = [
+const COLORS = [
   { start: "rgba(36, 204, 167, 1)", end: "rgba(74, 86, 226, 1)" },
   { start: "rgba(36, 204, 167, 1)", end: "rgba(36, 204, 167, 1)" },
   { start: "rgba(36, 204, 167, 0.7)", end: "rgba(36, 204, 167, 0.7)" },
   { start: "rgba(36, 204, 167, 0.4)", end: "rgba(36, 204, 167, 0.4)" },
   { start: "rgba(36, 204, 167, 0.2)", end: "rgba(36, 204, 167, 0.2)" },
-];
-
-const COLORS = [
-  { start: "rgba(92, 182, 249, 1)", end: "rgba(0, 74, 173, 1)" },
-  { start: "rgba(58, 195, 172, 1)", end: "rgba(58, 195, 172, 1)" },
 ];
 
 const MoneyIn = ({ accountPortfolioActive }) => {
@@ -222,7 +217,7 @@ const MoneyIn = ({ accountPortfolioActive }) => {
                   {selectBucketName === "Category" && (
                     <div className="d-flex justify-content-center mt-2">
                       <PieCharts
-                        COLORS={COLORS1}
+                        COLORS={COLORS}
                         data={moneyIn?.graphData}
                         cornerRadius={2}
                         In={true}
@@ -242,10 +237,10 @@ const MoneyIn = ({ accountPortfolioActive }) => {
                         gradient={true}
                         gradientNumber={4}
                         cashFlow={true}
-                        barGrad1={"rgba(226, 242, 255, 1)"}
-                        barGrad2={"rgba(226, 242, 255, 1)"}
-                        barGrad3={"rgba(226, 242, 255, 1)"}
-                        barGrad4={"rgba(0, 74, 173, 1)"}
+                        barGrad1={"#004AAD"}
+                        barGrad2={"#3AC3AC"}
+                        barGrad3={"#004AAD"}
+                        barGrad4={"#DC5A5A"}
                       />
                     </div>
                   )}
@@ -253,7 +248,7 @@ const MoneyIn = ({ accountPortfolioActive }) => {
                   {selectBucketName === "Merchant" && (
                     <div className="d-flex justify-content-center mt-2">
                       <PieCharts
-                        COLORS={COLORS1}
+                        COLORS={COLORS}
                         data={moneyIn?.graphData}
                         cornerRadius={2}
                         In={true}
@@ -266,7 +261,7 @@ const MoneyIn = ({ accountPortfolioActive }) => {
                   {selectBucketName === "Tag" && (
                     <div className="d-flex justify-content-center mt-2">
                       <PieCharts
-                        COLORS={COLORS1}
+                        COLORS={COLORS}
                         data={moneyIn?.graphData}
                         cornerRadius={2}
                         In={true}
@@ -344,13 +339,13 @@ const MoneyIn = ({ accountPortfolioActive }) => {
                   return (
                     <li
                       key={idx}
-                      className="d-flex justify-content-between align-items-center w-50 text-truncate"
+                      className="d-flex justify-content-between align-items-center "
                     >
-                      <div className="d-flex align-items-center gap-2">
+                      <div className="d-flex align-items-center gap-2 w-50 text-truncate">
                         <Image
-                          width={"25px"}
-                          height={"25px"}
-                          style={{ borderRadius: "50%", objectFit: "contain" }}
+                          width={"35px"}
+                          height={"35px"}
+                          style={{ borderRadius: "50%", objectFit: "cover" }}
                           src={
                             data?.image
                               ? imgAddr + data?.image

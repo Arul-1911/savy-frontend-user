@@ -9,8 +9,9 @@ import ExcludeTransaction from "./SubComponents/ExcludeTransaction";
 import { ResponsiveContainer } from "recharts";
 import BarsChart from "../../../components/Charts/BarsChart";
 import { getError } from "../../../utils/error";
-import { useGetCashflowNetMutation } from "../../../features/apiSlice";
+import { imgAddr, useGetCashflowNetMutation } from "../../../features/apiSlice";
 import BucketComponet from "./SubComponents/BucketComponet";
+import PieCharts from "../../../components/Charts/PieChart";
 
 const data = [
   {
@@ -39,11 +40,20 @@ const data = [
   },
 ];
 
+const COLORS = [
+  { start: "rgba(36, 204, 167, 1)", end: "rgba(74, 86, 226, 1)" },
+  { start: "rgba(36, 204, 167, 1)", end: "rgba(36, 204, 167, 1)" },
+  { start: "rgba(36, 204, 167, 0.7)", end: "rgba(36, 204, 167, 0.7)" },
+  { start: "rgba(36, 204, 167, 0.4)", end: "rgba(36, 204, 167, 0.4)" },
+  { start: "rgba(36, 204, 167, 0.2)", end: "rgba(36, 204, 167, 0.2)" },
+];
+
 const NetWorth = ({ accountPortfolioActive }) => {
   const [getCashflowNet, { isLoading }] = useGetCashflowNetMutation();
   const [excludeTransactionModal, setExcludeTransactionModal] = useState(false);
-  const [selectBucketName, setSelectBucketName] = useState("Merchent");
+  const [selectBucketName, setSelectBucketName] = useState("Bucket");
   const [bucketOpen, setBucketOpen] = useState(false);
+  const [net, setNet] = useState([]);
 
   const recentTransactions = [
     {
@@ -67,15 +77,15 @@ const NetWorth = ({ accountPortfolioActive }) => {
     if (accountPortfolioActive) {
       getNetData();
     }
-  }, [accountPortfolioActive]);
+  }, [accountPortfolioActive, selectBucketName]);
 
   const getNetData = async () => {
     try {
-      const data = await getCashflowNet({
+      const { net } = await getCashflowNet({
         date: "last_month",
         filter: selectBucketName.toLowerCase(),
       }).unwrap();
-      console.log(data);
+      setNet(net);
     } catch (error) {
       getError(error);
     }
@@ -144,7 +154,7 @@ const NetWorth = ({ accountPortfolioActive }) => {
                 className="mt-2"
                 style={{ fontWeight: 600, color: "rgba(0, 74, 173, 1)" }}
               >
-                $1,820.00
+                ${net?.total}
               </h3>
               <hr />
 
@@ -155,7 +165,7 @@ const NetWorth = ({ accountPortfolioActive }) => {
                     fontSize: "12px",
                   }}
                 >
-                  More than last period
+                  {net?.last_period?.key}
                 </div>
                 <div
                   style={{
@@ -164,7 +174,7 @@ const NetWorth = ({ accountPortfolioActive }) => {
                     fontWeight: 600,
                   }}
                 >
-                  $5,459.75
+                  ${net?.last_period?.amount}
                 </div>
               </div>
 
@@ -184,13 +194,84 @@ const NetWorth = ({ accountPortfolioActive }) => {
                     fontWeight: 600,
                   }}
                 >
-                  $5,459.75
+                  ${net?.last}
                 </div>
               </div>
             </Col>
 
             <Col>
-              <ResponsiveContainer width="100%" height="100%">
+              {selectBucketName === "Bucket" && (
+                <div className="d-flex justify-content-center mt-2">
+                  <PieCharts
+                    COLORS={COLORS}
+                    data={net?.graphData}
+                    cornerRadius={2}
+                    In={true}
+                    width={420}
+                    height={200}
+                  />
+                </div>
+              )}
+
+              {selectBucketName === "Category" && (
+                <div className="d-flex justify-content-center mt-2">
+                  <PieCharts
+                    COLORS={COLORS}
+                    data={net?.graphData}
+                    cornerRadius={2}
+                    In={true}
+                    width={420}
+                    height={200}
+                  />
+                </div>
+              )}
+
+              {selectBucketName === "Transaction" && (
+                <div className="d-flex justify-content-center">
+                  <BarsChart
+                    data={data}
+                    barWidth={50}
+                    width={"100%"}
+                    height={220}
+                    gradient={true}
+                    gradientNumber={12}
+                    cashFlowBar={true}
+                    netWorth={true}
+                    barGrad1={"#E2F2FF"}
+                    barGrad2={"#E2F2FF"}
+                    barGrad3={"#E2F2FF"}
+                    barGrad4={"#004AAD"}
+                  />
+                </div>
+              )}
+
+              {selectBucketName === "Merchant" && (
+                <div className="d-flex justify-content-center mt-2">
+                  <PieCharts
+                    COLORS={COLORS}
+                    data={net?.graphData}
+                    cornerRadius={2}
+                    In={true}
+                    width={420}
+                    height={200}
+                  />
+                </div>
+              )}
+
+              {selectBucketName === "Tag" && (
+                <div className="d-flex justify-content-center mt-2">
+                  <PieCharts
+                    COLORS={COLORS}
+                    data={net?.graphData}
+                    cornerRadius={2}
+                    In={true}
+                    width={420}
+                    height={200}
+                  />
+                </div>
+              )}
+
+              {/* <ResponsiveContainer width="100%" height="100%">
                 <BarsChart
                   data={data}
                   barWidth={50}
@@ -205,7 +286,7 @@ const NetWorth = ({ accountPortfolioActive }) => {
                   barGrad3={"#E2F2FF"}
                   barGrad4={"#004AAD"}
                 />
-              </ResponsiveContainer>
+              </ResponsiveContainer> */}
             </Col>
           </Row>
         </DashboardCard>
@@ -214,22 +295,21 @@ const NetWorth = ({ accountPortfolioActive }) => {
       <Row className="mt-3 ">
         <Col>
           <DashboardCard>
-            <div
-              style={{
-                color: "rgba(0, 39, 91, 1)",
-                fontWeight: 600,
-                fontSize: "18px",
-                cursor: "pointer",
-              }}
-            >
-              Buckets
-            </div>
-
-            <div className="d-flex align-items-center  gap-3">
-              <div className="w-25">
-                <SearchField />
+            <div className="d-flex align-items-center gap-3">
+              <div
+                style={{
+                  color: "rgba(0, 39, 91, 1)",
+                  fontWeight: 600,
+                  fontSize: "18px",
+                  cursor: "pointer",
+                }}
+              >
+                {selectBucketName}
               </div>
-              <button
+              {/* <div className="w-25">
+                <SearchField />
+              </div> */}
+              {/* <button
                 className="d-flex gap-2 align-items-center"
                 style={{
                   padding: "8px",
@@ -243,7 +323,7 @@ const NetWorth = ({ accountPortfolioActive }) => {
                 }}
               >
                 <CiCalendar size={18} /> 8 feb today
-              </button>
+              </button> */}
 
               <button
                 className="d-flex gap-2 align-items-center"
@@ -263,7 +343,7 @@ const NetWorth = ({ accountPortfolioActive }) => {
             </div>
 
             <ul className="market mt-2">
-              {recentTransactions?.map((data, idx) => {
+              {net?.data?.map((data, idx) => {
                 return (
                   <li
                     key={idx}
@@ -271,10 +351,14 @@ const NetWorth = ({ accountPortfolioActive }) => {
                   >
                     <div className="d-flex align-items-center gap-2">
                       <Image
-                        width={"50px"}
-                        height={"50px"}
-                        style={{ borderRadius: "50%" }}
-                        src={data?.icon}
+                        width={"35px"}
+                        height={"35px"}
+                        style={{ borderRadius: "50%", objectFit: "cover" }}
+                        src={
+                          data?.image
+                            ? imgAddr + data?.image
+                            : "/icons/Merchant 1.png"
+                        }
                         alt="..."
                       />
 
@@ -284,11 +368,11 @@ const NetWorth = ({ accountPortfolioActive }) => {
                           fontSize: "16px",
                         }}
                       >
-                        {data?.text}
+                        {data?.name}
                       </div>
                     </div>
 
-                    <div>{data?.parcentage}</div>
+                    <div>{data?.percent}%</div>
 
                     <div
                       style={{
@@ -297,7 +381,7 @@ const NetWorth = ({ accountPortfolioActive }) => {
                         fontWeight: 800,
                       }}
                     >
-                      -20.00 $
+                      {data?.value} $
                     </div>
                   </li>
                 );

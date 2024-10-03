@@ -133,7 +133,7 @@ export const apiSlice = createApi({
     // ====== Cashflow =======
     getCashflow: builder.mutation({
       query: () => ({
-        url: "/user/get-cashflow-data",
+        url: "/user/get-cashflow-data-overview",
         method: "GET",
       }),
     }),

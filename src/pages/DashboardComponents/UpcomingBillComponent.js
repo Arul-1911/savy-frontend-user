@@ -15,7 +15,6 @@ import { IoIosArrowDown } from "react-icons/io";
 import { FaRegCheckCircle } from "react-icons/fa";
 import "../Dashboard.css";
 import Calendar from "../../components/Calendar/Calendar";
-import { CiSquareMinus } from "react-icons/ci";
 import {
   imgAddr,
   useCreateBillMutation,
@@ -39,9 +38,6 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
   const [activeCat, setActiveCat] = useState(null);
   const [activeBudget, setActiveBudget] = useState(null);
   const [alreadyActiveCalendar, setAlreadyActiveCalendar] = useState(0);
-
-  const [openCalendar, setOpenCalendar] = useState(false);
-
   const [categories, setCategories] = useState([]);
   const [budgets, setBudgets] = useState([]);
   const [selectCategory, setSelectCategory] = useState("");
@@ -299,7 +295,14 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
             </div>
           </div>
 
-          <Card className="mt-3" style={{ borderRadius: "10px" }}>
+          <Card
+            className="mt-3"
+            style={{
+              borderRadius: "10px",
+              overflowY: "scroll",
+              height: "250px",
+            }}
+          >
             <Card.Body>
               {bills?.length > 0 ? (
                 !getBillsLoading ? (
@@ -315,7 +318,16 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                       >
                         <div className=" d-flex justify-content-between align-items-center">
                           <div className="d-flex gap-2 align-items-center">
-                            <Image src="/images/Rectangle 116.png" alt="..." />
+                            <Image
+                              style={{
+                                width: "35px",
+                                height: "35px",
+                                borderRadius: "50%",
+                                objectFit: "cover",
+                              }}
+                              src={imgAddr + data?.category?.image}
+                              alt="..."
+                            />
                             <div>
                               <div
                                 style={{
@@ -324,7 +336,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                                   fontSize: "12px",
                                 }}
                               >
-                                Cafe & Coffee
+                                {data?.category?.name}
                               </div>
                               <div
                                 style={{
@@ -333,7 +345,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                                   fontSize: "12px",
                                 }}
                               >
-                                $20 spent of 50
+                                $20 spent of {data?.budget_amount}
                               </div>
                             </div>
                           </div>
@@ -360,18 +372,18 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                             </div>
                           </div>
                         </div>
-                        <div className="mt-1">
+                        {/* <div className="mt-1">
                           <ProgressBar
                             now={40}
                             label={`${100}%`}
                             visuallyHidden
                           />
-                        </div>
+                        </div> */}
                       </div>
                     );
                   })
                 ) : (
-                  [1, 2, 3].map((_, idx) => {
+                  [1, 2, 3, 4, 5].map((_, idx) => {
                     return (
                       <div key={idx}>
                         <Skeleton
@@ -500,7 +512,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
             organise widgets below.
           </div>
 
-          <div>
+          {/* <div>
             <div
               className=""
               style={{ fontWeight: 600, color: "var(--primary-color)" }}
@@ -540,7 +552,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                 })}
               </Card.Body>
             </Card>
-          </div>
+          </div> */}
 
           <div>
             <div
@@ -584,9 +596,9 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                             <div className="d-flex align-items-center gap-3">
                               <img
                                 style={{
-                                  objectFit: "contain",
-                                  width: "25px",
-                                  height: "25px",
+                                  objectFit: "cover",
+                                  width: "35px",
+                                  height: "35px",
                                   borderRadius: "50%",
                                 }}
                                 src={imgAddr + data?.image}
@@ -671,7 +683,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
 
           <div>
             <div
-              className="my-3"
+              className="mt-1"
               style={{ fontWeight: 600, color: "var(--primary-color)" }}
             >
               Selected Category
@@ -681,7 +693,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                 <div className="d-flex justify-content-between align-items-center mt-2">
                   <div className="d-flex gap-2">
                     <div>
-                      <CiSquareMinus size={20} color="var(--primary-color)" />
+                      <LuMinusSquare color="var(--primary-color)" />
                     </div>
                     <div>
                       <div style={{ fontSize: "14px", fontWeight: 600 }}>
@@ -752,7 +764,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                               <div
                                 style={{ fontSize: "12px", fontWeight: 600 }}
                               >
-                                Restaurant
+                                {data?.category?.name}
                               </div>
                               <div
                                 style={{ fontSize: "10px", fontWeight: 400 }}
@@ -849,7 +861,8 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                 style={{
                   marginTop: "-30px",
                   backgroundColor: "white",
-                  objectFit: "contain",
+                  borderRadius: "50%",
+                  objectFit: "cover",
                 }}
                 width={"45px"}
                 height={"45px"}
@@ -857,7 +870,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                 alt="..."
               />
               <div style={{ color: "var(--primary-color)", fontWeight: 600 }}>
-                Electricity
+                {selectCategory?.name}
               </div>
               <div
                 style={{
@@ -866,7 +879,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                   color: "rgba(191, 191, 191, 1)",
                 }}
               >
-                Recommended: $29.49
+                Recommended: ${amount}
               </div>
             </div>
 
@@ -875,6 +888,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                 required
                 type={"text"}
                 placeholder={"Enter bill amount"}
+                value={amount}
                 onChange={(e) => setAmount(e.target.value)}
               />
             </div>
@@ -934,7 +948,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                     </div>
                     <div>
                       <div style={{ fontSize: "14px", fontWeight: 600 }}>
-                        ${selectBudget?.budget_amount}
+                        {selectBudget?.category?.name}
                       </div>
                       <div style={{ fontSize: "12px", fontWeight: 400 }}>
                         June 30
@@ -1000,14 +1014,14 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
             <Card style={{ borderRadius: "10px" }} className="mt-4">
               <div className="text-center">
                 <Image
-                  style={{ marginTop: "-30px" }}
+                  style={{ marginTop: "-30px", borderRadius: "50%" }}
                   width={"45px"}
                   height={"45px"}
-                  src="/icons/Merchent 3.png"
+                  src={imgAddr + selectCategory?.image}
                   alt="..."
                 />
                 <div style={{ color: "var(--primary-color)", fontWeight: 600 }}>
-                  Electricity
+                  {selectCategory?.name}
                 </div>
                 <div
                   style={{
@@ -1414,6 +1428,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
           </div>
         </>
       )}
+
       {active === 8 && (
         <Calendar
           already={alreadyActiveCalendar}
@@ -1424,8 +1439,6 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
           hide={true}
         />
       )}
-
-      {/* <Calendar show={openCalendar} hide={setOpenCalendar} setDate={setDate} /> */}
     </ModalWindow>
   );
 };

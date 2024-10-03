@@ -7,7 +7,7 @@ import TransactionComponents from "./TransationComponents/TransactionComponents"
 import Calendar from "../../components/Calendar/Calendar";
 import Filter from "../../components/Filter/Filter";
 import { getError } from "../../utils/error";
-import { useGetTransactionsMutation } from "../../features/apiSlice";
+import { imgAddr, useGetTransactionsMutation } from "../../features/apiSlice";
 import { formatDate } from "../../components/FormateDateTime/FormatDateTime";
 import Skeleton from "react-loading-skeleton";
 
@@ -120,7 +120,11 @@ const Transactions = () => {
                         width={"50px"}
                         height={"50px"}
                         style={{ borderRadius: "50%" }}
-                        src={"/icons/Rectangle 116.png"}
+                        src={
+                          tran?.category?.image
+                            ? imgAddr + tran?.category?.image
+                            : "/icons/Rectangle 116.png"
+                        }
                         alt="..."
                       />
                       <div>
