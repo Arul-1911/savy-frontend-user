@@ -12,6 +12,7 @@ import { getError } from "../../../utils/error";
 import { imgAddr, useGetCashflowNetMutation } from "../../../features/apiSlice";
 import BucketComponet from "./SubComponents/BucketComponet";
 import PieCharts from "../../../components/Charts/PieChart";
+import Skeleton from "react-loading-skeleton";
 
 const data = [
   {
@@ -150,128 +151,168 @@ const NetWorth = ({ accountPortfolioActive }) => {
               >
                 Total
               </div>
-              <h3
-                className="mt-2"
-                style={{ fontWeight: 600, color: "rgba(0, 74, 173, 1)" }}
-              >
-                ${net?.total}
-              </h3>
+              {!isLoading ? (
+                <h3
+                  className="mt-2"
+                  style={{ fontWeight: 600, color: "rgba(0, 74, 173, 1)" }}
+                >
+                  ${net?.total}
+                </h3>
+              ) : (
+                <Skeleton
+                  className="rounded-2"
+                  height={"40px"}
+                  width={"100%"}
+                />
+              )}
               <hr />
 
-              <div className="d-flex justify-content-between align-items-center">
-                <div
-                  style={{
-                    color: "rgba(55, 73, 87, 0.7)",
-                    fontSize: "12px",
-                  }}
-                >
-                  {net?.last_period?.key}
-                </div>
-                <div
-                  style={{
-                    color: "rgba(55, 73, 87, 1)",
-                    fontSize: "14px",
-                    fontWeight: 600,
-                  }}
-                >
-                  ${net?.last_period?.amount}
-                </div>
+              <div
+                className={
+                  !isLoading &&
+                  "d-flex justify-content-between align-items-center"
+                }
+              >
+                {!isLoading ? (
+                  <>
+                    <div
+                      style={{
+                        color: "rgba(55, 73, 87, 0.7)",
+                        fontSize: "12px",
+                      }}
+                    >
+                      {net?.last_period?.key}
+                    </div>
+                    <div
+                      style={{
+                        color: "rgba(55, 73, 87, 1)",
+                        fontSize: "14px",
+                        fontWeight: 600,
+                      }}
+                    >
+                      ${net?.last_period?.amount}
+                    </div>
+                  </>
+                ) : (
+                  <Skeleton
+                    className="rounded-2"
+                    height={"40px"}
+                    width={"100%"}
+                  />
+                )}
               </div>
 
-              <div className="mt-3 d-flex justify-content-between align-items-center">
-                <div
-                  style={{
-                    color: "rgba(55, 73, 87, 0.7)",
-                    fontSize: "12px",
-                  }}
-                >
-                  Last period
-                </div>
-                <div
-                  style={{
-                    color: "rgba(55, 73, 87, 1)",
-                    fontSize: "14px",
-                    fontWeight: 600,
-                  }}
-                >
-                  ${net?.last}
-                </div>
+              <div
+                className={
+                  !isLoading &&
+                  "mt-3 d-flex justify-content-between align-items-center"
+                }
+              >
+                {!isLoading ? (
+                  <>
+                    <div
+                      style={{
+                        color: "rgba(55, 73, 87, 0.7)",
+                        fontSize: "12px",
+                      }}
+                    >
+                      Last period
+                    </div>
+                    <div
+                      style={{
+                        color: "rgba(55, 73, 87, 1)",
+                        fontSize: "14px",
+                        fontWeight: 600,
+                      }}
+                    >
+                      ${net?.last}
+                    </div>
+                  </>
+                ) : (
+                  <Skeleton
+                    className="rounded-2"
+                    height={"40px"}
+                    width={"100%"}
+                  />
+                )}
               </div>
             </Col>
 
             <Col>
-              {selectBucketName === "Bucket" && (
-                <div className="d-flex justify-content-center mt-2">
-                  <PieCharts
-                    COLORS={COLORS}
-                    data={net?.graphData}
-                    cornerRadius={2}
-                    In={true}
-                    width={420}
-                    height={200}
-                  />
-                </div>
-              )}
+              {!isLoading ? (
+                <>
+                  {selectBucketName === "Bucket" && (
+                    <div className="d-flex justify-content-center mt-2">
+                      <PieCharts
+                        COLORS={COLORS}
+                        data={net?.graphData}
+                        cornerRadius={2}
+                        In={true}
+                        width={420}
+                        height={200}
+                      />
+                    </div>
+                  )}
 
-              {selectBucketName === "Category" && (
-                <div className="d-flex justify-content-center mt-2">
-                  <PieCharts
-                    COLORS={COLORS}
-                    data={net?.graphData}
-                    cornerRadius={2}
-                    In={true}
-                    width={420}
-                    height={200}
-                  />
-                </div>
-              )}
+                  {selectBucketName === "Category" && (
+                    <div className="d-flex justify-content-center mt-2">
+                      <PieCharts
+                        COLORS={COLORS}
+                        data={net?.graphData}
+                        cornerRadius={2}
+                        In={true}
+                        width={420}
+                        height={200}
+                      />
+                    </div>
+                  )}
 
-              {selectBucketName === "Transaction" && (
-                <div className="d-flex justify-content-center">
-                  <BarsChart
-                    data={data}
-                    barWidth={50}
-                    width={"100%"}
-                    height={220}
-                    gradient={true}
-                    gradientNumber={12}
-                    cashFlowBar={true}
-                    netWorth={true}
-                    barGrad1={"#E2F2FF"}
-                    barGrad2={"#E2F2FF"}
-                    barGrad3={"#E2F2FF"}
-                    barGrad4={"#004AAD"}
-                  />
-                </div>
-              )}
+                  {selectBucketName === "Transaction" && (
+                    <div className="d-flex justify-content-center">
+                      <BarsChart
+                        data={data}
+                        barWidth={50}
+                        width={"100%"}
+                        height={220}
+                        gradient={true}
+                        gradientNumber={12}
+                        cashFlowBar={true}
+                        netWorth={true}
+                        barGrad1={"#E2F2FF"}
+                        barGrad2={"#E2F2FF"}
+                        barGrad3={"#E2F2FF"}
+                        barGrad4={"#004AAD"}
+                      />
+                    </div>
+                  )}
 
-              {selectBucketName === "Merchant" && (
-                <div className="d-flex justify-content-center mt-2">
-                  <PieCharts
-                    COLORS={COLORS}
-                    data={net?.graphData}
-                    cornerRadius={2}
-                    In={true}
-                    width={420}
-                    height={200}
-                  />
-                </div>
-              )}
+                  {selectBucketName === "Merchant" && (
+                    <div className="d-flex justify-content-center mt-2">
+                      <PieCharts
+                        COLORS={COLORS}
+                        data={net?.graphData}
+                        cornerRadius={2}
+                        In={true}
+                        width={420}
+                        height={200}
+                      />
+                    </div>
+                  )}
 
-              {selectBucketName === "Tag" && (
-                <div className="d-flex justify-content-center mt-2">
-                  <PieCharts
-                    COLORS={COLORS}
-                    data={net?.graphData}
-                    cornerRadius={2}
-                    In={true}
-                    width={420}
-                    height={200}
-                  />
-                </div>
-              )}
+                  {selectBucketName === "Tag" && (
+                    <div className="d-flex justify-content-center mt-2">
+                      <PieCharts
+                        COLORS={COLORS}
+                        data={net?.graphData}
+                        cornerRadius={2}
+                        In={true}
+                        width={420}
+                        height={200}
+                      />
+                    </div>
+                  )}
 
-              {/* <ResponsiveContainer width="100%" height="100%">
+                  {/* <ResponsiveContainer width="100%" height="100%">
                 <BarsChart
                   data={data}
                   barWidth={50}
@@ -287,6 +328,14 @@ const NetWorth = ({ accountPortfolioActive }) => {
                   barGrad4={"#004AAD"}
                 />
               </ResponsiveContainer> */}
+                </>
+              ) : (
+                <Skeleton
+                  className="rounded-2"
+                  height={"200px"}
+                  width={"100%"}
+                />
+              )}
             </Col>
           </Row>
         </DashboardCard>
@@ -343,49 +392,66 @@ const NetWorth = ({ accountPortfolioActive }) => {
             </div>
 
             <ul className="market mt-2">
-              {net?.data?.map((data, idx) => {
-                return (
-                  <li
-                    key={idx}
-                    className="d-flex justify-content-between align-items-center "
-                  >
-                    <div className="d-flex align-items-center gap-2">
-                      <Image
-                        width={"35px"}
-                        height={"35px"}
-                        style={{ borderRadius: "50%", objectFit: "cover" }}
-                        src={
-                          data?.image
-                            ? imgAddr + data?.image
-                            : "/icons/Merchant 1.png"
-                        }
-                        alt="..."
-                      />
+              {!isLoading ? (
+                net?.data?.map((data, idx) => {
+                  return (
+                    <li
+                      key={idx}
+                      className="d-flex justify-content-between align-items-center "
+                    >
+                      <div className="d-flex align-items-center gap-2 w-50 text-truncate">
+                        <Image
+                          width={"35px"}
+                          height={"35px"}
+                          style={{ borderRadius: "50%", objectFit: "cover" }}
+                          src={
+                            data?.image
+                              ? imgAddr + data?.image
+                              : "/icons/Merchant 1.png"
+                          }
+                          alt="..."
+                        />
+
+                        <div
+                          style={{
+                            fontSize: "rgba(55, 73, 87, 1)",
+                            fontSize: "16px",
+                          }}
+                        >
+                          {selectBucketName !== "Transaction"
+                            ? data?.name
+                            : data?.description}
+                        </div>
+                      </div>
+
+                      {selectBucketName !== "Transaction" && (
+                        <div>{data?.percent}%</div>
+                      )}
 
                       <div
                         style={{
-                          fontSize: "rgba(55, 73, 87, 1)",
-                          fontSize: "16px",
+                          color: "var(--primary-color)",
+                          fontSize: "20px",
+                          fontWeight: 800,
                         }}
                       >
-                        {data?.name}
+                        {selectBucketName !== "Transaction"
+                          ? data?.value
+                          : data?.amount}{" "}
+                        $
                       </div>
-                    </div>
-
-                    <div>{data?.percent}%</div>
-
-                    <div
-                      style={{
-                        color: "var(--primary-color)",
-                        fontSize: "20px",
-                        fontWeight: 800,
-                      }}
-                    >
-                      {data?.value} $
-                    </div>
-                  </li>
-                );
-              })}
+                    </li>
+                  );
+                })
+              ) : (
+                <li>
+                  <Skeleton
+                    className="rounded-2 mb-2"
+                    height={"40px"}
+                    width={"100%"}
+                  />
+                </li>
+              )}
             </ul>
           </DashboardCard>
         </Col>

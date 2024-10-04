@@ -298,163 +298,165 @@ const OverView = ({ data, loading }) => {
         </DashboardCard>
       </div>
       <Row className="mt-2 g-2">
-        <Col>
-          <DashboardCard>
-            <div className="d-flex align-items-center justify-content-between">
-              <div
-                style={{
-                  color: "rgba(0, 39, 91, 1)",
-                  fontWeight: 600,
-                  fontSize: "18px",
-                  cursor: "pointer",
-                }}
-              >
-                Top categories
-              </div>
-              <div
-                style={{
-                  color: "rgba(92, 182, 249, 1)",
-                  fontWeight: 500,
-                  fontSize: "14px",
-                  cursor: "pointer",
-                }}
-              >
-                View all
-              </div>
-            </div>
-
-            <ul className="market mt-2">
-              {data?.topCategory?.map((data, idx) => {
-                return (
-                  <li
-                    key={idx}
-                    className="d-flex justify-content-between align-items-center "
+        {!loading ? (
+          <>
+            <Col>
+              <DashboardCard>
+                <div className="d-flex align-items-center justify-content-between">
+                  <div
+                    style={{
+                      color: "rgba(0, 39, 91, 1)",
+                      fontWeight: 600,
+                      fontSize: "18px",
+                      cursor: "pointer",
+                    }}
                   >
-                    <div className="d-flex align-items-center gap-2">
-                      <Image
-                        width={"50px"}
-                        height={"50px"}
-                        style={{ borderRadius: "50%", objectFit: "cover" }}
-                        src={
-                          data?.image
-                            ? imgAddr + data?.image
-                            : "/icons/Merchant 1.png"
-                        }
-                        alt="..."
-                      />
-                      <div>
-                        <div
-                          style={{
-                            fontSize: "rgba(55, 73, 87, 1)",
-                            fontSize: "16px",
-                          }}
-                        >
-                          {data?.category}
-                        </div>
-                        {/* <div
-                          style={{
-                            fontSize: "rgba(55, 73, 87, 0.7)",
-                            fontSize: "12px",
-                            fontWeight: 400,
-                          }}
-                        >
-                          {data?.subTexet}
-                        </div> */}
-                      </div>
-                    </div>
-
-                    <div
-                      style={{
-                        color: "var(--primary-color)",
-                        fontSize: "20px",
-                        fontWeight: 800,
-                      }}
-                    >
-                      {data?.value} $
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          </DashboardCard>
-        </Col>
-
-        <Col>
-          <DashboardCard>
-            <div className="d-flex align-items-center justify-content-between">
-              <div
-                style={{
-                  color: "rgba(0, 39, 91, 1)",
-                  fontWeight: 600,
-                  fontSize: "18px",
-                  cursor: "pointer",
-                }}
-              >
-                categories with most changes
-              </div>
-              <div
-                style={{
-                  color: "rgba(92, 182, 249, 1)",
-                  fontWeight: 500,
-                  fontSize: "14px",
-                  cursor: "pointer",
-                }}
-              >
-                View all
-              </div>
-            </div>
-
-            <ul className="market mt-2">
-              {data?.topBucket?.map((data, idx) => {
-                return (
-                  <li
-                    key={idx}
-                    className="d-flex justify-content-between align-items-center "
+                    Top categories
+                  </div>
+                  <div
+                    style={{
+                      color: "rgba(92, 182, 249, 1)",
+                      fontWeight: 500,
+                      fontSize: "14px",
+                      cursor: "pointer",
+                    }}
                   >
-                    <div className="d-flex align-items-center gap-2">
-                      <Image
-                        width={"50px"}
-                        height={"50px"}
-                        style={{ borderRadius: "50%", objectFit: "cover" }}
-                        src={
-                          data?.image
-                            ? imgAddr + data?.image
-                            : "/icons/Merchant 1.png"
-                        }
-                        alt="..."
-                      />
-                      <div>
-                        <div
-                          style={{
-                            fontSize: "rgba(55, 73, 87, 1)",
-                            fontSize: "16px",
-                          }}
-                        >
-                          {data?.bucket}
-                        </div>
-                        {/* <div
-                          style={{
-                            fontSize: "rgba(55, 73, 87, 0.7)",
-                            fontSize: "12px",
-                            fontWeight: 400,
-                          }}
-                        >
-                          {data?.subTexet}
-                        </div> */}
-                      </div>
-                    </div>
+                    View all
+                  </div>
+                </div>
 
-                    <div>
-                      <div
-                        style={{
-                          color: "var(--primary-color)",
-                          fontSize: "20px",
-                          fontWeight: 800,
-                        }}
+                <ul className="market mt-2">
+                  {data?.topCategory?.map((data, idx) => {
+                    return (
+                      <li
+                        key={idx}
+                        className="d-flex justify-content-between align-items-center "
                       >
-                        {data?.value} $
-                      </div>
-                      {/* <div
+                        <div className="d-flex align-items-center gap-2">
+                          <Image
+                            width={"50px"}
+                            height={"50px"}
+                            style={{ borderRadius: "50%", objectFit: "cover" }}
+                            src={
+                              data?.image
+                                ? imgAddr + data?.image
+                                : "/icons/Merchant 1.png"
+                            }
+                            alt="..."
+                          />
+                          <div>
+                            <div
+                              style={{
+                                fontSize: "rgba(55, 73, 87, 1)",
+                                fontSize: "16px",
+                              }}
+                            >
+                              {data?.category}
+                            </div>
+                            {/* <div
+                          style={{
+                            fontSize: "rgba(55, 73, 87, 0.7)",
+                            fontSize: "12px",
+                            fontWeight: 400,
+                          }}
+                        >
+                          {data?.subTexet}
+                        </div> */}
+                          </div>
+                        </div>
+
+                        <div
+                          style={{
+                            color: "var(--primary-color)",
+                            fontSize: "20px",
+                            fontWeight: 800,
+                          }}
+                        >
+                          {data?.value} $
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </DashboardCard>
+            </Col>
+
+            <Col>
+              <DashboardCard>
+                <div className="d-flex align-items-center justify-content-between">
+                  <div
+                    style={{
+                      color: "rgba(0, 39, 91, 1)",
+                      fontWeight: 600,
+                      fontSize: "18px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Top bucket
+                  </div>
+                  <div
+                    style={{
+                      color: "rgba(92, 182, 249, 1)",
+                      fontWeight: 500,
+                      fontSize: "14px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    View all
+                  </div>
+                </div>
+
+                <ul className="market mt-2">
+                  {data?.topBucket?.map((data, idx) => {
+                    return (
+                      <li
+                        key={idx}
+                        className="d-flex justify-content-between align-items-center "
+                      >
+                        <div className="d-flex align-items-center gap-2">
+                          <Image
+                            width={"50px"}
+                            height={"50px"}
+                            style={{ borderRadius: "50%", objectFit: "cover" }}
+                            src={
+                              data?.image
+                                ? imgAddr + data?.image
+                                : "/icons/Merchant 1.png"
+                            }
+                            alt="..."
+                          />
+                          <div>
+                            <div
+                              style={{
+                                fontSize: "rgba(55, 73, 87, 1)",
+                                fontSize: "16px",
+                              }}
+                            >
+                              {data?.bucket}
+                            </div>
+                            {/* <div
+                          style={{
+                            fontSize: "rgba(55, 73, 87, 0.7)",
+                            fontSize: "12px",
+                            fontWeight: 400,
+                          }}
+                        >
+                          {data?.subTexet}
+                        </div> */}
+                          </div>
+                        </div>
+
+                        <div>
+                          <div
+                            style={{
+                              color: "var(--primary-color)",
+                              fontSize: "20px",
+                              fontWeight: 800,
+                            }}
+                          >
+                            {data?.value} $
+                          </div>
+                          {/* <div
                         style={{
                           color: "rgba(58, 195, 172, 1)",
                           fontWeight: 400,
@@ -465,159 +467,169 @@ const OverView = ({ data, loading }) => {
                       >
                         <FaArrowUp /> 231.25%
                       </div> */}
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          </DashboardCard>
-        </Col>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </DashboardCard>
+            </Col>
+          </>
+        ) : (
+          [1, 2].map((_, i) => (
+            <Col key={i} className={`p-2 `}>
+              <Skeleton className="rounded-4" height={"350px"} width={"100%"} />
+            </Col>
+          ))
+        )}
       </Row>
 
       <Row className="mt-2 g-2">
-        <Col sm={6}>
-          <DashboardCard>
-            <div className="d-flex align-items-center justify-content-between">
-              <div
-                style={{
-                  color: "rgba(0, 39, 91, 1)",
-                  fontWeight: 600,
-                  fontSize: "18px",
-                  cursor: "pointer",
-                }}
-              >
-                Recent largest transactions
-              </div>
-              <div
-                style={{
-                  color: "rgba(92, 182, 249, 1)",
-                  fontWeight: 500,
-                  fontSize: "14px",
-                  cursor: "pointer",
-                }}
-              >
-                View all
-              </div>
-            </div>
-
-            <ul className="market mt-2">
-              {data?.recentLargestTransactions?.map((data, idx) => {
-                return (
-                  <li
-                    key={idx}
-                    className="d-flex justify-content-between align-items-center"
+        {!loading ? (
+          <>
+            <Col sm={6}>
+              <DashboardCard>
+                <div className="d-flex align-items-center justify-content-between">
+                  <div
+                    style={{
+                      color: "rgba(0, 39, 91, 1)",
+                      fontWeight: 600,
+                      fontSize: "18px",
+                      cursor: "pointer",
+                    }}
                   >
-                    <div className="d-flex align-items-center gap-2 w-75">
-                      <Image
-                        width={"50px"}
-                        height={"50px"}
-                        style={{ borderRadius: "50%" }}
-                        src={
-                          data?.category?.image
-                            ? imgAddr + data?.category?.image
-                            : "/icons/Merchant 1.png"
-                        }
-                        alt="..."
-                      />
-                      <div>
-                        <div
-                          className="w-75 text-truncate"
-                          style={{
-                            fontSize: "rgba(55, 73, 87, 1)",
-                            fontSize: "16px",
-                          }}
-                        >
-                          {data?.description}
-                        </div>
-                        <div
-                          style={{
-                            fontSize: "rgba(55, 73, 87, 0.7)",
-                            fontSize: "12px",
-                            fontWeight: 400,
-                          }}
-                        >
-                          {data?.bucket?.name}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="d-flex flex-column align-items-end">
-                      <div
-                        style={{
-                          color: "var(--primary-color)",
-                          fontSize: "20px",
-                          fontWeight: 800,
-                        }}
-                      >
-                        {data?.amount} $
-                      </div>
-                      <div
-                        style={{
-                          color: "rgba(55, 73, 87, 0.7)",
-                          fontWeight: 400,
-                          fontSize: "12px",
-                        }}
-                      >
-                        {formatDate(data?.date)}
-                      </div>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          </DashboardCard>
-        </Col>
-
-        <Col>
-          <DashboardCard>
-            <div className="d-flex align-items-center justify-content-between">
-              <div
-                style={{
-                  color: "rgba(0, 39, 91, 1)",
-                  fontWeight: 600,
-                  fontSize: "18px",
-                  cursor: "pointer",
-                }}
-              >
-                Top merchents
-              </div>
-              <div
-                style={{
-                  color: "rgba(92, 182, 249, 1)",
-                  fontWeight: 500,
-                  fontSize: "14px",
-                  cursor: "pointer",
-                }}
-              >
-                View all
-              </div>
-            </div>
-
-            <ul className="market mt-2">
-              {data?.topMerchant?.map((data, idx) => {
-                return (
-                  <li
-                    key={idx}
-                    className="d-flex justify-content-between align-items-center "
+                    Recent largest transactions
+                  </div>
+                  <div
+                    style={{
+                      color: "rgba(92, 182, 249, 1)",
+                      fontWeight: 500,
+                      fontSize: "14px",
+                      cursor: "pointer",
+                    }}
                   >
-                    <div className="d-flex align-items-center gap-2">
-                      <Image
-                        width={"50px"}
-                        height={"50px"}
-                        style={{ borderRadius: "50%" }}
-                        src={"/icons/Merchant 1.png"}
-                        alt="..."
-                      />
-                      <div>
-                        <div
-                          style={{
-                            fontSize: "rgba(55, 73, 87, 1)",
-                            fontSize: "16px",
-                          }}
-                        >
-                          {data?.merchant}
+                    View all
+                  </div>
+                </div>
+
+                <ul className="market mt-2">
+                  {data?.recentLargestTransactions?.map((data, idx) => {
+                    return (
+                      <li
+                        key={idx}
+                        className="d-flex justify-content-between align-items-center"
+                      >
+                        <div className="d-flex align-items-center gap-2 w-75">
+                          <Image
+                            width={"50px"}
+                            height={"50px"}
+                            style={{ borderRadius: "50%" }}
+                            src={
+                              data?.category?.image
+                                ? imgAddr + data?.category?.image
+                                : "/icons/Merchant 1.png"
+                            }
+                            alt="..."
+                          />
+                          <div>
+                            <div
+                              className="w-75 text-truncate"
+                              style={{
+                                fontSize: "rgba(55, 73, 87, 1)",
+                                fontSize: "16px",
+                              }}
+                            >
+                              {data?.description}
+                            </div>
+                            <div
+                              style={{
+                                fontSize: "rgba(55, 73, 87, 0.7)",
+                                fontSize: "12px",
+                                fontWeight: 400,
+                              }}
+                            >
+                              {data?.bucket?.name}
+                            </div>
+                          </div>
                         </div>
-                        {/* <div
+
+                        <div className="d-flex flex-column align-items-end">
+                          <div
+                            style={{
+                              color: "var(--primary-color)",
+                              fontSize: "20px",
+                              fontWeight: 800,
+                            }}
+                          >
+                            {data?.amount} $
+                          </div>
+                          <div
+                            style={{
+                              color: "rgba(55, 73, 87, 0.7)",
+                              fontWeight: 400,
+                              fontSize: "12px",
+                            }}
+                          >
+                            {formatDate(data?.date)}
+                          </div>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </DashboardCard>
+            </Col>
+
+            <Col>
+              <DashboardCard>
+                <div className="d-flex align-items-center justify-content-between">
+                  <div
+                    style={{
+                      color: "rgba(0, 39, 91, 1)",
+                      fontWeight: 600,
+                      fontSize: "18px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Top merchents
+                  </div>
+                  <div
+                    style={{
+                      color: "rgba(92, 182, 249, 1)",
+                      fontWeight: 500,
+                      fontSize: "14px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    View all
+                  </div>
+                </div>
+
+                <ul className="market mt-2">
+                  {data?.topMerchant?.map((data, idx) => {
+                    return (
+                      <li
+                        key={idx}
+                        className="d-flex justify-content-between align-items-center "
+                      >
+                        <div className="d-flex align-items-center gap-2">
+                          <Image
+                            width={"50px"}
+                            height={"50px"}
+                            style={{ borderRadius: "50%" }}
+                            src={"/icons/Merchant 1.png"}
+                            alt="..."
+                          />
+                          <div>
+                            <div
+                              style={{
+                                fontSize: "rgba(55, 73, 87, 1)",
+                                fontSize: "16px",
+                              }}
+                            >
+                              {data?.merchant}
+                            </div>
+                            {/* <div
                           style={{
                             fontSize: "rgba(55, 73, 87, 0.7)",
                             fontSize: "12px",
@@ -626,24 +638,32 @@ const OverView = ({ data, loading }) => {
                         >
                           {data?.subTexet}
                         </div> */}
-                      </div>
-                    </div>
+                          </div>
+                        </div>
 
-                    <div
-                      style={{
-                        color: "var(--primary-color)",
-                        fontSize: "20px",
-                        fontWeight: 800,
-                      }}
-                    >
-                      {data?.value} $
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          </DashboardCard>
-        </Col>
+                        <div
+                          style={{
+                            color: "var(--primary-color)",
+                            fontSize: "20px",
+                            fontWeight: 800,
+                          }}
+                        >
+                          {data?.value} $
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </DashboardCard>
+            </Col>
+          </>
+        ) : (
+          [1, 2].map((_, i) => (
+            <Col key={i} className={`p-2 `}>
+              <Skeleton className="rounded-4" height={"350px"} width={"100%"} />
+            </Col>
+          ))
+        )}
       </Row>
     </div>
   );

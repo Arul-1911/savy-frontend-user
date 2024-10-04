@@ -119,7 +119,7 @@ const Transactions = () => {
                       <Image
                         width={"50px"}
                         height={"50px"}
-                        style={{ borderRadius: "50%" }}
+                        style={{ borderRadius: "50%", objectFit: "cover" }}
                         src={
                           tran?.category?.image
                             ? imgAddr + tran?.category?.image

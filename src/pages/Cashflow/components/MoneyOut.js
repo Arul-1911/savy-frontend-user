@@ -234,14 +234,10 @@ const MoneyOut = ({ accountPortfolioActive }) => {
                         gradient={true}
                         cashFlow={true}
                         gradientNumber={4}
-                        barGrad1={"#004AAD"}
+                        barGrad1={"#3AC3AC"}
                         barGrad2={"#3AC3AC"}
-                        barGrad3={"#004AAD"}
-                        barGrad4={"#DC5A5A"}
-                        // barGrad1={"rgba(226, 242, 255, 1)"}
-                        // barGrad2={"rgba(226, 242, 255, 1)"}
-                        // barGrad3={"rgba(226, 242, 255, 1)"}
-                        // barGrad4={"rgba(0, 74, 173, 1)"}
+                        barGrad3={"#374957"}
+                        barGrad4={"#374957"}
                       />
                     </div>
                   )}

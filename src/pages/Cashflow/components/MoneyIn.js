@@ -231,16 +231,16 @@ const MoneyIn = ({ accountPortfolioActive }) => {
                     <div className="d-flex justify-content-center">
                       <BarsChart
                         data={moneyIn?.graphData}
-                        width={500}
+                        width={450}
                         height={220}
-                        barWidth={70}
+                        barWidth={50}
                         gradient={true}
                         gradientNumber={4}
                         cashFlow={true}
-                        barGrad1={"#004AAD"}
+                        barGrad1={"#3AC3AC"}
                         barGrad2={"#3AC3AC"}
-                        barGrad3={"#004AAD"}
-                        barGrad4={"#DC5A5A"}
+                        barGrad3={"#374957"}
+                        barGrad4={"#374957"}
                       />
                     </div>
                   )}

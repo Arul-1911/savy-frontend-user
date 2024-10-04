@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const BASE_URL = "https://sayv-backend.adaptable.app/api";
+const BASE_URL = "https://savy-backend-tda5.onrender.com/api";
 export const imgAddr = "https://creative-story.s3.amazonaws.com";
 
 export const apiSlice = createApi({
