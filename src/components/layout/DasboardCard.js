@@ -11,7 +11,7 @@ const DashboardCard = ({ children, height, width }) => {
         backgroundColor: "rgba(255, 255, 255, 1)",
         border: "none",
       }}
-      className=""
+      className="m-2"
     >
       <CardBody className="">{children}</CardBody>
     </Card>

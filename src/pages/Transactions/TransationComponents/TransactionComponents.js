@@ -86,7 +86,6 @@ const TransactionComponents = ({
   const [isBill, setIsBill] = useState(false);
 
   const [transaction, setTransaction] = useState({});
-
   const [tagName, setTagName] = useState("");
 
   useEffect(() => {
@@ -102,10 +101,23 @@ const TransactionComponents = ({
   }, [active]);
 
   useEffect(() => {
-    if (active === 1 && transactionId) {
+    if (transactionId) {
       getSingleTransation();
     }
-  }, [active, transactionId]);
+  }, [transactionId]);
+
+  useEffect(() => {
+    if (transaction) {
+      setSelectedTag(transaction?.tag?._id || null);
+      setSelectedTagName(transaction?.tag?.tag_name || "");
+      setSelectedCategory(transaction?.category?._id || null);
+      setSelectedCategoryName(transaction?.category?.name || "");
+      setSelectedBucket(transaction?.bucket?._id || null);
+      setSelectedBucketName(transaction?.bucket?.name || "");
+      setIsBill((transaction?.bill && true) || "");
+      setAddNote(transaction?.notes || "");
+    }
+  }, [transaction]);
 
   const handleTagChange = (tagId, tagName) => {
     setSelectedTag(tagId);
@@ -186,7 +198,7 @@ const TransactionComponents = ({
         transactionId,
         transData: transData,
       }).unwrap();
-      getSuccess(data?.success);
+      getSuccess(data?.message);
       hide(false);
     } catch (error) {
       getError(error);
@@ -201,8 +213,7 @@ const TransactionComponents = ({
     try {
       const data = await createTag(formData).unwrap();
       getSuccess(data?.message);
-      hide(false);
-      activeLink(1);
+      activeLink(3);
       setTagName("");
     } catch (error) {
       getError(error);
@@ -213,48 +224,64 @@ const TransactionComponents = ({
     <ModalWindow show={show} onHide={hide}>
       {active === 1 && (
         <>
-          <div className="d-flex align-items-center flex-wrap justify-content-between">
-            <IoArrowBackCircleOutline
-              color="rgba(92, 182, 249, 1)"
-              cursor={"pointer"}
-              size={28}
-              onClick={() => hide(false)}
-            />
-            <div
+          {/* <div className="d-flex align-items-center flex-wrap justify-content-between"> */}
+          <Row>
+            <Col>
+              <IoArrowBackCircleOutline
+                color="rgba(92, 182, 249, 1)"
+                cursor={"pointer"}
+                size={28}
+                onClick={() => hide(false)}
+              />
+            </Col>
+            <Col
+              className="text-center"
               style={{
-                // margin: "auto 120px",
                 fontWeight: 600,
-                fontSize: "18px",
+                fontSize: "16px",
                 color: "rgba(55, 73, 87, 1)",
               }}
             >
               {formatDate(transaction?.date)}
-            </div>
+            </Col>
 
-            <button
-              // className="px-2 py-1"
-              style={{
-                backgroundColor: "white",
-                color: "var(--primary-color)",
-                border: "1px solid #D2EBFD",
-                borderRadius: "18px",
-                fontSize: "12px",
-                fontWeight: 600,
-              }}
-              onClick={handleUpdateTransaction}
-            >
-              {!transactionLoading ? "update" : <Spinner size="sm" />}
-            </button>
-          </div>
+            <Col className="text-end">
+              <button
+                style={{
+                  backgroundColor: "white",
+                  color: "var(--primary-color)",
+                  border: "1px solid #D2EBFD",
+                  borderRadius: "18px",
+                  fontSize: "12px",
+                  fontWeight: 600,
+                }}
+                onClick={handleUpdateTransaction}
+              >
+                {!transactionLoading ? "update" : <Spinner size="sm" />}
+              </button>
+            </Col>
+          </Row>
+          {/* </div> */}
 
           {!getTransactionLoading ? (
             <Card style={{ borderRadius: "15px" }} className="mt-4">
               <Card.Body>
                 <div className="text-center">
                   <div style={{ marginTop: "-45px" }}>
-                    <Image src="/icons/Rectangle 116.png" alt="..." />
+                    <Image
+                      width={"50px"}
+                      height={"50px"}
+                      style={{ objectFit: "cover", borderRadius: "50%" }}
+                      src={
+                        transaction?.category?.image
+                          ? imgAddr + transaction?.category?.image
+                          : "/icons/Rectangle 116.png"
+                      }
+                      alt="..."
+                    />
                   </div>
                   <h3
+                    className="mt-1"
                     style={{ fontWeight: 700, color: "var(--primary-color)" }}
                   >
                     ${transaction?.amount}
@@ -356,6 +383,7 @@ const TransactionComponents = ({
                   placeholder="Add note"
                   type="text"
                   aria-describedby="basic-addon1"
+                  value={addNote}
                   onChange={(e) => setAddNote(e.target.value)}
                 />
               </InputGroup>

@@ -26,6 +26,7 @@ import {
 import { getError } from "../utils/error";
 import { formatDate } from "../components/FormateDateTime/FormatDateTime";
 import Skeleton from "react-loading-skeleton";
+// import { IoMdRefresh } from "react-icons/io";
 
 const COLORS = [
   { start: "rgba(36, 204, 167, 1)", end: "rgba(74, 86, 226, 1)" },
@@ -1024,9 +1025,19 @@ export default function Dashboard() {
           <Col>
             <DashboardCard>
               <div className="d-flex align-items-center justify-content-end">
-                {/* <div className="w-25">
-                  <SearchField />
-                </div> */}
+                {/* <button
+                  className="px-3 py-1"
+                  style={{
+                    backgroundColor: "white",
+                    color: "var(--primary-color)",
+                    border: "1px solid #D2EBFD",
+                    borderRadius: "18px",
+                    fontSize: "12px",
+                    fontWeight: 600,
+                  }}
+                >
+                  Refresh <IoMdRefresh />
+                </button> */}
                 <div
                   className="px-3 py-1"
                   style={{
@@ -1042,16 +1053,6 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              {/* <div
-                style={{
-                  color: "var(--primary-color)",
-                  fontWeight: 600,
-                  fontSize: "16px",
-                }}
-              >
-                Today
-              </div> */}
-
               <ul className="market mt-2">
                 {!isLoading
                   ? dashboard?.transactions?.map((data, idx) => {
@@ -1062,10 +1063,17 @@ export default function Dashboard() {
                         >
                           <div className="d-flex align-items-center gap-2">
                             <Image
-                              width={"50px"}
-                              height={"50px"}
-                              style={{ borderRadius: "50%" }}
-                              src="/icons/Rectangle 116.png"
+                              width={"35px"}
+                              height={"35px"}
+                              style={{
+                                borderRadius: "50%",
+                                objectFit: "cover",
+                              }}
+                              src={
+                                data?.category?.image
+                                  ? imgAddr + data?.category?.image
+                                  : "/icons/Rectangle 116.png"
+                              }
                               alt="..."
                             />
                             <div>

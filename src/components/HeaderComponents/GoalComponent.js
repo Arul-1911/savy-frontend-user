@@ -3,6 +3,7 @@ import ModalWindow from "../modals/ModalWindow";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import {
   Card,
+  Col,
   Form,
   Image,
   InputGroup,
@@ -19,6 +20,8 @@ import {
   useGetGoalsMutation,
 } from "../../features/apiSlice";
 import { getError } from "../../utils/error";
+import { getSuccess } from "../../utils/success";
+import Skeleton from "react-loading-skeleton";
 
 const GoalComponent = ({ show, hide, active, activeLink }) => {
   const fileRef = useRef(null);
@@ -74,9 +77,10 @@ const GoalComponent = ({ show, hide, active, activeLink }) => {
     };
 
     try {
-      await createGoals(goalData).unwrap();
-      hide(false);
+      const data = await createGoals(goalData).unwrap();
+      getSuccess(data?.message);
       activeLink(1);
+      hide();
     } catch (error) {
       getError(error);
     }
@@ -90,10 +94,10 @@ const GoalComponent = ({ show, hide, active, activeLink }) => {
 
   const getAllGoals = async () => {
     try {
-      const { data } = await getGoals();
-      setGoals(data?.goals);
+      const { goals } = await getGoals().unwrap();
+      setGoals(goals);
     } catch (error) {
-      getGoals(error);
+      getError(error);
     }
   };
 
@@ -131,7 +135,13 @@ const GoalComponent = ({ show, hide, active, activeLink }) => {
             >
               Goals
             </p>
-            <Card style={{ borderRadius: "20px" }}>
+            <Card
+              style={{
+                borderRadius: "10px",
+                height: "250px",
+                overflowY: "scroll",
+              }}
+            >
               <Card.Body>
                 {goals?.length > 0 ? (
                   !goalsLoading ? (
@@ -184,23 +194,24 @@ const GoalComponent = ({ show, hide, active, activeLink }) => {
                               ${data?.amount}
                             </div>
                           </div>
-                          <div className="mt-1">
-                            <ProgressBar
-                              now={data?.amount}
-                              label={`${100}%`}
-                              visuallyHidden
-                            />
-                          </div>
                         </div>
                       );
                     })
                   ) : (
-                    <div className="text-center">
-                      <Spinner size="sm" />
-                    </div>
+                    [1, 2, 3, 4, 5].map((_, idx) => {
+                      return (
+                        <div key={idx}>
+                          <Skeleton
+                            className="rounded-2"
+                            height={"40px"}
+                            width={"100%"}
+                          />
+                        </div>
+                      );
+                    })
                   )
                 ) : (
-                  <div className="text-center">No goals found</div>
+                  <div className="text-center">No goals found!</div>
                 )}
               </Card.Body>
             </Card>

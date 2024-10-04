@@ -10,6 +10,7 @@ import { getError } from "../../utils/error";
 import { imgAddr, useGetTransactionsMutation } from "../../features/apiSlice";
 import { formatDate } from "../../components/FormateDateTime/FormatDateTime";
 import Skeleton from "react-loading-skeleton";
+import { IoMdRefresh } from "react-icons/io";
 
 const Transactions = () => {
   const [transactionModal, setTransactionModal] = useState(false);
@@ -74,7 +75,7 @@ const Transactions = () => {
             src="/icons/calendar.png"
             alt="..."
           />
-          <Image
+          {/* <Image
             onClick={() => setOpenFilter(true)}
             style={{
               color: "rgba(92, 182, 249, 1)",
@@ -87,12 +88,12 @@ const Transactions = () => {
             }}
             src="/icons/Filter.png"
             alt="..."
-          />
+          /> */}
 
           <button
             className="px-3 py-1"
             style={{
-              backgroundColor: "#004AAD14",
+              backgroundColor: "white",
               color: "var(--primary-color)",
               border: "1px solid #D2EBFD",
               borderRadius: "18px",
@@ -102,6 +103,20 @@ const Transactions = () => {
             onClick={clearAllFilter}
           >
             Clear All
+          </button>
+
+          <button
+            className="px-3 py-1"
+            style={{
+              backgroundColor: "white",
+              color: "var(--primary-color)",
+              border: "1px solid #D2EBFD",
+              borderRadius: "18px",
+              fontSize: "12px",
+              fontWeight: 600,
+            }}
+          >
+            Refresh <IoMdRefresh />
           </button>
         </div>
 
@@ -117,8 +132,8 @@ const Transactions = () => {
                   >
                     <div className="d-flex  gap-2">
                       <Image
-                        width={"50px"}
-                        height={"50px"}
+                        width={"35px"}
+                        height={"35px"}
                         style={{ borderRadius: "50%", objectFit: "cover" }}
                         src={
                           tran?.category?.image
