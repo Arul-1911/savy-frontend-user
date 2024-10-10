@@ -170,7 +170,7 @@ const Transactions = () => {
                         fontWeight: 800,
                       }}
                     >
-                      ${tran?.amount}
+                      {tran?.amount} $
                     </div>
                   </li>
                 );

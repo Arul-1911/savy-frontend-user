@@ -231,7 +231,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
               marginTop: "10px",
             }}
           >
-            <h2
+            {/* <h2
               style={{
                 fontWeight: 700,
               }}
@@ -246,7 +246,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
               }}
             >
               left for this week budget
-            </p>
+            </p> */}
             <p style={{ fontSize: "13px" }} className="payday-list-amount">
               <span style={{ color: "rgba(255, 255, 255, 0.7)" }}>
                 Total budget left :

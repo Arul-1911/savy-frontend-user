@@ -73,6 +73,7 @@ const TransactionComponents = ({
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedCategoryName, setSelectedCategoryName] = useState("");
+  const [selectedCategoryImage, setSelectedCategoryImage] = useState("");
 
   const [selectedBucket, setSelectedBucket] = useState(null);
   const [selectedBucketName, setSelectedBucketName] = useState("");
@@ -131,13 +132,15 @@ const TransactionComponents = ({
     categoryName,
     bucketId,
     bucketName,
-    bucketImg
+    bucketImg,
+    categoryImg
   ) => {
     setSelectedCategory(categoryId);
     setSelectedCategoryName(categoryName);
     setSelectedBucket(bucketId);
     setSelectedBucketName(bucketName);
     setSelectedBucketImage(bucketImg);
+    setSelectedCategoryImage(categoryImg);
   };
 
   // ======== get categories ========
@@ -703,21 +706,21 @@ const TransactionComponents = ({
           </div>
 
           <div className="mt-3">
-            <div className="px-2">
+            {/* <div className="px-2">
               <SearchField />
-            </div>
+            </div> */}
 
             <div
-              className="mt-3"
+              className="my-1"
               style={{
-                fontSize: "18px",
+                fontSize: "14px",
                 color: "var(--primary-color)",
                 fontWeight: 600,
               }}
             >
               Select tags
             </div>
-            <Card className="mt-2" style={{ borderRadius: "10px" }}>
+            <Card style={{ borderRadius: "10px" }}>
               <Card.Body>
                 {tags?.length > 0 ? (
                   !tagsLoading ? (
@@ -842,7 +845,7 @@ const TransactionComponents = ({
               style={{
                 margin: "auto",
                 fontWeight: 600,
-                fontSize: "18px",
+                fontSize: "16px",
                 color: "rgba(55, 73, 87, 1)",
               }}
               className="text-center"
@@ -851,16 +854,20 @@ const TransactionComponents = ({
             </div>
           </div>
 
-          <div className="text-center px-4">
+          <div style={{ fontSize: "12px" }} className="text-center px-4">
             To add a Category, please select the Category to continue.
           </div>
 
-          <p className="text-primary font-bold">Category</p>
+          <p
+            className="text-primary my-1"
+            style={{ fontSize: "14px", fontWeight: 600 }}
+          >
+            Category
+          </p>
 
-          <SearchField />
+          {/* <SearchField /> */}
           <Form onSubmit={handleCategory}>
             <Card
-              className="mt-3"
               style={
                 categories.length > 5
                   ? { height: "300px", overflowY: "scroll" }
@@ -880,16 +887,18 @@ const TransactionComponents = ({
                               <div className="d-flex align-items-center gap-2">
                                 <img
                                   style={{
-                                    width: "15px",
-                                    height: "15px",
+                                    width: "35px",
+                                    height: "35px",
                                     borderRadius: "50%",
-                                    objectFit: "contain",
+                                    objectFit: "cover",
                                     color: "var(--primary-color)",
                                   }}
                                   src={data?.image && imgAddr + data?.image}
                                   alt="..."
                                 />
-                                <div className="font-bold">{data?.name}</div>
+                                <div style={{ fontSize: "14px" }}>
+                                  {data?.name}
+                                </div>
                               </div>
                               <input
                                 type="checkbox"
@@ -900,7 +909,8 @@ const TransactionComponents = ({
                                     data?.name,
                                     data?.bucket?._id,
                                     data?.bucket?.name,
-                                    data?.bucket?.image
+                                    data?.bucket?.image,
+                                    data?.image
                                   )
                                 }
                               />
@@ -956,7 +966,7 @@ const TransactionComponents = ({
               style={{
                 margin: "auto",
                 fontWeight: 600,
-                fontSize: "18px",
+                fontSize: "16px",
                 color: "rgba(55, 73, 87, 1)",
               }}
               className="text-center"
@@ -965,11 +975,19 @@ const TransactionComponents = ({
             </div>
           </div>
 
-          <div className="text-center text-12 px-4">
+          <div
+            style={{ fontSize: "12px" }}
+            className="text-center text-12 px-4"
+          >
             To add a Bucket, please select the Bucket to continue.
           </div>
 
-          <p className="text-primary font-bold">Selected Transaction</p>
+          <p
+            style={{ fontSize: "14px", fontWeight: 600 }}
+            className="text-primary my-1"
+          >
+            Selected Transaction
+          </p>
 
           <Card>
             <div className="d-flex justify-content-between align-items-center p-1">
@@ -977,12 +995,16 @@ const TransactionComponents = ({
                 <div className="d-flex gap-2">
                   <img
                     style={{
-                      width: "25px",
-                      height: "25px",
+                      width: "35px",
+                      height: "35px",
                       borderRadius: "50%",
-                      objectFit: "contain",
+                      objectFit: "cover",
                     }}
-                    src={"/icons/Rectangle 116.png"}
+                    src={
+                      selectedCategoryImage
+                        ? imgAddr + selectedCategoryImage
+                        : "/icons/Rectangle 116.png"
+                    }
                     alt="..."
                   />
                   <div>
@@ -1016,24 +1038,28 @@ const TransactionComponents = ({
             </div>
           </Card>
 
-          <p className="text-primary font-bold">Bucket</p>
+          <p
+            style={{ fontSize: "14px", fontWeight: 600 }}
+            className="text-primary my-1"
+          >
+            Bucket
+          </p>
 
-          <Card className="mt-3">
+          <Card>
             <Card.Body>
               <div className="d-flex justify-content-between align-items-center">
                 <div className="d-flex align-items-center gap-2">
                   <img
                     style={{
-                      width: "15px",
-                      height: "15px",
+                      width: "35px",
+                      height: "35px",
                       borderRadius: "50%",
-                      objectFit: "contain",
-                      color: "var(--primary-color)",
+                      objectFit: "cover",
                     }}
                     src={selectedBucketImage && imgAddr + selectedBucketImage}
                     alt="..."
                   />
-                  <div>{selectedBucketName}</div>
+                  <div style={{ fontSize: "14px" }}>{selectedBucketName}</div>
                 </div>
                 <LuMinusSquare color="var(--main-blue)" />
               </div>
