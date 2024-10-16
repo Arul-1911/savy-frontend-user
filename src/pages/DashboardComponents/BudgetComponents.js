@@ -15,20 +15,23 @@ import {
 import { CalendarSVG } from "../../components/svg/CalendarSVG";
 import Calendar from "../../components/Calendar/Calendar";
 import Filter from "../../components/Filter/Filter";
-import { IoIosSettings } from "react-icons/io";
+// import { IoIosSettings } from "react-icons/io";
 import { FiEdit } from "react-icons/fi";
 import { getError } from "../../utils/error";
 import {
   imgAddr,
+  useGetBudgetMutation,
   useGetBudgetsMutation,
   useGetCategoriesMutation,
   useGetPaydaysMutation,
   useSaveBudgetMutation,
+  useUpdateBudgetMutation,
 } from "../../features/apiSlice";
 import { LuMinusSquare } from "react-icons/lu";
 import Skeleton from "react-loading-skeleton";
 import { getSuccess } from "../../utils/success";
 import FormField from "../../components/layout/FormField";
+import { MdDelete } from "react-icons/md";
 
 const BudgetComponents = ({ show, hide, active, activeLink }) => {
   const [alreadyActiveFilter, setAlreadyActiveFilter] = useState(0);
@@ -39,6 +42,10 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
   const [getPaydays, { isLoading: paydayLoading }] = useGetPaydaysMutation();
   const [saveBudget, { isLoading: budgetLoading }] = useSaveBudgetMutation();
   const [getBudgets, { isLoading: getBudgetLoading }] = useGetBudgetsMutation();
+  const [getBudget, { isLoading: getBudgetListLoading }] =
+    useGetBudgetMutation();
+  const [updateBudget, { isLoading: updateBudgetListLoading }] =
+    useUpdateBudgetMutation();
 
   const [categories, setCategories] = useState([]);
   const [paydays, setPaydays] = useState([]);
@@ -46,11 +53,17 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
 
   const [activeCat, setActiveCat] = useState(null);
   const [selectCategory, setSelectCategory] = useState("");
+  const [categoryName, setCategoryName] = useState("");
+  const [categoryImg, setCategoryImg] = useState("");
+
   const [selectPayday, setSelectPayday] = useState("");
+  const [skipPayday, setSkipPaydays] = useState(false);
+
   const [budget, setBudget] = useState("");
+  const [budgetId, setBudgetId] = useState("");
+
   const [bill, setBill] = useState(null);
   const [date, setDate] = useState(null);
-  const [categoryName, setCategoryName] = useState("");
 
   const budgetPeriod = [
     {
@@ -98,6 +111,14 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
       }
     }
   }, [active]);
+
+  useEffect(() => {
+    if (budgetId) {
+      handleBudgetList();
+      getAllCategories();
+      getAllPaydays();
+    }
+  }, [budgetId]);
 
   // ======= Getting all categories =======
   const getAllCategories = async () => {
@@ -197,6 +218,66 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
     }
   };
 
+  const handleBudgetListData = (budgetData) => {
+    setBudgetId(budgetData?._id);
+    activeLink(11);
+  };
+
+  // ======== Get Single budget ===========
+  const handleBudgetList = async () => {
+    try {
+      const { budget } = await getBudget(budgetId).unwrap();
+      setBudget(budget?.budget_amount || "");
+      setCategoryImg(budget?.category?.image ? budget?.category?.image : "");
+      setSelectCategory(budget?.category || "");
+      setSelectPayday(budget?.payday?._id || "");
+      setDate((budget?.date && budget?.date.split("T")[0]) || "");
+    } catch (error) {
+      getError(error);
+    }
+  };
+
+  // ======== update budget ===========
+  const handleBudgetupdate = async (e) => {
+    e.preventDefault();
+
+    try {
+      if (date) {
+        const budgetData = {
+          category: selectCategory,
+          date: date ? date : "",
+          budget_amount: budget,
+        };
+
+        const data = await updateBudget({ budgetId, budgetData }).unwrap();
+        getSuccess(data?.message);
+        activeLink(1);
+      } else {
+        const budgetData = {
+          category: selectCategory,
+          payday: selectPayday,
+          budget_amount: budget,
+        };
+        const data = await updateBudget({ budgetId, budgetData }).unwrap();
+        getSuccess(data?.message);
+        activeLink(1);
+      }
+    } catch (error) {
+      getError(error);
+    }
+  };
+
+  // ======== delete budget ===========
+  const handleDeleteBudget = async () => {
+    try {
+      window.alert("Are you sure you want  to delete this budget");
+      activeLink(1);
+      hide();
+    } catch (error) {
+      getError(error);
+    }
+  };
+
   return (
     <ModalWindow show={show} onHide={hide}>
       {active === 1 && (
@@ -222,32 +303,15 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
           </div>
 
           <div
-            className="payday-list"
+            className="payday-list py-1"
             style={{
               color: "rgba(254, 254, 254, 1)",
               textAlign: "center",
-              padding: "10px",
-              borderRadius: "20px",
+              borderRadius: "10px",
               marginTop: "10px",
             }}
           >
-            {/* <h2
-              style={{
-                fontWeight: 700,
-              }}
-            >
-              15 days
-            </h2>
-            <p
-              style={{
-                padding: 0,
-                margin: 0,
-                fontSize: "12px",
-              }}
-            >
-              left for this week budget
-            </p> */}
-            <p style={{ fontSize: "13px" }} className="payday-list-amount">
+            <p style={{ fontSize: "16px" }} className="mt-1">
               <span style={{ color: "rgba(255, 255, 255, 0.7)" }}>
                 Total budget left :
               </span>{" "}
@@ -293,10 +357,12 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                       <div
                         key={data?._id}
                         className="mt-2"
+                        onClick={() => handleBudgetListData(data)}
                         style={{
                           backgroundColor: "rgba(245, 247, 248, 1)",
                           padding: "8px",
                           borderRadius: "10px",
+                          cursor: "pointer",
                         }}
                       >
                         <div className=" d-flex justify-content-between align-items-center">
@@ -355,13 +421,6 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                             </div>
                           </div>
                         </div>
-                        {/* <div className="mt-1">
-                          <ProgressBar
-                            now={40}
-                            label={`${100}%`}
-                            visuallyHidden
-                          />
-                        </div> */}
                       </div>
                     );
                   })
@@ -1625,6 +1684,193 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
               </button>
             </div>
           </Form>
+        </>
+      )}
+
+      {active === 11 && (
+        <>
+          <div className="d-flex align-items-center ">
+            <IoArrowBackCircleOutline
+              color="rgba(92, 182, 249, 1)"
+              cursor={"pointer"}
+              size={28}
+              onClick={() => activeLink(1)}
+            />
+            <div
+              style={{
+                margin: "auto 175px",
+                fontWeight: 600,
+                fontSize: "16px",
+                color: "rgba(55, 73, 87, 1)",
+              }}
+            >
+              Budget
+            </div>
+            <MdDelete
+              size={23}
+              color="red"
+              cursor={"pointer"}
+              onClick={handleDeleteBudget}
+            />
+          </div>
+
+          {!getBudgetListLoading ? (
+            <Card style={{ borderRadius: "10px" }} className="mt-4">
+              <Card.Body>
+                <div className="text-center">
+                  <div style={{ marginTop: "-40px" }}>
+                    <Image
+                      width={"50px"}
+                      height={"50px"}
+                      style={{ objectFit: "cover", borderRadius: "50%" }}
+                      src={
+                        categoryImg
+                          ? imgAddr + categoryImg
+                          : "/icons/Rectangle 116.png"
+                      }
+                      alt="..."
+                    />
+                  </div>
+                  <div
+                    className="mt-1"
+                    style={{
+                      fontWeight: 700,
+                      color: "var(--primary-color)",
+                      fontSize: "14px",
+                    }}
+                  >
+                    $ {budget}
+                  </div>
+                </div>
+              </Card.Body>
+            </Card>
+          ) : (
+            <Skeleton
+              className="rounded-2 mt-2"
+              height={"100px"}
+              width={"100%"}
+            />
+          )}
+
+          {!getBudgetListLoading ? (
+            <Form className="mt-2" onSubmit={handleBudgetupdate}>
+              <Form.Label
+                style={{
+                  color: "var(--primary-color)",
+                  fontWeight: 600,
+                  fontSize: "14px",
+                }}
+              >
+                Category
+              </Form.Label>
+              <FormField
+                type={"dropdown"}
+                options={categories}
+                onChange={(e) => setSelectCategory(e.target.value)}
+                required
+              />
+
+              {selectPayday ? (
+                <>
+                  <Form.Label
+                    className="my-3"
+                    style={{
+                      color: "var(--primary-color)",
+                      fontWeight: 600,
+                      fontSize: "14px",
+                    }}
+                  >
+                    Payday
+                  </Form.Label>
+                  <FormField
+                    type={"dropdown"}
+                    options={paydays}
+                    onChange={(e) => setSelectPayday(e.target.value)}
+                    required
+                  />
+                </>
+              ) : (
+                <div>
+                  <div
+                    className="my-3"
+                    style={{
+                      fontWeight: 600,
+                      color: "var(--primary-color)",
+                      fontSize: "14px",
+                    }}
+                  >
+                    Select date
+                  </div>
+                  <InputGroup className="mb-3">
+                    <Form.Control
+                      className="form-field"
+                      style={{ borderRight: "none" }}
+                      placeholder="Select Date"
+                      aria-label="Username"
+                      aria-describedby="basic-addon1"
+                      value={date}
+                      required
+                    />
+                    <InputGroup.Text
+                      onClick={() => {
+                        activeLink(9);
+                        setAlreadyActiveCalendar(11);
+                      }}
+                      style={{ cursor: "pointer" }}
+                      id="basic-addon1"
+                      className="grp_input"
+                    >
+                      <CalendarSVG />
+                    </InputGroup.Text>
+                  </InputGroup>
+                </div>
+              )}
+
+              <Form.Label
+                style={{
+                  color: "var(--primary-color)",
+                  fontWeight: 600,
+                  fontSize: "14px",
+                }}
+              >
+                Amount
+              </Form.Label>
+              <FormField
+                maxLength={5}
+                type={"number"}
+                value={budget}
+                onChange={(e) => setBudget(e.target.value)}
+                required
+              />
+
+              <div className="text-center">
+                <button
+                  className="w-75 mt-3"
+                  style={{
+                    backgroundColor: "var(--primary-color)",
+                    padding: "10px",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "10px",
+                  }}
+                >
+                  {!updateBudgetListLoading ? "Update" : <Spinner size="sm" />}
+                </button>
+              </div>
+            </Form>
+          ) : (
+            [1, 2, 3].map((_, idx) => {
+              return (
+                <div key={idx}>
+                  <Skeleton
+                    className="rounded-2 mt-5"
+                    height={"40px"}
+                    width={"100%"}
+                  />
+                </div>
+              );
+            })
+          )}
         </>
       )}
     </ModalWindow>

@@ -19,6 +19,7 @@ function FormField({
   maxLength,
   as,
   rows,
+  defaultValue,
 }) {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -82,16 +83,21 @@ function FormField({
         >
           {options?.map((option, index) => (
             <option
-              key={option?.value}
-              value={option?.value}
+              key={option?._id}
+              value={option?._id}
               className="custom-drop"
+              defaultValue={defaultValue}
             >
-              {option?.label}
+              {option?.category?.name
+                ? option?.category?.name
+                : option?.name
+                ? option?.name
+                : option?.source}
             </option>
           ))}
         </Form.Select>
       ) : type === "password" ? (
-        <InputGroup className="">
+        <InputGroup>
           <Form.Control
             className={" form-field "}
             required={required}

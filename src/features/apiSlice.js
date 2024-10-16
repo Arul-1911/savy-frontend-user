@@ -70,8 +70,8 @@ export const apiSlice = createApi({
     }),
 
     getPayday: builder.mutation({
-      query: () => ({
-        url: "/payday/create-payday",
+      query: (paydayId) => ({
+        url: `/payday/get-payday/${paydayId}`,
         method: "GET",
       }),
     }),
@@ -80,6 +80,21 @@ export const apiSlice = createApi({
       query: () => ({
         url: "/payday/get-paydays",
         method: "GET",
+      }),
+    }),
+
+    updatePayday: builder.mutation({
+      query: ({ paydayId, paydayData }) => ({
+        url: `/payday/update-payday/${paydayId}`,
+        method: "PATCH",
+        body: paydayData,
+      }),
+    }),
+
+    deletePayday: builder.mutation({
+      query: (paydayId) => ({
+        url: `/payday/delete-payday/${paydayId}`,
+        method: "DELETE",
       }),
     }),
 
@@ -98,6 +113,23 @@ export const apiSlice = createApi({
         method: "GET",
       }),
     }),
+
+    getBudget: builder.mutation({
+      query: (budgetId) => ({
+        url: `/budget/get-budget/${budgetId}`,
+        method: "GET",
+      }),
+    }),
+
+    updateBudget: builder.mutation({
+      query: ({ budgetId, budgetData }) => ({
+        url: `/budget/update-budget/${budgetId}`,
+        method: "PATCH",
+        body: budgetData,
+      }),
+    }),
+
+    // ====== Category =======
 
     getCategories: builder.mutation({
       query: () => ({
@@ -119,6 +151,28 @@ export const apiSlice = createApi({
       query: () => ({
         url: "/bill/get-bills",
         method: "GET",
+      }),
+    }),
+
+    getBill: builder.mutation({
+      query: (billId) => ({
+        url: `/bill/get-bill/${billId}`,
+        method: "GET",
+      }),
+    }),
+
+    updateBill: builder.mutation({
+      query: ({ billId, billData }) => ({
+        url: `/bill/update-bill/${billId}`,
+        method: "PATCH",
+        body: billData,
+      }),
+    }),
+
+    deleteBill: builder.mutation({
+      query: (billId) => ({
+        url: `/bill/delete-bill/${billId}`,
+        method: "DELETE",
       }),
     }),
 
@@ -218,13 +272,22 @@ export const {
 
   useCreatePaydayMutation,
   useGetPaydaysMutation,
+  useGetPaydayMutation,
+  useUpdatePaydayMutation,
+  useDeletePaydayMutation,
 
   useSaveBudgetMutation,
   useGetBudgetsMutation,
+  useGetBudgetMutation,
+  useUpdateBudgetMutation,
+
   useGetCategoriesMutation,
 
   useCreateBillMutation,
   useGetBillsMutation,
+  useGetBillMutation,
+  useUpdateBillMutation,
+  useDeleteBillMutation,
 
   useGetSubscriptionsMutation,
 

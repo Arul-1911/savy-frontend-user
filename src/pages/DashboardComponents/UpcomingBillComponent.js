@@ -18,20 +18,29 @@ import Calendar from "../../components/Calendar/Calendar";
 import {
   imgAddr,
   useCreateBillMutation,
+  useDeleteBillMutation,
+  useGetBillMutation,
   useGetBillsMutation,
   useGetBudgetsMutation,
   useGetCategoriesMutation,
+  useUpdateBillMutation,
 } from "../../features/apiSlice";
 import { getError } from "../../utils/error";
 import { LuMinusSquare } from "react-icons/lu";
 import Skeleton from "react-loading-skeleton";
 import { getSuccess } from "../../utils/success";
+import { MdDelete } from "react-icons/md";
 
 const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
   const [getCategories, { isLoading }] = useGetCategoriesMutation();
   const [getBudgets, { isLoading: budgetLoading }] = useGetBudgetsMutation();
   const [createBill, { isLoading: billLoading }] = useCreateBillMutation();
   const [getBills, { isLoading: getBillsLoading }] = useGetBillsMutation();
+  const [getBill, { isLoading: getBillLoading }] = useGetBillMutation();
+  const [updateBill, { isLoading: updateBillLoading }] =
+    useUpdateBillMutation();
+  const [deleteBill, { isLoading: deleteBillLoading }] =
+    useDeleteBillMutation();
 
   const [selectActivePeriod, setSelectActivePeriod] = useState(0);
   const [activePopularCat, setActivePopularCat] = useState(0);
@@ -45,6 +54,8 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
   const [amount, setAmount] = useState("");
   const [bills, setBills] = useState([]);
   const [date, setDate] = useState();
+  const [billId, setBillId] = useState("");
+  const [categoryImg, setCategoryImg] = useState("");
 
   const periods = [
     "Next 7 days",
@@ -59,21 +70,6 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
   const activePeriods = (index) => {
     setSelectActivePeriod(index);
   };
-
-  const popularCat = [
-    {
-      text: "Restaurants",
-      subText: "Lifestyle",
-    },
-    {
-      text: "Electricity",
-      subText: "Home",
-    },
-    {
-      text: "Restaurants",
-      subText: "Lifestyle",
-    },
-  ];
 
   // Function to handle mouse enter (hover)
   const activeCategory = (index) => {
@@ -141,7 +137,20 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
     } else if (active === 4) {
       getAllBudget();
     }
-  }, [active]);
+  }, [active, billId]);
+
+  useEffect(() => {
+    if (billId) {
+      handleBillList();
+      getAllCategories();
+      getAllBudget();
+    }
+  }, [billId]);
+
+  const handleBillListData = (budgetData) => {
+    setBillId(budgetData?._id);
+    activeLink(9);
+  };
 
   const getAllBills = async () => {
     try {
@@ -189,6 +198,63 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
       setActiveBudget(null);
       setSelectBudget("");
       setSelectCategory("");
+    } catch (error) {
+      getError(error);
+    }
+  };
+
+  const handleBillList = async () => {
+    try {
+      const { bill } = await getBill(billId).unwrap();
+      setAmount(bill?.budget_amount || "");
+      setCategoryImg(bill?.category?.image ? bill?.category?.image : "");
+      setSelectCategory(bill?.category || "");
+      setSelectBudget(bill?.budget?._id || "");
+      setDate((bill?.date && bill?.date.split("T")[0]) || "");
+    } catch (error) {
+      getError(error);
+    }
+  };
+
+  // ========== Update bills ===========
+  const handleBillUpdate = async (e) => {
+    e.preventDefault();
+    try {
+      if (date) {
+        const billData = {
+          category: selectCategory,
+          budget_amount: amount,
+          date: date ? date : "",
+        };
+        const bill = await updateBill({ billId, billData }).unwrap();
+        getSuccess(bill?.message);
+        activeLink(1);
+      } else {
+        const billData = {
+          category: selectCategory,
+          budget: selectBudget ? selectBudget : "",
+          budget_amount: amount,
+        };
+        const bill = await updateBill({ billId, billData }).unwrap();
+        getSuccess(bill?.message);
+        activeLink(1);
+      }
+    } catch (error) {
+      getError(error);
+    }
+  };
+
+  // ========== Delete bills ===========
+  const handleDeleteBill = async () => {
+    try {
+      const deleted = window.confirm(
+        "Are you sure you want to delete this bill"
+      );
+      if (deleted) {
+        const data = await deleteBill(billId).unwrap();
+        getSuccess(data?.message);
+        activeLink(1);
+      } else return;
     } catch (error) {
       getError(error);
     }
@@ -309,11 +375,13 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                   bills?.map((data) => {
                     return (
                       <div
+                        onClick={() => handleBillListData(data)}
                         className="mt-2"
                         style={{
                           backgroundColor: "rgba(245, 247, 248, 1)",
                           padding: "8px",
                           borderRadius: "10px",
+                          cursor: "pointer",
                         }}
                       >
                         <div className=" d-flex justify-content-between align-items-center">
@@ -372,13 +440,6 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                             </div>
                           </div>
                         </div>
-                        {/* <div className="mt-1">
-                          <ProgressBar
-                            now={40}
-                            label={`${100}%`}
-                            visuallyHidden
-                          />
-                        </div> */}
                       </div>
                     );
                   })
@@ -1438,6 +1499,193 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
           date={date}
           hide={true}
         />
+      )}
+
+      {/* ==== update bill ====== */}
+      {active === 9 && (
+        <>
+          <div className="d-flex align-items-center justify-content-between">
+            <IoArrowBackCircleOutline
+              color="rgba(92, 182, 249, 1)"
+              cursor={"pointer"}
+              size={28}
+              onClick={() => activeLink(1)}
+            />
+            <div
+              style={{
+                fontWeight: 600,
+                fontSize: "16px",
+                color: "rgba(55, 73, 87, 1)",
+              }}
+            >
+              Bill
+            </div>
+            <MdDelete
+              size={23}
+              color="red"
+              cursor={"pointer"}
+              onClick={handleDeleteBill}
+            />
+          </div>
+
+          {!getBillLoading ? (
+            <Card style={{ borderRadius: "10px" }} className="mt-4">
+              <Card.Body>
+                <div className="text-center">
+                  <div style={{ marginTop: "-40px" }}>
+                    <Image
+                      width={"50px"}
+                      height={"50px"}
+                      style={{ objectFit: "cover", borderRadius: "50%" }}
+                      src={
+                        categoryImg
+                          ? imgAddr + categoryImg
+                          : "/icons/Rectangle 116.png"
+                      }
+                      alt="..."
+                    />
+                  </div>
+                  <div
+                    className="mt-1"
+                    style={{
+                      fontWeight: 700,
+                      color: "var(--primary-color)",
+                      fontSize: "14px",
+                    }}
+                  >
+                    $ {amount}
+                  </div>
+                </div>
+              </Card.Body>
+            </Card>
+          ) : (
+            <Skeleton
+              className="rounded-2 mt-2"
+              height={"100px"}
+              width={"100%"}
+            />
+          )}
+
+          {!getBillLoading ? (
+            <Form className="mt-2" onSubmit={handleBillUpdate}>
+              <Form.Label
+                style={{
+                  color: "var(--primary-color)",
+                  fontWeight: 600,
+                  fontSize: "14px",
+                }}
+              >
+                Category
+              </Form.Label>
+              <FormField
+                type={"dropdown"}
+                options={categories}
+                onChange={(e) => setSelectCategory(e.target.value)}
+                required
+              />
+
+              {selectBudget ? (
+                <>
+                  <Form.Label
+                    className="my-3"
+                    style={{
+                      color: "var(--primary-color)",
+                      fontWeight: 600,
+                      fontSize: "14px",
+                    }}
+                  >
+                    Budget
+                  </Form.Label>
+                  <FormField
+                    type={"dropdown"}
+                    options={budgets}
+                    onChange={(e) => setSelectBudget(e.target.value)}
+                    required
+                  />
+                </>
+              ) : (
+                <div>
+                  <div
+                    className="my-3"
+                    style={{
+                      fontWeight: 600,
+                      color: "var(--primary-color)",
+                      fontSize: "14px",
+                    }}
+                  >
+                    Select date
+                  </div>
+                  <InputGroup className="mb-3">
+                    <Form.Control
+                      className="form-field"
+                      style={{ borderRight: "none" }}
+                      placeholder="Select Date"
+                      aria-label="Username"
+                      aria-describedby="basic-addon1"
+                      value={date}
+                      required
+                    />
+                    <InputGroup.Text
+                      onClick={() => {
+                        activeLink(8);
+                        setAlreadyActiveCalendar(9);
+                      }}
+                      style={{ cursor: "pointer" }}
+                      id="basic-addon1"
+                      className="grp_input"
+                    >
+                      <CalendarSVG />
+                    </InputGroup.Text>
+                  </InputGroup>
+                </div>
+              )}
+
+              <Form.Label
+                style={{
+                  color: "var(--primary-color)",
+                  fontWeight: 600,
+                  fontSize: "14px",
+                }}
+              >
+                Amount
+              </Form.Label>
+              <FormField
+                maxLength={5}
+                type={"number"}
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                required
+              />
+
+              <div className="text-center">
+                <button
+                  className="w-75 mt-3"
+                  style={{
+                    backgroundColor: "var(--primary-color)",
+                    padding: "10px",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "10px",
+                  }}
+                >
+                  {!updateBillLoading ? "Update" : <Spinner size="sm" />}
+                </button>
+              </div>
+            </Form>
+          ) : (
+            [1, 2, 3].map((_, idx) => {
+              return (
+                <div key={idx}>
+                  <Skeleton
+                    className="rounded-2 mt-5"
+                    height={"40px"}
+                    width={"100%"}
+                  />
+                </div>
+              );
+            })
+          )}
+        </>
       )}
     </ModalWindow>
   );

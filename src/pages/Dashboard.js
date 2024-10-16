@@ -7,12 +7,9 @@ import {
   ProgressBar,
   Row,
 } from "react-bootstrap";
-// import Skeleton from "react-loading-skeleton";
-// import { getError, toastOptions } from "../utils/error";
 import { MotionDiv } from "../components";
 import DashboardCard from "../components/layout/DasboardCard";
 import "./Dashboard.css";
-// import SearchField from "../components/layout/SearchField";
 import { Link } from "react-router-dom";
 import BudgetComponents from "./DashboardComponents/BudgetComponents";
 import UpcomingBillComponents from "./DashboardComponents/UpcomingBillComponent";
@@ -26,7 +23,6 @@ import {
 import { getError } from "../utils/error";
 import { formatDate } from "../components/FormateDateTime/FormatDateTime";
 import Skeleton from "react-loading-skeleton";
-// import { IoMdRefresh } from "react-icons/io";
 
 const COLORS = [
   { start: "rgba(36, 204, 167, 1)", end: "rgba(74, 86, 226, 1)" },
@@ -51,27 +47,6 @@ export default function Dashboard() {
   const [dashboard, setDashboard] = useState({});
   const [bills, setBills] = useState();
 
-  const upcomingPayments = [
-    {
-      icons: "/icons/disnep.png",
-      text: "Disney+",
-      subText: "5th of every month",
-      amount: "-$30.00",
-    },
-    {
-      icons: "/icons/spotify.png",
-      text: "Spotify",
-      subText: "18th of every month",
-      amount: "-$30.00",
-    },
-    {
-      icons: "/icons/amazon.png",
-      text: "Amazon",
-      subText: "10th of May, every year",
-      amount: "-$30.00",
-    },
-  ];
-
   useEffect(() => {
     getDashboardData();
   }, []);
@@ -94,7 +69,6 @@ export default function Dashboard() {
   const getDashboardData = async () => {
     try {
       const { data } = await dashboardData();
-      console.log(data);
       setDashboard(data?.dashboardData);
     } catch (error) {
       getError(error);
@@ -446,7 +420,7 @@ export default function Dashboard() {
                       cursor: "pointer",
                     }}
                   >
-                    See more
+                    <Link to={"/user/cashflow"}>See more</Link>
                   </p>
                 </div>
                 <ul className="account_portfolio_active px-5">
@@ -778,11 +752,11 @@ export default function Dashboard() {
                         cursor: "pointer",
                       }}
                     >
-                      View
+                      <Link to={"/user/my-account"}>View</Link>
                     </p>
                   </div>
 
-                  <div className="mt-3">
+                  <div className="mt-2">
                     <div
                       style={{
                         color: "rgba(116, 141, 174, 1)",
@@ -807,7 +781,7 @@ export default function Dashboard() {
                     </div>
                   </div>
 
-                  <div className="mt-4 d-flex justify-content-between">
+                  <div className="mt-3 d-flex justify-content-between">
                     <div
                       style={{
                         color: "rgba(121, 144, 176, 1)",
@@ -853,104 +827,107 @@ export default function Dashboard() {
                     Budget
                   </h4>
 
-                  <div className="mt-4 d-flex justify-content-between align-items-center">
-                    <div>
-                      <h3
-                        style={{
-                          fontWeight: 600,
-                          color: "var(--primary-color)",
-                          borderRadius: "20px",
-                        }}
-                      >
-                        5 days
-                      </h3>
-                      <p
-                        style={{
-                          fontWeight: 600,
-                          color: "rgba(159, 175, 198, 1)",
-                          fontSize: "12px",
-                        }}
-                      >
-                        Left for this week’s budget
-                      </p>
-                    </div>
+                  {dashboard?.budgets?.length > 0 ? (
+                    !isLoading ? (
+                      dashboard?.budgets?.map((data) => {
+                        return (
+                          <div
+                            className="mt-3"
+                            style={{
+                              backgroundColor: "rgba(245, 247, 248, 1)",
+                              padding: "10px",
+                              borderRadius: "10px",
+                            }}
+                          >
+                            <div className=" d-flex justify-content-between align-items-center">
+                              <div className="d-flex gap-2 align-items-center">
+                                <Image
+                                  style={{
+                                    width: "35px",
+                                    height: "35px",
+                                    objectFit: "cover",
+                                    borderRadius: "50%",
+                                  }}
+                                  src={
+                                    data?.category?.image
+                                      ? imgAddr + data?.category?.image
+                                      : "/images/Rectangle 116.png"
+                                  }
+                                  alt="..."
+                                />
+                                <div>
+                                  <div
+                                    style={{
+                                      fontWeight: 600,
+                                      color: "rgba(55, 73, 87, 1)",
+                                      fontSize: "12px",
+                                    }}
+                                  >
+                                    {data?.category?.name}
+                                  </div>
+                                  <div
+                                    style={{
+                                      fontWeight: 600,
+                                      color: "rgba(159, 175, 198, 1)",
+                                      fontSize: "12px",
+                                    }}
+                                  >
+                                    $20 spent of {data?.budget_amount}
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div>
+                                <div
+                                  className="text-end"
+                                  style={{
+                                    color: "rgba(92, 182, 249, 1)",
+                                    fontSize: "12px",
+                                  }}
+                                >
+                                  $ {data?.budget_amount}
+                                </div>
+
+                                <div
+                                  style={{
+                                    color: "rgba(55, 73, 87, 0.8)",
+                                    fontSize: "12px",
+                                  }}
+                                >
+                                  remaining
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      [1, 2].map((_, i) => (
+                        <Col key={i} className={`p-2`}>
+                          <Skeleton
+                            className="rounded-2"
+                            height={"40px"}
+                            width={"100%"}
+                          />
+                        </Col>
+                      ))
+                    )
+                  ) : (
                     <div
-                      style={{
-                        backgroundColor: "rgba(92, 182, 249, 0.08)",
-                        color: "rgba(92, 182, 249, 1)",
-                        fontSize: "12px",
-                        padding: "8px",
-                        borderRadius: "20px",
-                      }}
+                      className="mt-3"
+                      style={{ fontSize: "16px", fontWeight: 600 }}
                     >
-                      1 active budget
+                      No Budget Added!
                     </div>
-                  </div>
-
-                  <div
-                    style={{
-                      backgroundColor: "rgba(245, 247, 248, 1)",
-                      padding: "10px",
-                      borderRadius: "10px",
-                    }}
-                  >
-                    <div className=" d-flex justify-content-between align-items-center">
-                      <div className="d-flex gap-2 align-items-center">
-                        <Image src="/images/Rectangle 116.png" alt="..." />
-                        <div>
-                          <div
-                            style={{
-                              fontWeight: 600,
-                              color: "rgba(55, 73, 87, 1)",
-                              fontSize: "12px",
-                            }}
-                          >
-                            Cafes & Coffee
-                          </div>
-                          <div
-                            style={{
-                              fontWeight: 600,
-                              color: "rgba(159, 175, 198, 1)",
-                              fontSize: "12px",
-                            }}
-                          >
-                            $20 spent of 50
-                          </div>
-                        </div>
-                      </div>
-
-                      <div>
-                        <div
-                          style={{
-                            color: "rgba(92, 182, 249, 1)",
-                            fontSize: "12px",
-                          }}
-                        >
-                          $30.00
-                        </div>
-
-                        <div
-                          style={{
-                            color: "rgba(55, 73, 87, 0.8)",
-                            fontSize: "12px",
-                          }}
-                        >
-                          remaining
-                        </div>
-                      </div>
-                    </div>
-                    {/* <div className="mt-1">
-                      <ProgressBar now={60} label={`${60}%`} visuallyHidden />
-                    </div> */}
-                  </div>
+                  )}
 
                   <div className="mt-3 text-center">
                     <Link
                       onClick={() => setShowBudget(true)}
                       style={{
                         color: "var(--primary-color)",
-                        fontSize: "14px",
-                        fontWeight: 400,
+                        fontSize: "16px",
+                        fontWeight: 600,
                         textDecoration: "underline",
                       }}
                       to=""
@@ -961,49 +938,119 @@ export default function Dashboard() {
                 </DashboardCard>
               </Col>
 
-              <Col
-                style={{ cursor: "pointer" }}
-                onClick={() => setShowBills(true)}
-              >
+              <Col>
                 <DashboardCard>
                   <h4 style={{ fontWeight: 600, color: "rgba(0, 39, 91, 1)" }}>
                     Upcoming Bills
                   </h4>
 
-                  <div className="d-flex align-items-center flex-column mt-2">
-                    <div
-                      style={{
-                        backgroundColor: "rgba(224, 234, 255, 1)",
-                        borderRadius: "50%",
-                        width: "50px",
-                        height: "50px",
-                        padding: "10px",
-                      }}
-                    >
-                      <Image src="/icons/Bills.png" alt="..." />
-                    </div>
+                  {dashboard?.bills?.length > 0 ? (
+                    !isLoading ? (
+                      dashboard?.bills?.map((data) => {
+                        return (
+                          <div
+                            className="mt-3"
+                            style={{
+                              backgroundColor: "rgba(245, 247, 248, 1)",
+                              padding: "10px",
+                              borderRadius: "10px",
+                            }}
+                          >
+                            <div className=" d-flex justify-content-between align-items-center">
+                              <div className="d-flex gap-2 align-items-center">
+                                <Image
+                                  style={{
+                                    width: "35px",
+                                    height: "35px",
+                                    objectFit: "cover",
+                                    borderRadius: "50%",
+                                  }}
+                                  src={
+                                    data?.category?.image
+                                      ? imgAddr + data?.category?.image
+                                      : "/images/Rectangle 116.png"
+                                  }
+                                  alt="..."
+                                />
+                                <div>
+                                  <div
+                                    style={{
+                                      fontWeight: 600,
+                                      color: "rgba(55, 73, 87, 1)",
+                                      fontSize: "12px",
+                                    }}
+                                  >
+                                    {data?.category?.name}
+                                  </div>
+                                  <div
+                                    style={{
+                                      fontWeight: 600,
+                                      color: "rgba(159, 175, 198, 1)",
+                                      fontSize: "12px",
+                                    }}
+                                  >
+                                    $20 spent of {data?.budget_amount}
+                                  </div>
+                                </div>
+                              </div>
 
-                    <h3
-                      className="text-center mt-4"
+                              <div>
+                                <div
+                                  className="text-end"
+                                  style={{
+                                    color: "rgba(92, 182, 249, 1)",
+                                    fontSize: "12px",
+                                  }}
+                                >
+                                  $ {data?.budget_amount}
+                                </div>
+
+                                <div
+                                  style={{
+                                    color: "rgba(55, 73, 87, 0.8)",
+                                    fontSize: "12px",
+                                  }}
+                                >
+                                  remaining
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      [1, 2].map((_, i) => (
+                        <Col key={i} className={`p-2`}>
+                          <Skeleton
+                            className="rounded-2"
+                            height={"40px"}
+                            width={"100%"}
+                          />
+                        </Col>
+                      ))
+                    )
+                  ) : (
+                    <div
+                      className="mt-3"
+                      style={{ fontSize: "16px", fontWeight: 600 }}
+                    >
+                      No Bills Added!
+                    </div>
+                  )}
+
+                  <div className="mt-3 text-center">
+                    <Link
+                      onClick={() => setShowBills(true)}
                       style={{
-                        fontWeight: 700,
-                        fontSize: "20px",
                         color: "var(--primary-color)",
-                      }}
-                    >
-                      Don’t miss a bill
-                    </h3>
-
-                    <div
-                      className="text-center px-5 mt-2"
-                      style={{
-                        fontWeight: 400,
                         fontSize: "16px",
+                        fontWeight: 600,
+                        textDecoration: "underline",
                       }}
+                      to=""
                     >
-                      Track your bills and other known recurring expenses -
-                      We’ll remind you before they’re due.
-                    </div>
+                      View bills
+                    </Link>
                   </div>
                 </DashboardCard>
               </Col>
@@ -1024,20 +1071,10 @@ export default function Dashboard() {
         <Row className="mt-4">
           <Col>
             <DashboardCard>
-              <div className="d-flex align-items-center justify-content-end">
-                {/* <button
-                  className="px-3 py-1"
-                  style={{
-                    backgroundColor: "white",
-                    color: "var(--primary-color)",
-                    border: "1px solid #D2EBFD",
-                    borderRadius: "18px",
-                    fontSize: "12px",
-                    fontWeight: 600,
-                  }}
-                >
-                  Refresh <IoMdRefresh />
-                </button> */}
+              <div className="d-flex align-items-center justify-content-between">
+                <h4 style={{ fontWeight: 600, color: "rgba(0, 39, 91, 1)" }}>
+                  Transactions
+                </h4>
                 <div
                   className="px-3 py-1"
                   style={{
@@ -1049,7 +1086,7 @@ export default function Dashboard() {
                     cursor: "pointer",
                   }}
                 >
-                  View all
+                  <Link to={"/user/transactions"}>View all</Link>
                 </div>
               </div>
 

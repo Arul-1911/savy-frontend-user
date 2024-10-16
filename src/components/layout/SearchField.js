@@ -52,7 +52,7 @@ const SearchField = ({
               }}
               type="submit"
             >
-              <FaSearch size={14} />
+              <FaSearch color="rgba(0, 74, 173, 1)" size={14} />
             </button>
           </InputGroup.Text>
         </InputGroup>

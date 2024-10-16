@@ -1,14 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ModalWindow from "../modals/ModalWindow";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
-import {
-  Card,
-  Form,
-  Image,
-  InputGroup,
-  ProgressBar,
-  Spinner,
-} from "react-bootstrap";
+import { Card, Form, Image, InputGroup, Spinner } from "react-bootstrap";
 import FormField from "../layout/FormField";
 import { CalendarSVG } from "../svg/CalendarSVG";
 import { FilterSVG } from "../svg/FilterSVG";
@@ -19,12 +12,18 @@ import { getError } from "../../utils/error";
 import { getSuccess } from "../../utils/success";
 import {
   useCreatePaydayMutation,
+  useGetPaydayMutation,
   useGetPaydaysMutation,
+  useUpdatePaydayMutation,
 } from "../../features/apiSlice";
 import Skeleton from "react-loading-skeleton";
+import { MdDelete } from "react-icons/md";
 
 const PayDayComponent = ({ show, hide, active, activeLink }) => {
   const [getPaydays, { isLoading: getPaydayLoading }] = useGetPaydaysMutation();
+  const [getPayday, { isLoading: paydayLoading }] = useGetPaydayMutation();
+  const [updatePayday, { isLoading: updatePaydayLoading }] =
+    useUpdatePaydayMutation();
   const [createPayday, { isLoading }] = useCreatePaydayMutation();
 
   const [alreadyActiveFilter, setAlreadyActiveFilter] = useState(0);
@@ -35,6 +34,7 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
   const [selectPayDayPeriod, setSelectPayDayPeriod] = useState("");
   const [amount, setAmount] = useState("");
   const [paydays, setPaydays] = useState([]);
+  const [paydayId, setPaydayId] = useState("");
 
   const paydayPeriod = [
     {
@@ -59,11 +59,30 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
     if (active === 3) getAllPadays();
   }, [active]);
 
+  useEffect(() => {
+    if (paydayId) {
+      getSinglePayday();
+    }
+  }, [paydayId]);
+
   // ========= get paydays ===========
   const getAllPadays = async () => {
     try {
       const { paydays } = await getPaydays().unwrap();
       setPaydays(paydays);
+    } catch (error) {
+      getError(error);
+    }
+  };
+
+  // ======= get payday =========
+  const getSinglePayday = async () => {
+    try {
+      const { payday } = await getPayday(paydayId).unwrap();
+      setPaydayName(payday?.source || "");
+      setPaydayDate(payday?.pay_date?.split("T")[0] || null);
+      setSelectPayDayPeriod(payday?.pay_period || "");
+      setAmount(payday?.amount || "");
     } catch (error) {
       getError(error);
     }
@@ -97,29 +116,32 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
     }
   };
 
-  // ========= edit payday ===========
-  // const handleEditPayday = async (e) => {
-  //   e.preventDefault();
+  const handlePaydayList = (paydayData) => {
+    setPaydayId(paydayData?._id);
+    activeLink(6);
+  };
 
-  //   const paydayData = {
-  //     source: paydayName,
-  //     pay_date: payDayDate,
-  //     pay_period: selectPayDayPeriod,
-  //     amount: amount,
-  //   };
-
-  //   try {
-  //     await createPayday(paydayData).unwrap();
-  //     // setEditPaydayName("");
-  //     // setEditPaydayDate(null);
-  //     // setEditSelectPayDayPeriod("");
-  //     // setEditAmount("");
-  //     hide(false);
-  //     activeLink(1);
-  //   } catch (error) {
-  //     getError(error);
-  //   }
-  // };
+  // ========= update payday ===========
+  const handleUpdatePayday = async (e) => {
+    e.preventDefault();
+    const paydayData = {
+      source: paydayName,
+      pay_date: payDayDate,
+      pay_period: selectPayDayPeriod,
+      amount: amount,
+    };
+    try {
+      const data = await updatePayday({ paydayId, paydayData }).unwrap();
+      getSuccess(data?.message);
+      activeLink(3);
+      setPaydayName("");
+      setPaydayDate(null);
+      setSelectPayDayPeriod("");
+      setAmount("");
+    } catch (error) {
+      getError(error);
+    }
+  };
 
   return (
     <>
@@ -148,54 +170,6 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
 
             <Card className="mt-3" style={{ borderRadius: "10px" }}>
               <Card.Body>
-                <div className="d-flex align-items-center justify-content-between">
-                  <div>
-                    <h2
-                      style={{ color: "var(--primary-color)", fontWeight: 600 }}
-                    >
-                      5 days
-                    </h2>
-                    <div
-                      style={{
-                        color: "rgba(159, 175, 198, 1)",
-                        fontSize: "10px",
-                      }}
-                    >
-                      Left for this week's budget
-                    </div>
-                  </div>
-
-                  <div>
-                    <div
-                      className="text-center"
-                      style={{
-                        backgroundColor: "rgba(92, 182, 249, 0.08)",
-                        fontSize: "12px",
-                        color: "rgba(92, 182, 249, 1)",
-                        fontWeight: 500,
-                        borderRadius: "15px",
-                        padding: "6px",
-                      }}
-                    >
-                      1 active budget
-                    </div>
-                    <div
-                      className="mt-2"
-                      style={{
-                        color: "rgba(55, 73, 87, 1)",
-                        fontSize: "10px",
-                        fontWeight: 500,
-                      }}
-                    >
-                      Weekly on wednesday
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-3 mb-3">
-                  <ProgressBar now={40} label={`${100}%`} visuallyHidden />
-                </div>
-
                 <div
                   className="mt-2"
                   style={{
@@ -252,8 +226,8 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
                   </div>
                 </div>
 
-                <div className="d-flex justify-content-center gap-3 mt-3">
-                  <button
+                <div className="d-flex justify-content-center mt-3">
+                  {/* <button
                     onClick={() => activeLink(2)}
                     className="px-2 py-2"
                     style={{
@@ -266,7 +240,7 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
                     }}
                   >
                     Edit payday
-                  </button>
+                  </button> */}
                   <button
                     onClick={() => activeLink(3)}
                     className="px-2 py-2"
@@ -330,7 +304,7 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
             <Form onSubmit={handleSubmit} className="mt-3">
               <Form.Label
                 style={{
-                  fontSize: "18px",
+                  fontSize: "16px",
                   fontWeight: 600,
                   color: "var(--primary-color)",
                 }}
@@ -347,7 +321,7 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
 
               <Form.Label
                 style={{
-                  fontSize: "18px",
+                  fontSize: "16px",
                   fontWeight: 600,
                   color: "var(--primary-color)",
                 }}
@@ -377,7 +351,7 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
 
               <Form.Label
                 style={{
-                  fontSize: "18px",
+                  fontSize: "16px",
                   fontWeight: 600,
                   color: "var(--primary-color)",
                 }}
@@ -408,7 +382,7 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
 
               <Form.Label
                 style={{
-                  fontSize: "18px",
+                  fontSize: "16px",
                   fontWeight: 600,
                   color: "var(--primary-color)",
                 }}
@@ -416,7 +390,8 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
                 Amount
               </Form.Label>
               <FormField
-                type={"text"}
+                type={"number"}
+                maxLength={5}
                 placeholder={"Enter amount"}
                 required
                 value={amount}
@@ -424,37 +399,20 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
               />
 
               <div className="d-flex justify-content-center mt-3">
-                {isLoading ? (
-                  <button
-                    className="w-75"
-                    style={{
-                      fontWeight: 600,
-                      fontSize: "14px",
-                      border: "1px solid rgba(228, 228, 228, 1)",
-                      borderRadius: "10px",
-                      backgroundColor: "var(--primary-color)",
-                      color: "white",
-                      padding: "10px",
-                    }}
-                  >
-                    <Spinner size="sm" />
-                  </button>
-                ) : (
-                  <button
-                    className="w-75"
-                    style={{
-                      fontWeight: 600,
-                      fontSize: "14px",
-                      border: "1px solid rgba(228, 228, 228, 1)",
-                      borderRadius: "10px",
-                      backgroundColor: "var(--primary-color)",
-                      color: "white",
-                      padding: "10px",
-                    }}
-                  >
-                    Confirm
-                  </button>
-                )}
+                <button
+                  className="w-75"
+                  style={{
+                    fontWeight: 600,
+                    fontSize: "14px",
+                    border: "1px solid rgba(228, 228, 228, 1)",
+                    borderRadius: "10px",
+                    backgroundColor: "var(--primary-color)",
+                    color: "white",
+                    padding: "10px",
+                  }}
+                >
+                  {!isLoading ? "Create" : <Spinner size="sm" />}
+                </button>
               </div>
             </Form>
           </>
@@ -473,7 +431,7 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
                 style={{
                   margin: "auto 180px",
                   fontWeight: 600,
-                  fontSize: "18px",
+                  fontSize: "16px",
                   color: "rgba(55, 73, 87, 1)",
                 }}
                 className="text-center"
@@ -488,33 +446,21 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
                 color: "rgba(254, 254, 254, 1)",
                 textAlign: "center",
                 padding: "10px",
-                borderRadius: "20px",
+                borderRadius: "10px",
                 marginTop: "10px",
               }}
             >
-              <h2
+              <h4
                 style={{
-                  fontWeight: 700,
+                  fontWeight: 600,
+                  fontSize: "16px",
                 }}
               >
-                5 days
-              </h2>
-              <p
-                style={{
-                  fontWeight: 700,
-                  padding: 0,
-                  margin: 0,
-                  fontSize: "12px",
-                }}
-              >
-                left for this week budget
-              </p>
-              <p className="payday-list-amount">
                 <span style={{ color: "rgba(255, 255, 255, 0.7)" }}>
-                  Total Amount:{" "}
+                  Total Amount:
                 </span>{" "}
                 $50.00
-              </p>
+              </h4>
             </div>
 
             <div className="d-flex align-items-center justify-content-between mt-2">
@@ -539,19 +485,28 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
               </div>
             </div>
 
-            <Card className="mt-3" style={{ borderRadius: "10px" }}>
+            <Card
+              className="mt-3"
+              style={{
+                borderRadius: "10px",
+                overflowY: "scroll",
+                height: "250px",
+              }}
+            >
               <Card.Body>
                 {paydays?.length > 0 ? (
                   !getPaydayLoading ? (
                     paydays?.map((data) => {
                       return (
                         <div
+                          onClick={() => handlePaydayList(data)}
                           key={data?._id}
                           className="mt-2"
                           style={{
                             backgroundColor: "rgba(245, 247, 248, 1)",
                             padding: "8px",
                             borderRadius: "10px",
+                            cursor: "pointer",
                           }}
                         >
                           <div className=" d-flex justify-content-between align-items-center">
@@ -577,7 +532,7 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
                                     fontSize: "12px",
                                   }}
                                 >
-                                  $20 spent of 50
+                                  $20 spent of {data?.amount}
                                 </div>
                               </div>
                             </div>
@@ -591,9 +546,10 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
                                   fontWeight: 600,
                                 }}
                               >
-                                ${data?.amount}
+                                $ {data?.amount}
                               </div>
                               <div
+                                className="text-end"
                                 style={{
                                   fontWeight: 400,
                                   color: "rgba(159, 175, 198, 1)",
@@ -604,18 +560,11 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
                               </div>
                             </div>
                           </div>
-                          <div className="mt-1">
-                            <ProgressBar
-                              now={40}
-                              label={`${100}%`}
-                              visuallyHidden
-                            />
-                          </div>
                         </div>
                       );
                     })
                   ) : (
-                    [1, 2, 3].map((_, idx) => {
+                    [1, 2, 3, 4, 5].map((_, idx) => {
                       return (
                         <div key={idx}>
                           <Skeleton
@@ -628,28 +577,10 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
                     })
                   )
                 ) : (
-                  <div className="text-center">No paydays found</div>
+                  <div className="text-center">No paydays found!</div>
                 )}
               </Card.Body>
             </Card>
-
-            {/* <div className="d-flex justify-content-center mt-3">
-              <button
-                onClick={() => activeLink(2)}
-                className="w-75"
-                style={{
-                  fontWeight: 600,
-                  fontSize: "14px",
-                  border: "1px solid rgba(228, 228, 228, 1)",
-                  borderRadius: "10px",
-                  backgroundColor: "var(--primary-color)",
-                  color: "white",
-                  padding: "10px",
-                }}
-              >
-                Edit
-              </button>
-            </div> */}
           </>
         )}
 
@@ -671,6 +602,165 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
             date={payDayDate}
             setDate={setPaydayDate}
           />
+        )}
+
+        {active === 6 && (
+          <>
+            <div className="d-flex align-items-center justify-content-between">
+              <IoArrowBackCircleOutline
+                color="rgba(92, 182, 249, 1)"
+                cursor={"pointer"}
+                size={28}
+                onClick={() => activeLink(3)}
+              />
+              <div
+                style={{
+                  fontWeight: 600,
+                  fontSize: "16px",
+                  color: "rgba(55, 73, 87, 1)",
+                }}
+                className="text-center"
+              >
+                Payday
+              </div>
+
+              <MdDelete
+                size={23}
+                color="red"
+                cursor={"pointer"}
+                // onClick={handleDeleteBill}
+              />
+            </div>
+
+            {!paydayLoading ? (
+              <Form onSubmit={handleUpdatePayday} className="mt-3">
+                <Form.Label
+                  style={{
+                    fontSize: "16px",
+                    fontWeight: 600,
+                    color: "var(--primary-color)",
+                  }}
+                >
+                  Name
+                </Form.Label>
+                <FormField
+                  type={"text"}
+                  placeholder={"Enter name"}
+                  value={paydayName}
+                  required
+                  onChange={(e) => setPaydayName(e.target.value)}
+                />
+
+                <Form.Label
+                  style={{
+                    fontSize: "16px",
+                    fontWeight: 600,
+                    color: "var(--primary-color)",
+                  }}
+                >
+                  Payday
+                </Form.Label>
+                <InputGroup className="mb-3">
+                  <Form.Control
+                    className="form-field"
+                    style={{ borderRight: "none" }}
+                    placeholder="Payday"
+                    aria-describedby="basic-addon1"
+                    value={payDayDate}
+                  />
+                  <InputGroup.Text
+                    onClick={() => {
+                      activeLink(5);
+                      setAlreadyActiveCalendar(6);
+                    }}
+                    style={{ cursor: "pointer" }}
+                    id="basic-addon1"
+                    className="grp_input"
+                  >
+                    <CalendarSVG />
+                  </InputGroup.Text>
+                </InputGroup>
+
+                <Form.Label
+                  style={{
+                    fontSize: "16px",
+                    fontWeight: 600,
+                    color: "var(--primary-color)",
+                  }}
+                >
+                  Payday Period
+                </Form.Label>
+                <InputGroup className="mb-3">
+                  <Form.Control
+                    className="form-field"
+                    style={{ borderRight: "none" }}
+                    placeholder="Select period"
+                    onChange={(e) => selectPayDayPeriod(e.target.value)}
+                    aria-describedby="basic-addon1"
+                    value={selectPayDayPeriod}
+                  />
+                  <InputGroup.Text
+                    onClick={() => {
+                      activeLink(4);
+                      setAlreadyActiveFilter(6);
+                    }}
+                    style={{ cursor: "pointer" }}
+                    id="basic-addon1"
+                    className="grp_input"
+                  >
+                    <FilterSVG />
+                  </InputGroup.Text>
+                </InputGroup>
+
+                <Form.Label
+                  style={{
+                    fontSize: "16px",
+                    fontWeight: 600,
+                    color: "var(--primary-color)",
+                  }}
+                >
+                  Amount
+                </Form.Label>
+                <FormField
+                  type={"number"}
+                  placeholder={"Enter amount"}
+                  maxLength={5}
+                  required
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                />
+
+                <div className="d-flex justify-content-center mt-3">
+                  <button
+                    className="w-75"
+                    style={{
+                      fontWeight: 600,
+                      fontSize: "14px",
+                      border: "1px solid rgba(228, 228, 228, 1)",
+                      borderRadius: "10px",
+                      backgroundColor: "var(--primary-color)",
+                      color: "white",
+                      padding: "10px",
+                    }}
+                  >
+                    {!updatePaydayLoading ? "Confirm" : <Spinner size="sm" />}
+                  </button>
+                </div>
+              </Form>
+            ) : (
+              [1, 2, 3, 4].map((_, idx) => {
+                return (
+                  <div key={idx}>
+                    <Skeleton
+                      className="rounded-2 mt-5"
+                      height={"40px"}
+                      width={"100%"}
+                    />
+                  </div>
+                );
+              })
+            )}
+          </>
         )}
       </ModalWindow>
     </>
