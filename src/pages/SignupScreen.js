@@ -16,13 +16,16 @@ export default function SignupScreen() {
     e.preventDefault();
 
     const user = {
-      mobile_no: mobile,
+      mobile_no: "+61" + mobile,
       email,
       password,
       confirm_password: confirmPassword,
     };
 
     try {
+      if (mobile.length !== 9) {
+        throw new Error("Mobile number should be 9 digit");
+      }
       if (password !== confirmPassword) {
         throw new Error("Password and confirm password are not matched");
       } else {
@@ -59,20 +62,31 @@ export default function SignupScreen() {
         <FormField
           placeholder={"E-mail"}
           type={"email"}
+          required
           onChange={(e) => setEmail(e.target.value)}
           value={email}
         />
 
         <FormField
           placeholder={"Mobile"}
-          type={"number"}
-          onChange={(e) => setMobile(e.target.value)}
+          type={"tel"}
+          required
+          onChange={(e) => {
+            const inputValue = e.target.value;
+            // Allow only digits and restrict length to 10
+            const isValidNumber = /^\d{0,9}$/.test(inputValue);
+
+            if (isValidNumber) {
+              setMobile(inputValue);
+            }
+          }}
           value={mobile}
         />
 
         <FormField
           type={"password"}
           placeholder={"Password"}
+          required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
@@ -81,6 +95,7 @@ export default function SignupScreen() {
           type={"password"}
           placeholder={"Confirm Password"}
           value={confirmPassword}
+          required
           onChange={(e) => setConfirmPassword(e.target.value)}
         />
 

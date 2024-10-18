@@ -186,29 +186,47 @@ export const apiSlice = createApi({
 
     // ====== Cashflow =======
     getCashflow: builder.mutation({
-      query: () => ({
-        url: "/user/get-cashflow-data-overview",
+      query: ({ currentStart, currentEnd, previousStart, previousEnd }) => ({
+        url: `/user/get-cashflow-data-overview?currentStart=${currentStart}&currentEnd=${currentEnd}&previousStart=${previousStart}&previousEnd=${previousEnd}`,
         method: "GET",
       }),
     }),
 
     getCashflowMoneyIn: builder.mutation({
-      query: ({ date, filter }) => ({
-        url: `/user/get-cashflow-data-in?date=${date}&filter=${filter}`,
+      query: ({
+        currentStart,
+        currentEnd,
+        previousStart,
+        previousEnd,
+        filter,
+      }) => ({
+        url: `/user/get-cashflow-data-in?currentStart=${currentStart}&currentEnd=${currentEnd}&previousStart=${previousStart}&previousEnd=${previousEnd}&filter=${filter}`,
         method: "GET",
       }),
     }),
 
     getCashflowMoneyOut: builder.mutation({
-      query: ({ date, filter }) => ({
-        url: `/user/get-cashflow-data-out?date=${date}&filter=${filter}`,
+      query: ({
+        currentStart,
+        currentEnd,
+        previousStart,
+        previousEnd,
+        filter,
+      }) => ({
+        url: `/user/get-cashflow-data-out?currentStart=${currentStart}&currentEnd=${currentEnd}&previousStart=${previousStart}&previousEnd=${previousEnd}&filter=${filter}`,
         method: "GET",
       }),
     }),
 
     getCashflowNet: builder.mutation({
-      query: ({ date, filter }) => ({
-        url: `/user/get-cashflow-data-net?date=${date}&filter=${filter}`,
+      query: ({
+        currentStart,
+        currentEnd,
+        previousStart,
+        previousEnd,
+        filter,
+      }) => ({
+        url: `/user/get-cashflow-data-net?currentStart=${currentStart}&currentEnd=${currentEnd}&previousStart=${previousStart}&previousEnd=${previousEnd}&filter=${filter}`,
         method: "GET",
       }),
     }),

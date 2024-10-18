@@ -99,6 +99,7 @@ function FormField({
       ) : type === "password" ? (
         <InputGroup>
           <Form.Control
+            style={{ color: "#004AAD" }}
             className={" form-field "}
             required={required}
             type={showPassword ? "text" : "password"}
@@ -123,6 +124,7 @@ function FormField({
         </InputGroup>
       ) : type === "tel" ? (
         <Form.Control
+          style={{ color: "#004AAD" }}
           className={"form-field  "}
           required={required}
           type={type}
@@ -142,6 +144,7 @@ function FormField({
         />
       ) : (
         <Form.Control
+          style={{ color: "#004AAD" }}
           className={"form-field "}
           required={required}
           type={type}

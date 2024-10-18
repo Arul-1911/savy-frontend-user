@@ -742,11 +742,8 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
             </div>
           </div>
 
-          <div>
-            <div
-              className="mt-1"
-              style={{ fontWeight: 600, color: "var(--primary-color)" }}
-            >
+          <div className="mt-3">
+            <div style={{ fontWeight: 600, color: "var(--primary-color)" }}>
               Selected Category
             </div>
             <Card style={{ borderRadius: " 10px" }}>
@@ -781,15 +778,14 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
             </Card>
           </div>
 
-          <div>
-            <div
-              className="mt-1"
-              style={{ fontWeight: 600, color: "var(--primary-color)" }}
-            >
+          <div className="mt-2">
+            <div style={{ fontWeight: 600, color: "var(--primary-color)" }}>
               Selected Budget
             </div>
 
-            <div style={{ fontSize: "12px", fontWeight: 400 }}>
+            <div
+              style={{ fontSize: "12px", fontWeight: 400, color: "#374957B2" }}
+            >
               Select your budget to link your bills
             </div>
             <Card
@@ -944,13 +940,19 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
               </div>
             </div>
 
-            <div className="px-3">
+            <div className="px-3 mt-1">
               <FormField
                 required
                 type={"text"}
                 placeholder={"Enter bill amount"}
                 value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                onChange={(e) => {
+                  const inputValue = e.target.value;
+                  const isValidNumber = /^\d{0,6}$/.test(inputValue);
+                  if (isValidNumber) {
+                    setAmount(e.target.value);
+                  }
+                }}
               />
             </div>
           </Card>
@@ -1095,10 +1097,16 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                 </div>
               </div>
 
-              <div className="px-3">
+              <div className="px-3 mt-1">
                 <FormField
                   type={"text"}
-                  onChange={(e) => setAmount(e.target.value)}
+                  onChange={(e) => {
+                    const inputValue = e.target.value;
+                    const isValidNumber = /^\d{0,6}$/.test(inputValue);
+                    if (isValidNumber) {
+                      setAmount(e.target.value);
+                    }
+                  }}
                   value={amount}
                   placeholder={"Enter budget"}
                 />
@@ -1653,7 +1661,13 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                 maxLength={5}
                 type={"number"}
                 value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                onChange={(e) => {
+                  const inputValue = e.target.value;
+                  const isValidNumber = /^\d{0,6}$/.test(inputValue);
+                  if (isValidNumber) {
+                    setAmount(e.target.value);
+                  }
+                }}
                 required
               />
 

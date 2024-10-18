@@ -3,10 +3,12 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import loadingReducer from "./features/loadingSlice";
 import { apiSlice } from "./features/apiSlice";
 import authReducer from "./features/authSlice";
+import periodReducer from "./features/periodSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
   loading: loadingReducer,
+  period: periodReducer,
   [apiSlice.reducerPath]: apiSlice.reducer,
 });
 

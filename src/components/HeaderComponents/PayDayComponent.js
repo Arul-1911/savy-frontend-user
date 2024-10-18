@@ -395,7 +395,13 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
                 placeholder={"Enter amount"}
                 required
                 value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                onChange={(e) => {
+                  const inputValue = e.target.value;
+                  const isValidNumber = /^\d{0,6}$/.test(inputValue);
+                  if (isValidNumber) {
+                    setAmount(e.target.value);
+                  }
+                }}
               />
 
               <div className="d-flex justify-content-center mt-3">
@@ -601,6 +607,7 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
             active={active}
             date={payDayDate}
             setDate={setPaydayDate}
+            heading={"Payday"}
           />
         )}
 

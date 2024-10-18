@@ -660,6 +660,7 @@ const TransactionComponents = ({
                   border: "none",
                   outline: "none",
                   color: "var(--primary-color)",
+                  fontWeight: 600,
                 }}
               >
                 Send Feedback
@@ -854,7 +855,10 @@ const TransactionComponents = ({
             </div>
           </div>
 
-          <div style={{ fontSize: "12px" }} className="text-center px-4">
+          <div
+            style={{ fontSize: "12px", padding: "0px 100px 0px 100px" }}
+            className="text-center"
+          >
             To add a Category, please select the Category to continue.
           </div>
 
@@ -976,18 +980,18 @@ const TransactionComponents = ({
           </div>
 
           <div
-            style={{ fontSize: "12px" }}
-            className="text-center text-12 px-4"
+            style={{ fontSize: "12px", padding: "0px 130px 0px 130px" }}
+            className="text-center text-12 "
           >
             To add a Bucket, please select the Bucket to continue.
           </div>
 
-          <p
-            style={{ fontSize: "14px", fontWeight: 600 }}
-            className="text-primary my-1"
+          <div
+            style={{ fontSize: "14px", fontWeight: 600, color: "#004AAD" }}
+            className="mt-3 mb-1"
           >
             Selected Transaction
-          </p>
+          </div>
 
           <Card>
             <div className="d-flex justify-content-between align-items-center p-1">
@@ -1038,12 +1042,12 @@ const TransactionComponents = ({
             </div>
           </Card>
 
-          <p
-            style={{ fontSize: "14px", fontWeight: 600 }}
-            className="text-primary my-1"
+          <div
+            style={{ fontSize: "14px", fontWeight: 600, color: "#004AAD" }}
+            className="mt-3 mt-1"
           >
             Bucket
-          </p>
+          </div>
 
           <Card>
             <Card.Body>
@@ -1056,7 +1060,11 @@ const TransactionComponents = ({
                       borderRadius: "50%",
                       objectFit: "cover",
                     }}
-                    src={selectedBucketImage && imgAddr + selectedBucketImage}
+                    src={
+                      selectedBucketImage
+                        ? imgAddr + selectedBucketImage
+                        : "/icons/Rectangle 116.png"
+                    }
                     alt="..."
                   />
                   <div style={{ fontSize: "14px" }}>{selectedBucketName}</div>

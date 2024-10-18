@@ -15,6 +15,8 @@ import {
 } from "../../../features/apiSlice";
 import { getError } from "../../../utils/error";
 import Skeleton from "react-loading-skeleton";
+import { useSelector } from "react-redux";
+import { getDateRanges } from "../../../components/DateRange/DateRange";
 
 const COLORS = [
   { start: "rgba(36, 204, 167, 1)", end: "rgba(74, 86, 226, 1)" },
@@ -25,6 +27,7 @@ const COLORS = [
 ];
 
 const MoneyIn = ({ accountPortfolioActive }) => {
+  const { period } = useSelector((state) => state.period);
   const [getCashflowMoneyIn, { isLoading: inLoading }] =
     useGetCashflowMoneyInMutation();
   const [bucketOpen, setBucketOpen] = useState(false);
@@ -36,12 +39,17 @@ const MoneyIn = ({ accountPortfolioActive }) => {
     if (accountPortfolioActive === 2) {
       getMoneyInData();
     }
-  }, [accountPortfolioActive, selectBucketName]);
+  }, [accountPortfolioActive, selectBucketName, period]);
+
+  const dateRange = getDateRanges(period);
 
   const getMoneyInData = async () => {
     try {
       const { moneyIn } = await getCashflowMoneyIn({
-        date: "last_month",
+        currentStart: dateRange?.currentStart,
+        currentEnd: dateRange?.currentEnd,
+        previousStart: dateRange?.previousStart,
+        previousEnd: dateRange?.previousEnd,
         filter: selectBucketName.toLowerCase(),
       }).unwrap();
       setMoneyIn(moneyIn);

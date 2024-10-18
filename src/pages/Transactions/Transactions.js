@@ -75,20 +75,6 @@ const Transactions = () => {
             src="/icons/calendar.png"
             alt="..."
           />
-          {/* <Image
-            onClick={() => setOpenFilter(true)}
-            style={{
-              color: "rgba(92, 182, 249, 1)",
-              fontWeight: 600,
-              fontSize: "16px",
-              backgroundColor: "rgba(242, 249, 255, 1)",
-              padding: "10px",
-              borderRadius: "20px",
-              cursor: "pointer",
-            }}
-            src="/icons/Filter.png"
-            alt="..."
-          /> */}
 
           <button
             className="px-3 py-1"
@@ -105,7 +91,7 @@ const Transactions = () => {
             Clear All
           </button>
 
-          <button
+          {/* <button
             className="px-3 py-1"
             style={{
               backgroundColor: "white",
@@ -117,10 +103,10 @@ const Transactions = () => {
             }}
           >
             Refresh <IoMdRefresh />
-          </button>
+          </button> */}
         </div>
 
-        <ul className="market mt-2">
+        <ul className="market mt-3">
           {!isLoading
             ? transactions?.map((tran) => {
                 return (
@@ -128,9 +114,9 @@ const Transactions = () => {
                     style={{ cursor: "pointer" }}
                     onClick={() => handleTransaction(tran._id)}
                     key={tran?._id}
-                    className="d-flex justify-content-between align-items-center "
+                    className="d-flex justify-content-between align-items-center"
                   >
-                    <div className="d-flex  gap-2">
+                    <div className="d-flex  gap-4">
                       <Image
                         width={"35px"}
                         height={"35px"}

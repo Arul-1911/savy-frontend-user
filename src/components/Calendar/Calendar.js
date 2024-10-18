@@ -6,8 +6,10 @@ import ModalWindow from "../../components/modals/ModalWindow";
 import { Card, CardBody } from "react-bootstrap";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import dayjs from "dayjs";
+import Badge from "@mui/material/Badge";
+import { PickersDay } from "@mui/x-date-pickers/PickersDay";
 
-const Calendar = ({ show, hide, already, activeLink, setDate, date }) => {
+const Calendar = ({ show, hide, already, activeLink, setDate, heading }) => {
   const [value, setValue] = useState(null);
 
   const handleDateChange = (newDate) => {
@@ -42,7 +44,7 @@ const Calendar = ({ show, hide, already, activeLink, setDate, date }) => {
               }}
               className="text-center"
             >
-              Calendar
+              {heading}
             </div>
           </div>
           <div className="d-flex justify-content-center mt-3">
@@ -82,21 +84,27 @@ const Calendar = ({ show, hide, already, activeLink, setDate, date }) => {
             />
             <div
               style={{
-                margin: "auto",
+                margin: "auto 170px",
                 fontWeight: 600,
                 fontSize: "18px",
                 color: "rgba(55, 73, 87, 1)",
               }}
               className="text-center"
             >
-              Calendar
+              {heading}
             </div>
           </div>
           <div className="d-flex justify-content-center mt-3">
             <Card style={{ width: "100%", borderRadius: "10px" }}>
               <CardBody>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DateCalendar value={value} onChange={handleDateChange} />
+                  <DateCalendar
+                    value={value}
+                    // slots={{
+                    //   day: ServerDay,
+                    // }}
+                    onChange={handleDateChange}
+                  />
                 </LocalizationProvider>
                 <div className="d-flex justify-content-center">
                   <button
@@ -124,3 +132,29 @@ const Calendar = ({ show, hide, already, activeLink, setDate, date }) => {
 };
 
 export default Calendar;
+
+function ServerDay(props) {
+  const { highlightedDays = [], day, outsideCurrentMonth, ...other } = props;
+
+  const isSelected =
+    !props.outsideCurrentMonth &&
+    highlightedDays.indexOf(props.day.date()) >= 0;
+
+  console.log(props);
+
+  const subDate = "2024-10-17";
+
+  return (
+    <Badge
+      key={props.day.toString()}
+      overlap="circular"
+      badgeContent={isSelected ? "🌚" : subDate}
+    >
+      <PickersDay
+        {...other}
+        outsideCurrentMonth={outsideCurrentMonth}
+        day={day}
+      />
+    </Badge>
+  );
+}

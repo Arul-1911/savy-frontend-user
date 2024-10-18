@@ -71,24 +71,22 @@ export default function ResetPassword() {
 
         <Row className="mt-5">
           <Col>
-            {isLoading ? (
-              <Button type="submit" className="float-sm-end" disabled>
+            <Button
+              type="submit"
+              className="float-sm-end w-100 "
+              style={{
+                background: "var(--primary-color)",
+                fontWeight: 700,
+                fontSize: "12px",
+                padding: "10px",
+              }}
+            >
+              {!isLoading ? (
+                "Reset password"
+              ) : (
                 <Spinner animation="border" size="sm" />
-              </Button>
-            ) : (
-              <Button
-                type="submit"
-                className="float-sm-end w-100 "
-                style={{
-                  background: "var(--primary-color)",
-                  fontWeight: 700,
-                  fontSize: "12px",
-                  padding: "10px",
-                }}
-              >
-                Reset password
-              </Button>
-            )}
+              )}
+            </Button>
           </Col>
         </Row>
       </Form>

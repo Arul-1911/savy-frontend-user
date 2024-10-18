@@ -282,7 +282,7 @@ export default function Dashboard() {
                           height={220}
                           moneyInvsOut={true}
                           color={COLORS}
-                          barWidth={45}
+                          barWidth={50}
                           gradient={true}
                           gradientNumber={12}
                           barGrad1={"#004AAD"}
@@ -305,6 +305,7 @@ export default function Dashboard() {
                               fontSize: "10px",
                               color: "var(--primary-color)",
                               textAlign: "end",
+                              fontWeight: 600,
                             }}
                           >
                             Total Money In:
@@ -337,6 +338,7 @@ export default function Dashboard() {
                               fontSize: "10px",
                               color: "var(--primary-color)",
                               textAlign: "end",
+                              fontWeight: 600,
                             }}
                           >
                             Money Out:
@@ -559,7 +561,13 @@ export default function Dashboard() {
                   )}
 
                   {expenseActive === 3 && (
-                    <Carousel>
+                    <Carousel
+                      prevIcon={false}
+                      nextIcon={false}
+                      touch={true}
+                      interval={3000}
+                      controls={false}
+                    >
                       <Carousel.Item>
                         <div className="d-flex flex-column justify-content-center mt-5">
                           <BarsChart
@@ -650,12 +658,13 @@ export default function Dashboard() {
                             </div>
                             <div
                               style={{
+                                cursor: "pointer",
                                 fontWeight: 600,
-                                fontSize: "12px",
+                                fontSize: "14px",
                                 color: "rgba(92, 182, 249, 1)",
                               }}
                             >
-                              View
+                              <Link to={"/user/cashflow"}>View</Link>
                             </div>
                           </div>
 

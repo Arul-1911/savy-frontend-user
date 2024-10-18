@@ -255,6 +255,12 @@ input[type="range"]::-moz-range-thumb {
   cursor: pointer;
 }
 
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 .drop-option option:hover {
   background-color: var(--main-blue) !important;
 }

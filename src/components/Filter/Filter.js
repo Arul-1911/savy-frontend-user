@@ -25,7 +25,7 @@ const Filter = ({ show, hide, already, activeLink, data, selectedPeriod }) => {
             />
             <div
               style={{
-                margin: "auto",
+                margin: "auto 180px",
                 fontWeight: 600,
                 fontSize: "18px",
                 color: "rgba(55, 73, 87, 1)",
@@ -37,6 +37,7 @@ const Filter = ({ show, hide, already, activeLink, data, selectedPeriod }) => {
           </div>
 
           <div
+            className="my-3"
             style={{
               fontSize: "14px",
               fontWeight: 600,
@@ -95,7 +96,7 @@ const Filter = ({ show, hide, already, activeLink, data, selectedPeriod }) => {
             />
             <div
               style={{
-                margin: "auto",
+                margin: "auto 180px",
                 fontWeight: 600,
                 fontSize: "18px",
                 color: "rgba(55, 73, 87, 1)",
@@ -107,6 +108,7 @@ const Filter = ({ show, hide, already, activeLink, data, selectedPeriod }) => {
           </div>
 
           <div
+            className="my-3"
             style={{
               fontSize: "14px",
               fontWeight: 600,

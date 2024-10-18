@@ -2,17 +2,19 @@ import React, { useEffect, useState } from "react";
 import DashboardCard from "../../../components/layout/DasboardCard";
 import { IoIosArrowUp } from "react-icons/io";
 import { Col, Row, Image } from "react-bootstrap";
-import { CiCalendar } from "react-icons/ci";
+// import { CiCalendar } from "react-icons/ci";
 import { IoInformationCircleOutline } from "react-icons/io5";
-import SearchField from "../../../components/layout/SearchField";
+// import SearchField from "../../../components/layout/SearchField";
 import ExcludeTransaction from "./SubComponents/ExcludeTransaction";
-import { ResponsiveContainer } from "recharts";
+// import { ResponsiveContainer } from "recharts";
 import BarsChart from "../../../components/Charts/BarsChart";
 import { getError } from "../../../utils/error";
 import { imgAddr, useGetCashflowNetMutation } from "../../../features/apiSlice";
 import BucketComponet from "./SubComponents/BucketComponet";
 import PieCharts from "../../../components/Charts/PieChart";
 import Skeleton from "react-loading-skeleton";
+import { useSelector } from "react-redux";
+import { getDateRanges } from "../../../components/DateRange/DateRange";
 
 const data = [
   {
@@ -50,40 +52,28 @@ const COLORS = [
 ];
 
 const NetWorth = ({ accountPortfolioActive }) => {
+  const { period } = useSelector((state) => state.period);
   const [getCashflowNet, { isLoading }] = useGetCashflowNetMutation();
   const [excludeTransactionModal, setExcludeTransactionModal] = useState(false);
   const [selectBucketName, setSelectBucketName] = useState("Bucket");
   const [bucketOpen, setBucketOpen] = useState(false);
   const [net, setNet] = useState([]);
 
-  const recentTransactions = [
-    {
-      icon: "/icons/Merchant 1.png",
-      text: "Carlin & Gazzard polvere nom 33 receipt",
-      parcentage: "99.69%",
-    },
-    {
-      icon: "/icons/Merchant 1.png",
-      text: "Carlin & Gazzard polvere nom 33 receipt",
-      parcentage: "99.69%",
-    },
-    {
-      icon: "/icons/Merchant 1.png",
-      text: "Carlin & Gazzard polvere nom 33 receipt",
-      parcentage: "99.69%",
-    },
-  ];
-
   useEffect(() => {
     if (accountPortfolioActive) {
       getNetData();
     }
-  }, [accountPortfolioActive, selectBucketName]);
+  }, [accountPortfolioActive, selectBucketName, period]);
+
+  const dateRange = getDateRanges(period);
 
   const getNetData = async () => {
     try {
       const { net } = await getCashflowNet({
-        date: "last_month",
+        currentStart: dateRange?.currentStart,
+        currentEnd: dateRange?.currentEnd,
+        previousStart: dateRange?.previousStart,
+        previousEnd: dateRange?.previousEnd,
         filter: selectBucketName.toLowerCase(),
       }).unwrap();
       setNet(net);

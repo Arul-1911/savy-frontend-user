@@ -9,23 +9,30 @@ import NetWorth from "./components/NetWorth";
 import CashFlowSettings from "./components/SubComponents/CashFlowSettings";
 import { useGetCashflowMutation } from "../../features/apiSlice";
 import { getError } from "../../utils/error";
+import { useSelector } from "react-redux";
+import { getDateRanges } from "../../components/DateRange/DateRange";
 
 const CashFlow = () => {
+  const { period } = useSelector((state) => state.period);
   const [getCashflow, { isLoading }] = useGetCashflowMutation();
-
   const [accountPortfolioActive, setAccountPortfolioActive] = useState(1);
-
   const [settingModal, setSettingModal] = useState(false);
-
   const [overView, setOverview] = useState({});
 
   useEffect(() => {
     getCashflowData();
-  }, []);
+  }, [period]);
+
+  const dateRange = getDateRanges(period);
 
   const getCashflowData = async () => {
     try {
-      const { overview } = await getCashflow().unwrap();
+      const { overview } = await getCashflow({
+        currentStart: dateRange?.currentStart,
+        currentEnd: dateRange?.currentEnd,
+        previousStart: dateRange?.previousStart,
+        previousEnd: dateRange?.previousEnd,
+      }).unwrap();
       setOverview(overview);
     } catch (error) {
       getError(error);

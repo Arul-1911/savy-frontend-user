@@ -15,6 +15,8 @@ import {
   useGetCashflowMoneyOutMutation,
 } from "../../../features/apiSlice";
 import Skeleton from "react-loading-skeleton";
+import { getDateRanges } from "../../../components/DateRange/DateRange";
+import { useSelector } from "react-redux";
 
 const COLORS = [
   { start: "rgba(36, 204, 167, 1)", end: "rgba(74, 86, 226, 1)" },
@@ -25,6 +27,7 @@ const COLORS = [
 ];
 
 const MoneyOut = ({ accountPortfolioActive }) => {
+  const { period } = useSelector((state) => state.period);
   const [getCashflowMoneyOut, { isLoading }] = useGetCashflowMoneyOutMutation();
   const [bucketOpen, setBucketOpen] = useState(false);
   const [excludeTransactionModal, setExcludeTransactionModal] = useState(false);
@@ -35,12 +38,18 @@ const MoneyOut = ({ accountPortfolioActive }) => {
     if (accountPortfolioActive === 3) {
       getMoneyOutData();
     }
-  }, [accountPortfolioActive, selectBucketName]);
+  }, [accountPortfolioActive, selectBucketName, period]);
+
+  const dateRange = getDateRanges(period);
 
   const getMoneyOutData = async () => {
     try {
       const { moneyOut } = await getCashflowMoneyOut({
-        date: "last_month",
+        currentStart: dateRange?.currentStart,
+        currentEnd: dateRange?.currentEnd,
+        previousStart: dateRange?.previousStart,
+        previousEnd: dateRange?.previousEnd,
+        filter: selectBucketName.toLowerCase(),
         filter: selectBucketName.toLowerCase(),
       }).unwrap();
       setMoneyOut(moneyOut);

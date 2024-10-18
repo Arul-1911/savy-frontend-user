@@ -2,25 +2,30 @@ import React, { useState } from "react";
 import ModalWindow from "../modals/ModalWindow";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { FaRegCheckCircle } from "react-icons/fa";
+import { setPeriod } from "../../features/periodSlice";
+import { useDispatch } from "react-redux";
 
 const SettingsComponent = ({ show, hide }) => {
+  const dispatch = useDispatch();
   const [selectActivePeriod, setSelectActivePeriod] = useState(0);
+  // const [selectPeriod, setSelectPeriod] = useState("");
 
   const periods = [
-    "Past fortnight",
     "Past months",
     "Past 3 months",
     "Past 6 months",
-    "Past year",
-    "Calendar week",
-    "Calendar fortnight",
-    "Calendar month",
-    "Calendar month (last business day)",
-    "Calendar year",
+    "Past 12 months",
+    "Past week",
+    // "Calendar fortnight",
+    // "Calendar month",
+    // "Calendar month (last business day)",
+    // "Calendar year",
   ];
 
-  const activePeriods = (index) => {
+  const handlePeriods = (index, prd) => {
     setSelectActivePeriod(index);
+    dispatch(setPeriod(prd));
+    hide();
   };
 
   return (
@@ -76,7 +81,7 @@ const SettingsComponent = ({ show, hide }) => {
                           cursor: "pointer",
                         }
                   }
-                  onClick={() => activePeriods(idx)}
+                  onClick={() => handlePeriods(idx, prd)}
                 >
                   {prd}
                 </div>
