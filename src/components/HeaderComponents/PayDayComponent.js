@@ -68,8 +68,8 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
   // ========= get paydays ===========
   const getAllPadays = async () => {
     try {
-      const { paydays } = await getPaydays().unwrap();
-      setPaydays(paydays);
+      const data = await getPaydays().unwrap();
+      setPaydays(data);
     } catch (error) {
       getError(error);
     }
@@ -465,7 +465,7 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
                 <span style={{ color: "rgba(255, 255, 255, 0.7)" }}>
                   Total Amount:
                 </span>{" "}
-                $50.00
+                ${paydays?.total}
               </h4>
             </div>
 
@@ -500,9 +500,9 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
               }}
             >
               <Card.Body>
-                {paydays?.length > 0 ? (
+                {paydays?.paydays?.length > 0 ? (
                   !getPaydayLoading ? (
-                    paydays?.map((data) => {
+                    paydays?.paydays?.map((data) => {
                       return (
                         <div
                           onClick={() => handlePaydayList(data)}

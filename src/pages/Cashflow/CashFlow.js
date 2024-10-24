@@ -27,13 +27,14 @@ const CashFlow = () => {
 
   const getCashflowData = async () => {
     try {
-      const { overview } = await getCashflow({
+      const data = await getCashflow({
         currentStart: dateRange?.currentStart,
         currentEnd: dateRange?.currentEnd,
         previousStart: dateRange?.previousStart,
         previousEnd: dateRange?.previousEnd,
       }).unwrap();
-      setOverview(overview);
+      console.log(data);
+      setOverview(data?.overview);
     } catch (error) {
       getError(error);
     }

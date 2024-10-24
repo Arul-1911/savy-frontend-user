@@ -1,60 +1,14 @@
 import React from "react";
 import DashboardCard from "../../../components/layout/DasboardCard";
-import { IoIosArrowUp, IoMdArrowUp } from "react-icons/io";
+import { IoMdArrowUp } from "react-icons/io";
 import { Col, Row, Image } from "react-bootstrap";
-import { FaArrowUp } from "react-icons/fa6";
 import { IoArrowDownSharp } from "react-icons/io5";
 import BarsChart from "../../../components/Charts/BarsChart";
 import Skeleton from "react-loading-skeleton";
 import { imgAddr } from "../../../features/apiSlice";
+import { Link } from "react-router-dom";
 
 const OverView = ({ data, loading }) => {
-  const mostChangedCategory = [
-    {
-      icon: "/icons/Merchant 1.png",
-      text: "Salary/Regular income",
-      subTexet: "Income",
-    },
-    {
-      icon: "/icons/Merchent 2.png",
-      text: "Salary/Regular income",
-      subTexet: "Living",
-    },
-    {
-      icon: "/icons/Merchent 3.png",
-      text: "Groceries",
-      subTexet: "Living",
-    },
-    {
-      icon: "/icons/Merchant 1.png",
-      text: "Salary/Regular income",
-      subTexet: "Income",
-    },
-  ];
-
-  const topCategory = [
-    {
-      icon: "/icons/Merchant 1.png",
-      text: "Salary/Regular income",
-      subTexet: "Income",
-    },
-    {
-      icon: "/icons/Merchent 2.png",
-      text: "Salary/Regular income",
-      subTexet: "Living",
-    },
-    {
-      icon: "/icons/Merchent 3.png",
-      text: "Groceries",
-      subTexet: "Living",
-    },
-    {
-      icon: "/icons/Merchant 1.png",
-      text: "Salary/Regular income",
-      subTexet: "Income",
-    },
-  ];
-
   const formatDate = (dateString) => {
     const date = new Date(dateString);
 
@@ -109,19 +63,11 @@ const OverView = ({ data, loading }) => {
                         fontSize: "12px",
                       }}
                     >
-                      Overspent
+                      {data?.text}
                     </div>
-                    {/* <div
-                      style={{
-                        color: "rgba(55, 73, 87, 0.7)",
-                        fontSize: "12px",
-                      }}
-                    >
-                      08 Dec - 07 Jan
-                    </div> */}
                   </div>
                   <h3 style={{ fontWeight: 600, color: "rgba(0, 74, 173, 1)" }}>
-                    $4,400
+                    ${data?.amount}
                   </h3>
                   <div className="d-flex justify-content-center">
                     <BarsChart
@@ -227,14 +173,6 @@ const OverView = ({ data, loading }) => {
                     >
                       Money out
                     </div>
-                    {/* <div
-                      style={{
-                        color: "rgba(55, 73, 87, 0.7)",
-                        fontSize: "12px",
-                      }}
-                    >
-                      08 Dec - 07 Jan
-                    </div> */}
                   </div>
                   <div className="d-flex justify-content-between align-items-center">
                     <h3
@@ -321,7 +259,9 @@ const OverView = ({ data, loading }) => {
                       cursor: "pointer",
                     }}
                   >
-                    View all
+                    <Link to={`/user/cashflow/top-category?q=${"category"}`}>
+                      View all
+                    </Link>
                   </div>
                 </div>
 
@@ -353,15 +293,6 @@ const OverView = ({ data, loading }) => {
                             >
                               {data?.category}
                             </div>
-                            {/* <div
-                          style={{
-                            fontSize: "rgba(55, 73, 87, 0.7)",
-                            fontSize: "12px",
-                            fontWeight: 400,
-                          }}
-                        >
-                          {data?.subTexet}
-                        </div> */}
                           </div>
                         </div>
 
@@ -402,7 +333,9 @@ const OverView = ({ data, loading }) => {
                       cursor: "pointer",
                     }}
                   >
-                    View all
+                    <Link to={`/user/cashflow/top-bucket?q=${"bucket"}`}>
+                      View all
+                    </Link>
                   </div>
                 </div>
 
@@ -434,15 +367,6 @@ const OverView = ({ data, loading }) => {
                             >
                               {data?.bucket}
                             </div>
-                            {/* <div
-                          style={{
-                            fontSize: "rgba(55, 73, 87, 0.7)",
-                            fontSize: "12px",
-                            fontWeight: 400,
-                          }}
-                        >
-                          {data?.subTexet}
-                        </div> */}
                           </div>
                         </div>
 
@@ -456,17 +380,6 @@ const OverView = ({ data, loading }) => {
                           >
                             {data?.value} $
                           </div>
-                          {/* <div
-                        style={{
-                          color: "rgba(58, 195, 172, 1)",
-                          fontWeight: 400,
-                          fontSize: "12px",
-                          cursor: "pointer",
-                          marginLeft: "20px",
-                        }}
-                      >
-                        <FaArrowUp /> 231.25%
-                      </div> */}
                         </div>
                       </li>
                     );
@@ -508,7 +421,11 @@ const OverView = ({ data, loading }) => {
                       cursor: "pointer",
                     }}
                   >
-                    View all
+                    <Link
+                      to={`/user/cashflow/top-transactions?q=${"transaction"}`}
+                    >
+                      View all
+                    </Link>
                   </div>
                 </div>
 
@@ -601,7 +518,9 @@ const OverView = ({ data, loading }) => {
                       cursor: "pointer",
                     }}
                   >
-                    View all
+                    <Link to={`/user/cashflow/top-merchant?q=${"merchant"}`}>
+                      View all
+                    </Link>
                   </div>
                 </div>
 
@@ -629,15 +548,6 @@ const OverView = ({ data, loading }) => {
                             >
                               {data?.merchant}
                             </div>
-                            {/* <div
-                          style={{
-                            fontSize: "rgba(55, 73, 87, 0.7)",
-                            fontSize: "12px",
-                            fontWeight: 400,
-                          }}
-                        >
-                          {data?.subTexet}
-                        </div> */}
                           </div>
                         </div>
 

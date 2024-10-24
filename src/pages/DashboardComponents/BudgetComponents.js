@@ -143,8 +143,8 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
   // ======= Getting all budget =======
   const getAllBudget = async () => {
     try {
-      const { budgets } = await getBudgets().unwrap();
-      setBudgets(budgets);
+      const data = await getBudgets().unwrap();
+      setBudgets(data);
     } catch (error) {
       getError(error);
     }
@@ -311,12 +311,17 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
               marginTop: "10px",
             }}
           >
-            <p style={{ fontSize: "16px" }} className="mt-1">
+            <h4
+              style={{
+                fontWeight: 600,
+                fontSize: "16px",
+              }}
+            >
               <span style={{ color: "rgba(255, 255, 255, 0.7)" }}>
-                Total budget left :
+                Total Amount:
               </span>{" "}
-              $50.00
-            </p>
+              ${budgets?.total}
+            </h4>
           </div>
 
           <div className="d-flex align-items-center justify-content-between mt-2">
@@ -350,9 +355,9 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
             }}
           >
             <Card.Body>
-              {budgets?.length > 0 ? (
+              {budgets?.budgets?.length > 0 ? (
                 !getBudgetLoading ? (
-                  budgets?.map((data) => {
+                  budgets?.budgets?.map((data) => {
                     return (
                       <div
                         key={data?._id}

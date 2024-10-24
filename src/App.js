@@ -28,7 +28,13 @@ import {
 import ResetPassword from "./pages/ResetPassword";
 import { MyAccount } from "./pages/MyAccount";
 import { Transactions } from "./pages/Transactions";
-import CashFlow from "./pages/Cashflow/CashFlow";
+import {
+  CashFlow,
+  TopBucket,
+  TopCategory,
+  TopMerchant,
+  TopTransaction,
+} from "./pages/Cashflow";
 import SubscriptionPage from "./pages/Subscription/SubscriptionPage";
 import { selectAuth } from "./features/authSlice";
 
@@ -67,6 +73,10 @@ function App() {
     { path: "/user/my-account", comp: <MyAccount /> },
     { path: "/user/transactions", comp: <Transactions /> },
     { path: "/user/cashflow", comp: <CashFlow /> },
+    { path: "/user/cashflow/top-category", comp: <TopCategory /> },
+    { path: "/user/cashflow/top-bucket", comp: <TopBucket /> },
+    { path: "/user/cashflow/top-merchant", comp: <TopMerchant /> },
+    { path: "/user/cashflow/top-transactions", comp: <TopTransaction /> },
   ];
 
   return (

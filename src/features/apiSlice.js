@@ -130,7 +130,6 @@ export const apiSlice = createApi({
     }),
 
     // ====== Category =======
-
     getCategories: builder.mutation({
       query: () => ({
         url: "/category/get-categorys",
@@ -231,6 +230,13 @@ export const apiSlice = createApi({
       }),
     }),
 
+    getCashflowListData: builder.mutation({
+      query: ({ currentStart, currentEnd, from }) => ({
+        url: `/user/get-all-list?currentStart=${currentStart}&currentEnd=${currentEnd}&from=${from}`,
+        method: "GET",
+      }),
+    }),
+
     // ====== Transactions =======
     getTransactions: builder.mutation({
       query: ({ query, date }) => ({
@@ -313,6 +319,7 @@ export const {
   useGetCashflowMoneyInMutation,
   useGetCashflowMoneyOutMutation,
   useGetCashflowNetMutation,
+  useGetCashflowListDataMutation,
 
   useDashboardDataMutation,
 

@@ -154,8 +154,8 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
 
   const getAllBills = async () => {
     try {
-      const { bills } = await getBills().unwrap();
-      setBills(bills);
+      const data = await getBills().unwrap();
+      setBills(data);
     } catch (error) {
       getError(error);
     }
@@ -290,30 +290,23 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
               color: "rgba(254, 254, 254, 1)",
               textAlign: "center",
               padding: "10px",
-              borderRadius: "20px",
+              borderRadius: "10px",
               marginTop: "10px",
             }}
           >
-            <h2
+            <h4
               style={{
-                fontWeight: 700,
+                fontWeight: 600,
+                fontSize: "16px",
               }}
             >
-              $-
-            </h2>
-            <p
-              style={{
-                fontWeight: 700,
-                padding: 0,
-                margin: 0,
-                fontSize: "12px",
-                color: "rgba(255, 255, 255, 0.89)",
-              }}
-            >
-              Total bills due
-            </p>
+              <span style={{ color: "rgba(255, 255, 255, 0.7)" }}>
+                Total Amount:
+              </span>{" "}
+              ${bills?.total}
+            </h4>
 
-            <button
+            {/* <button
               onClick={() => activeLink(2)}
               className="w-50 py-1 mt-2"
               style={{
@@ -325,7 +318,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
               }}
             >
               All Bills <IoIosArrowDown />
-            </button>
+            </button> */}
           </div>
 
           <div className="mt-2 text-center">
@@ -370,9 +363,9 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
             }}
           >
             <Card.Body>
-              {bills?.length > 0 ? (
+              {bills?.bills?.length > 0 ? (
                 !getBillsLoading ? (
-                  bills?.map((data) => {
+                  bills?.bills?.map((data) => {
                     return (
                       <div
                         onClick={() => handleBillListData(data)}
@@ -457,7 +450,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                   })
                 )
               ) : (
-                <div className="text-center">No bills found</div>
+                <div className="text-center">No bills found!</div>
               )}
             </Card.Body>
           </Card>
