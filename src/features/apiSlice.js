@@ -276,6 +276,14 @@ export const apiSlice = createApi({
       }),
     }),
 
+    // ====== Assets =======
+    getAssets: builder.mutation({
+      query: () => ({
+        url: `/asset/get-assets?type=Asset`,
+        method: "GET",
+      }),
+    }),
+
     // ====== Dashboard =======
     dashboardData: builder.mutation({
       query: () => ({
@@ -320,6 +328,8 @@ export const {
   useGetCashflowMoneyOutMutation,
   useGetCashflowNetMutation,
   useGetCashflowListDataMutation,
+
+  useGetAssetsMutation,
 
   useDashboardDataMutation,
 

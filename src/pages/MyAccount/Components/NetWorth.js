@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { Col, Image, Row } from "react-bootstrap";
 import { IoIosArrowForward } from "react-icons/io";
 import DashboardCard from "../../../components/layout/DasboardCard";
+import Assets from "./NetworthComponent/Assets";
 
 const NetWorth = () => {
+  const [showAssets, setShowAssets] = useState(false);
+  const [showActiveAssets, setShowActiveAssets] = useState(1);
+
   const arr = [
     {
       icons: "/icons/image 3.png",
@@ -149,6 +153,7 @@ const NetWorth = () => {
             })}
             <div className="mt-3 text-center">
               <button
+                onClick={() => setShowAssets(true)}
                 className="py-2"
                 style={{
                   backgroundColor: "rgba(0, 74, 173, 0.08)",
@@ -206,6 +211,13 @@ const NetWorth = () => {
           </DashboardCard>
         </Col>
       </Row>
+
+      <Assets
+        show={showAssets}
+        hide={setShowAssets}
+        active={showActiveAssets}
+        activLeink={setShowActiveAssets}
+      />
     </>
   );
 };

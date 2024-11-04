@@ -20,26 +20,26 @@ const data = [
   {
     name: "02 Dec - 01 Jan",
     uv: 4000,
-    pv: 2400,
-    amt: 2400,
+    // pv: 2400,
+    // amt: 2400,
   },
   {
     name: "02 Jan - 01 Feb",
     uv: -3000,
-    pv: 1398,
-    amt: 2210,
+    // pv: 1398,
+    // amt: 2210,
   },
   {
     name: "02 Feb - 01 Mar",
     uv: -2000,
-    pv: -9800,
-    amt: 2290,
+    // pv: -9800,
+    // amt: 2290,
   },
   {
     name: "02 Mar - Today",
     uv: 2780,
-    pv: 3908,
-    amt: 2000,
+    // pv: 3908,
+    // amt: 2000,
   },
 ];
 
