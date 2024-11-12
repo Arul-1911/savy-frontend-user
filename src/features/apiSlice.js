@@ -285,6 +285,28 @@ export const apiSlice = createApi({
       }),
     }),
 
+    getAssetsLv2: builder.mutation({
+      query: ({ assetLv1Id }) => ({
+        url: `/asset-level1/get-assets?asset_ref=${assetLv1Id}`,
+        method: "GET",
+      }),
+    }),
+
+    getAssetsLv3: builder.mutation({
+      query: ({ assetLv2Id }) => ({
+        url: `/asset-level2/get-assets?asset_level1_ref=${assetLv2Id}`,
+        method: "GET",
+      }),
+    }),
+
+    createAssetLiability: builder.mutation({
+      query: (data) => ({
+        url: "/asset-liability/create-asset-liability",
+        method: "POST",
+        body: data,
+      }),
+    }),
+
     // ====== Dashboard =======
     dashboardData: builder.mutation({
       query: () => ({
@@ -331,6 +353,9 @@ export const {
   useGetCashflowListDataMutation,
 
   useGetAssetsMutation,
+  useGetAssetsLv2Mutation,
+  useGetAssetsLv3Mutation,
+  useCreateAssetLiabilityMutation,
 
   useDashboardDataMutation,
 

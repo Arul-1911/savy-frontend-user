@@ -216,7 +216,7 @@ const NetWorth = () => {
         show={showAssets}
         hide={setShowAssets}
         active={showActiveAssets}
-        activLeink={setShowActiveAssets}
+        activeLink={setShowActiveAssets}
       />
     </>
   );
