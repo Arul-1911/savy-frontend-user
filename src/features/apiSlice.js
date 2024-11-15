@@ -277,10 +277,17 @@ export const apiSlice = createApi({
       }),
     }),
 
-    // ====== Assets =======
-    getAssets: builder.mutation({
+    // ====== Assets/Liabilities =======
+    getAssetsLiabilities: builder.mutation({
       query: () => ({
-        url: `/asset/get-assets?type=Asset`,
+        url: `/asset-liability/get-assets-liabilities`,
+        method: "GET",
+      }),
+    }),
+
+    getAssets: builder.mutation({
+      query: (query) => ({
+        url: `/asset/get-assets?type=${query}`,
         method: "GET",
       }),
     }),
@@ -356,6 +363,7 @@ export const {
   useGetAssetsLv2Mutation,
   useGetAssetsLv3Mutation,
   useCreateAssetLiabilityMutation,
+  useGetAssetsLiabilitiesMutation,
 
   useDashboardDataMutation,
 

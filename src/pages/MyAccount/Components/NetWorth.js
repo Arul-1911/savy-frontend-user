@@ -1,30 +1,40 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Col, Image, Row } from "react-bootstrap";
 import { IoIosArrowForward } from "react-icons/io";
 import DashboardCard from "../../../components/layout/DasboardCard";
 import Assets from "./NetworthComponent/Assets";
+import { getError } from "../../../utils/error";
+import {
+  imgAddr,
+  useGetAssetsLiabilitiesMutation,
+} from "../../../features/apiSlice";
+import Skeleton from "react-loading-skeleton";
+import Liabilities from "./NetworthComponent/Liabilities";
 
 const NetWorth = () => {
+  const [getAssetsLiabilities, { isLoading }] =
+    useGetAssetsLiabilitiesMutation();
+
   const [showAssets, setShowAssets] = useState(false);
   const [showActiveAssets, setShowActiveAssets] = useState(1);
 
-  const arr = [
-    {
-      icons: "/icons/image 3.png",
-      text: "ING Australia Orange Bank Accounts",
-      subText: "Updated 4 minutes ago",
-    },
-    {
-      icons: "/icons/image 3.png",
-      text: "ING Australia Orange Bank Accounts",
-      subText: "Updated 4 minutes ago",
-    },
-    {
-      icons: "/icons/image 3.png",
-      text: "ING Australia Orange Bank Accounts",
-      subText: "Updated 4 minutes ago",
-    },
-  ];
+  const [showLiabilities, setShowLiabilities] = useState(false);
+  const [showActiveLiabilities, setShowActiveLiabilities] = useState(1);
+
+  const [assetsLiabilities, setAssetsLiabilities] = useState([]);
+
+  useEffect(() => {
+    getAllAssetsLibilities();
+  }, []);
+
+  const getAllAssetsLibilities = async () => {
+    try {
+      const data = await getAssetsLiabilities().unwrap();
+      setAssetsLiabilities(data);
+    } catch (error) {
+      getError(error);
+    }
+  };
 
   return (
     <>
@@ -58,27 +68,16 @@ const NetWorth = () => {
       <Row className="mt-3 g-3">
         <Col>
           <DashboardCard>
-            <div className="d-flex align-items-center justify-content-between">
-              <h5
-                style={{
-                  fontWeight: 600,
-                  color: "rgba(0, 39, 91, 1)",
-                  fontSize: "18px",
-                }}
-              >
-                Assets
-              </h5>
-              <p
-                style={{
-                  color: "var(--primary-color)",
-                  fontWeight: 600,
-                  fontSize: "16px",
-                  cursor: "pointer",
-                }}
-              >
-                N / A
-              </p>
-            </div>
+            <h5
+              style={{
+                fontWeight: 600,
+                color: "rgba(0, 39, 91, 1)",
+                fontSize: "18px",
+              }}
+            >
+              Assets
+            </h5>
+
             <hr />
             <div className="d-flex align-items-center justify-content-between">
               <h5 style={{ fontWeight: 600, color: "rgba(0, 39, 91, 1)" }}>
@@ -92,65 +91,80 @@ const NetWorth = () => {
                   cursor: "pointer",
                 }}
               >
-                $7,441.81
+                ${assetsLiabilities?.totalAssetsAmount}
               </p>
             </div>
             <hr />
-            {arr?.map((data, idx) => {
-              return (
-                <div
-                  key={idx}
-                  style={{
-                    backgroundColor: "rgba(245, 247, 248, 1)",
-                    borderRadius: "10px",
-                    padding: "10px",
-                  }}
-                  className="mt-3 d-flex justify-content-between align-items-center"
-                >
-                  <div className="d-flex gap-2 align-items-center">
-                    <Image
-                      style={{
-                        borderRadius: "50%",
-                        width: "30px",
-                        height: "30px",
-                      }}
-                      src={data?.icons}
-                      alt="..."
-                    />
-                    <div>
-                      <div
-                        style={{
-                          fontWeight: 600,
-                          color: "rgba(55, 73, 87, 1)",
-                          fontSize: "12px",
-                        }}
-                      >
-                        {data?.text}
-                      </div>
-                      <div
-                        style={{
-                          fontWeight: 600,
-                          color: "rgba(159, 175, 198, 1)",
-                          fontSize: "12px",
-                        }}
-                      >
-                        {data?.subText}
-                      </div>
-                    </div>
-                  </div>
 
-                  <div
-                    style={{
-                      color: "var(--primary-color)",
-                      fontSize: "14px",
-                      fontWeight: 600,
-                    }}
-                  >
-                    $100,000.00 <IoIosArrowForward size={16} />
-                  </div>
-                </div>
-              );
-            })}
+            <div style={{ height: "250px", overflowY: "scroll" }}>
+              {assetsLiabilities?.assets?.length > 0 ? (
+                !isLoading ? (
+                  assetsLiabilities?.assets
+                    ?.filter((data) => data?.type === "Asset")
+                    ?.map((data) => {
+                      return (
+                        <div
+                          key={data?._id}
+                          style={{
+                            backgroundColor: "rgba(245, 247, 248, 1)",
+                            borderRadius: "10px",
+                            padding: "10px",
+                          }}
+                          className="mt-3 d-flex justify-content-between align-items-center"
+                        >
+                          <div className="d-flex gap-2 align-items-center">
+                            <Image
+                              style={{
+                                borderRadius: "50%",
+                                width: "30px",
+                                height: "30px",
+                              }}
+                              src={
+                                data?.asset_liabilty_lv1?.image &&
+                                imgAddr + data?.asset_liabilty_lv1?.image
+                              }
+                              alt="..."
+                            />
+                            <div
+                              style={{
+                                fontWeight: 600,
+                                color: "rgba(55, 73, 87, 1)",
+                                fontSize: "12px",
+                              }}
+                            >
+                              {data?.name}
+                            </div>
+                          </div>
+
+                          <div
+                            style={{
+                              color: "var(--primary-color)",
+                              fontSize: "14px",
+                              fontWeight: 600,
+                            }}
+                          >
+                            ${data?.price} <IoIosArrowForward size={16} />
+                          </div>
+                        </div>
+                      );
+                    })
+                ) : (
+                  [1, 2, 3, 4, 5]?.map((_, idx) => {
+                    return (
+                      <div key={idx}>
+                        <Skeleton
+                          className="rounded-2"
+                          height={"40px"}
+                          width={"100%"}
+                        />
+                      </div>
+                    );
+                  })
+                )
+              ) : (
+                <div className="text-center">No Asset found!</div>
+              )}
+            </div>
             <div className="mt-3 text-center">
               <button
                 onClick={() => setShowAssets(true)}
@@ -180,7 +194,7 @@ const NetWorth = () => {
               >
                 Liabilities
               </h4>
-              <p
+              <div
                 style={{
                   color: "var(--primary-color)",
                   fontWeight: 600,
@@ -189,11 +203,12 @@ const NetWorth = () => {
                 }}
               >
                 N / A
-              </p>
+              </div>
             </div>
             <hr />
             <div className="d-flex align-items-center justify-content-center">
               <button
+                onClick={() => setShowLiabilities(true)}
                 style={{
                   border: "none",
                   borderRadius: "20px",
@@ -218,6 +233,13 @@ const NetWorth = () => {
         active={showActiveAssets}
         activeLink={setShowActiveAssets}
       />
+
+      {/* <Liabilities
+        show={showLiabilities}
+        hide={setShowLiabilities}
+        active={showActiveLiabilities}
+        activeLink={setShowActiveLiabilities}
+      /> */}
     </>
   );
 };

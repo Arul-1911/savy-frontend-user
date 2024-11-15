@@ -27,7 +27,6 @@ const Assets = ({ show, hide, active, activeLink }) => {
   const [assetsLv1, setAssetLv1] = useState([]);
   const [assetsLv2, setAssetLv2] = useState([]);
   const [assetsLv3, setAssetLv3] = useState([]);
-  // const [assetsLv4, setAssetLv4] = useState([]);
 
   const [selectAssetLv1, setSelectAssetLv1] = useState("");
   const [selectAssetLv2, setSelectAssetLv2] = useState("");
@@ -45,16 +44,28 @@ const Assets = ({ show, hide, active, activeLink }) => {
     }
   }, [active]);
 
+  useEffect(() => {
+    if (active === 1) {
+      setSelectAssetLv1("");
+      setSelectAssetLv2("");
+      setSelectAssetLv3("");
+    }
+  }, [active]);
+
   // ======= Select Asset Lv1 ========
   const handleSelectAssetLv1 = (data) => {
     setSelectAssetLv1(data);
-    activeLink(2);
+    if (data?._id) {
+      activeLink(2);
+    }
   };
 
   // ======= Select Asset Lv2 ========
   const handleSelectAssetLv2 = (data) => {
     setSelectAssetLv2(data);
-    activeLink(3);
+    if (data?._id) {
+      activeLink(3);
+    }
   };
 
   // ======= Select Asset Lv3 ========
@@ -66,8 +77,10 @@ const Assets = ({ show, hide, active, activeLink }) => {
   // ======= get Assets Lv1 ========
   const getAllAssets = async () => {
     try {
-      const { assets } = await getAssets().unwrap();
-      setAssetLv1(assets);
+      const { assets } = await getAssets("Asset").unwrap();
+      if (assets?.length > 0) {
+        setAssetLv1(assets);
+      }
     } catch (error) {
       getError(error);
     }
@@ -79,7 +92,12 @@ const Assets = ({ show, hide, active, activeLink }) => {
       const { assets } = await getAssetsLv2({
         assetLv1Id: selectAssetLv1?._id,
       }).unwrap();
-      setAssetLv2(assets);
+
+      if (assets?.length > 0) {
+        setAssetLv2(assets);
+      } else {
+        activeLink(4);
+      }
     } catch (error) {
       getError(error);
     }
@@ -91,14 +109,18 @@ const Assets = ({ show, hide, active, activeLink }) => {
       const { assets } = await getAssetsLv3({
         assetLv2Id: selectAssetLv2?._id,
       }).unwrap();
-      setAssetLv3(assets);
+      if (assets?.length > 0) {
+        setAssetLv3(assets);
+      } else {
+        activeLink(4);
+      }
     } catch (error) {
       getError(error);
     }
   };
 
   // ======= Add Asset Liability =========
-  const handleSubmitTipTopic = async (e) => {
+  const handleSubmitAsset = async (e) => {
     e.preventDefault();
     const assteLiability = {
       type: "Asset",
@@ -331,7 +353,7 @@ const Assets = ({ show, hide, active, activeLink }) => {
               color="rgba(92, 182, 249, 1)"
               cursor={"pointer"}
               size={28}
-              onClick={() => activeLink(2)}
+              onClick={() => activeLink(1)}
             />
             <div
               style={{
@@ -424,7 +446,7 @@ const Assets = ({ show, hide, active, activeLink }) => {
               color="rgba(92, 182, 249, 1)"
               cursor={"pointer"}
               size={28}
-              onClick={() => activeLink(3)}
+              onClick={() => activeLink(1)}
             />
             <div
               style={{
@@ -484,7 +506,7 @@ const Assets = ({ show, hide, active, activeLink }) => {
                 </div>
               </div>
               <Card.Body>
-                <Form onSubmit={handleSubmitTipTopic}>
+                <Form onSubmit={handleSubmitAsset}>
                   <Form.Label>Name</Form.Label>
                   <FormField
                     type={"text"}
