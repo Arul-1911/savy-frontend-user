@@ -73,8 +73,7 @@ export default function SignupScreen() {
           required
           onChange={(e) => {
             const inputValue = e.target.value;
-            // Allow only digits and restrict length to 10
-            const isValidNumber = /^\d{0,9}$/.test(inputValue);
+            const isValidNumber = /^\d{0,09}$/.test(inputValue);
 
             if (isValidNumber) {
               setMobile(inputValue);
