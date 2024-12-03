@@ -66,7 +66,6 @@ const NetWorth = () => {
       </div>
 
       <Row className="mt-3 g-3">
-        {/* Assets Section */}
         <Col>
           <DashboardCard>
             <h5
@@ -120,10 +119,11 @@ const NetWorth = () => {
                                 width: "30px",
                                 height: "30px",
                               }}
-                              src={
-                                data?.asset_liabilty_lv1?.image &&
-                                imgAddr + data?.asset_liabilty_lv1?.image
-                              }
+                              // src={
+                              //   data?.asset_liabilty_lv1?.image &&
+                              //   imgAddr + data?.asset_liabilty_lv1?.image
+                              // }
+                              src="/images/money.png"
                               alt="..."
                             />
                             <div
@@ -215,11 +215,9 @@ const NetWorth = () => {
                               borderRadius: "50%",
                               width: "30px",
                               height: "30px",
+                              objectFit:'cover'
                             }}
-                            src={
-                              data?.asset_liabilty_lv1?.image &&
-                              imgAddr + data?.asset_liabilty_lv1?.image
-                            }
+                            src="/images/Liability.png"
                             alt="..."
                           />
                           <div
@@ -281,13 +279,13 @@ const NetWorth = () => {
         show={showAssets}
         hide={setShowAssets}
         active={showActiveAssets}
-        activeIndex={setShowActiveAssets}
+        activeLink={setShowActiveAssets}
       />
       <Liabilities
         show={showLiabilities}
         hide={setShowLiabilities}
         active={showActiveLiabilities}
-        activeIndex={setShowActiveLiabilities}
+        activeLink={setShowActiveLiabilities}
       />
     </>
   );
