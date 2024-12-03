@@ -66,6 +66,7 @@ const NetWorth = () => {
       </div>
 
       <Row className="mt-3 g-3">
+        {/* Assets Section */}
         <Col>
           <DashboardCard>
             <h5
@@ -149,17 +150,15 @@ const NetWorth = () => {
                       );
                     })
                 ) : (
-                  [1, 2, 3, 4, 5]?.map((_, idx) => {
-                    return (
-                      <div key={idx}>
-                        <Skeleton
-                          className="rounded-2"
-                          height={"40px"}
-                          width={"100%"}
-                        />
-                      </div>
-                    );
-                  })
+                  [1, 2, 3, 4, 5]?.map((_, idx) => (
+                    <div key={idx}>
+                      <Skeleton
+                        className="rounded-2"
+                        height={"40px"}
+                        width={"100%"}
+                      />
+                    </div>
+                  ))
                 )
               ) : (
                 <div className="text-center">No Asset found!</div>
@@ -184,40 +183,91 @@ const NetWorth = () => {
 
         <Col>
           <DashboardCard>
-            <div className="d-flex align-items-center justify-content-between">
-              <h4
-                style={{
-                  fontWeight: 600,
-                  color: "rgba(0, 39, 91, 1)",
-                  fontSize: "18px",
-                }}
-              >
-                Liabilities
-              </h4>
-              <div
-                style={{
-                  color: "var(--primary-color)",
-                  fontWeight: 600,
-                  fontSize: "16px",
-                  cursor: "pointer",
-                }}
-              >
-                N / A
-              </div>
-            </div>
+            <h5
+              style={{
+                fontWeight: 600,
+                color: "rgba(0, 39, 91, 1)",
+                fontSize: "18px",
+              }}
+            >
+              Liabilities
+            </h5>
+
             <hr />
-            <div className="d-flex align-items-center justify-content-center">
+            <div style={{ height: "250px", overflowY: "scroll" }}>
+              {assetsLiabilities?.assets?.length > 0 ? (
+                !isLoading ? (
+                  assetsLiabilities?.assets
+                    ?.filter((data) => data?.type === "Liability")
+                    ?.map((data) => (
+                      <div
+                        key={data?._id}
+                        style={{
+                          backgroundColor: "rgba(245, 247, 248, 1)",
+                          borderRadius: "10px",
+                          padding: "10px",
+                        }}
+                        className="mt-3 d-flex justify-content-between align-items-center"
+                      >
+                        <div className="d-flex gap-2 align-items-center">
+                          <Image
+                            style={{
+                              borderRadius: "50%",
+                              width: "30px",
+                              height: "30px",
+                            }}
+                            src={
+                              data?.asset_liabilty_lv1?.image &&
+                              imgAddr + data?.asset_liabilty_lv1?.image
+                            }
+                            alt="..."
+                          />
+                          <div
+                            style={{
+                              fontWeight: 600,
+                              color: "rgba(55, 73, 87, 1)",
+                              fontSize: "12px",
+                            }}
+                          >
+                            {data?.name}
+                          </div>
+                        </div>
+
+                        <div
+                          style={{
+                            color: "var(--primary-color)",
+                            fontSize: "14px",
+                            fontWeight: 600,
+                          }}
+                        >
+                          ${data?.price} <IoIosArrowForward size={16} />
+                        </div>
+                      </div>
+                    ))
+                ) : (
+                  [1, 2, 3, 4, 5]?.map((_, idx) => (
+                    <div key={idx}>
+                      <Skeleton
+                        className="rounded-2"
+                        height={"40px"}
+                        width={"100%"}
+                      />
+                    </div>
+                  ))
+                )
+              ) : (
+                <div className="text-center">No Liability found!</div>
+              )}
+            </div>
+            <div className="mt-3 text-center">
               <button
                 onClick={() => setShowLiabilities(true)}
+                className="py-2"
                 style={{
-                  border: "none",
-                  borderRadius: "20px",
-                  padding: "10px",
+                  backgroundColor: "rgba(0, 74, 173, 0.08)",
                   color: "var(--primary-color)",
-                  fontWeight: 600,
-                  fontSize: "16px",
-                  cursor: "pointer",
-                  marginTop: "100px",
+                  borderRadius: "20px",
+                  border: "1px solid rgba(0, 74, 173, 0.08)",
                 }}
               >
                 + Add Liabilities
@@ -231,15 +281,14 @@ const NetWorth = () => {
         show={showAssets}
         hide={setShowAssets}
         active={showActiveAssets}
-        activeLink={setShowActiveAssets}
+        activeIndex={setShowActiveAssets}
       />
-
-      {/* <Liabilities
+      <Liabilities
         show={showLiabilities}
         hide={setShowLiabilities}
         active={showActiveLiabilities}
-        activeLink={setShowActiveLiabilities}
-      /> */}
+        activeIndex={setShowActiveLiabilities}
+      />
     </>
   );
 };

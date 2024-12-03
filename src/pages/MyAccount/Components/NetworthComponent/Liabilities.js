@@ -16,7 +16,8 @@ import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 import FormField from "../../../../components/layout/FormField";
 
 const Liabilities = ({ show, hide, active, activeLink }) => {
-  const [getAssets, { isLoading: liabilityLoading }] = useGetAssetsMutation();
+  const [getAssets, { isLoading: liabilityLoading }] =
+    useGetAssetsMutation();
   const [getAssetsLv2, { isLoading: liabilityLv2Loading }] =
     useGetAssetsLv2Mutation();
   const [getAssetsLv3, { isLoading: liabilityLv3Loading }] =
@@ -36,23 +37,23 @@ const Liabilities = ({ show, hide, active, activeLink }) => {
 
   useEffect(() => {
     if (active === 1) {
-      getAllAssets();
+      getAllLiabilities();
     } else if (active === 2) {
-      getAllAssetsLv2();
+      getLiabilitiesLv2();
     } else if (active === 3) {
-      getAllAssetsLv3();
+      getLiabilitiesLv3();
     }
   }, [active]);
 
   useEffect(() => {
     if (active === 1) {
-      setSelectAssetLv1("");
-      setSelectAssetLv2("");
-      setSelectAssetLv3("");
+      setSelectLiabilityLv1("");
+      setSelectLiabilityLv2("");
+      setSelectLiabilityLv3("");
     }
   }, [active]);
 
-  // ======= Select Asset Lv1 ========
+  // ======= Select Liability Lv1 ========
   const handleSelectLiabilityLv1 = (data) => {
     setSelectLiabilityLv1(data);
     if (data?._id) {
@@ -74,27 +75,27 @@ const Liabilities = ({ show, hide, active, activeLink }) => {
     activeLink(4);
   };
 
-  // ======= get Assets Lv1 ========
-  const getAllAssets = async () => {
+  // ======= get Liability Lv1 ========
+  const getAllLiabilities = async () => {
     try {
-      const { assets } = await getAssets("Liabilities").unwrap();
+      const { assets } = await getAssets("Liability").unwrap();
       if (assets?.length > 0) {
-        setAssetLv1(assets);
+        setLiabilityLv1(assets);
       }
     } catch (error) {
       getError(error);
     }
   };
 
-  // ======= get Assets Lv2 ========
-  const getAllAssetsLv2 = async () => {
+  // ======= get Liability Lv2 ========
+  const getLiabilitiesLv2 = async () => {
     try {
       const { assets } = await getAssetsLv2({
-        assetLv1Id: selectAssetLv1?._id,
+        assetLv1Id: selectLiabilityLv1?._id,
       }).unwrap();
 
       if (assets?.length > 0) {
-        setAssetLv2(assets);
+        setLiabilityLv2(assets);
       } else {
         activeLink(4);
       }
@@ -103,14 +104,14 @@ const Liabilities = ({ show, hide, active, activeLink }) => {
     }
   };
 
-  // ======= get Assets Lv3 ========
-  const getAllAssetsLv3 = async () => {
+  // ======= get Liability Lv3 ========
+  const getLiabilitiesLv3 = async () => {
     try {
       const { assets } = await getAssetsLv3({
-        assetLv2Id: selectAssetLv2?._id,
+        assetLv2Id: selectLiabilityLv2?._id,
       }).unwrap();
       if (assets?.length > 0) {
-        setAssetLv3(assets);
+        setLiabilityLv3(assets);
       } else {
         activeLink(4);
       }
@@ -123,20 +124,20 @@ const Liabilities = ({ show, hide, active, activeLink }) => {
   const handleSubmitLiability = async (e) => {
     e.preventDefault();
     const assteLiability = {
-      type: "Asset",
+      type: "Liability",
       name,
       price,
-      asset_liabilty_lv1: selectAssetLv1?._id,
-      asset_liabilty_lv2: selectAssetLv2?._id,
-      asset_liabilty_lv3: selectAssetLv3?._id,
+      asset_liabilty_lv1: selectLiabilityLv1?._id,
+      asset_liabilty_lv2: selectLiabilityLv2?._id,
+      asset_liabilty_lv3: selectLiabilityLv3?._id,
     };
     try {
       const { asset } = await createAssetLiability(assteLiability).unwrap();
       setName("");
       setPrice("");
-      setSelectAssetLv1("");
-      setSelectAssetLv2("");
-      setSelectAssetLv3("");
+      setSelectLiabilityLv1("");
+      setSelectLiabilityLv2("");
+      setSelectLiabilityLv3("");
       hide();
       activeLink(1);
       if (asset?.type === "Asset") {
@@ -299,7 +300,7 @@ const Liabilities = ({ show, hide, active, activeLink }) => {
 
             <Card className="mt-2">
               <Card.Body>
-                {!assetLv2Loading
+                {!liabilityLv2Loading
                   ? liabilityLv2?.map((data) => {
                       return (
                         <div
@@ -391,7 +392,7 @@ const Liabilities = ({ show, hide, active, activeLink }) => {
             </div>
             <Card className="mt-2">
               <Card.Body>
-                {!assetLv3Loading
+                {!liabilityLv3Loading
                   ? liabilityLv3?.map((data) => {
                       return (
                         <div
@@ -483,7 +484,10 @@ const Liabilities = ({ show, hide, active, activeLink }) => {
                     objectFit: "cover",
                     backgroundColor: "white",
                   }}
-                  src={selectAssetLv1?.image && imgAddr + selectAssetLv1?.image}
+                  src={
+                    selectLiabilityLv1?.image &&
+                    imgAddr + selectLiabilityLv1?.image
+                  }
                   alt="..."
                 />
                 <div
@@ -493,7 +497,7 @@ const Liabilities = ({ show, hide, active, activeLink }) => {
                     fontWeight: 600,
                   }}
                 >
-                  {selectAssetLv1?.title} Property
+                  {selectLiabilityLv1?.title} Property
                 </div>
                 <div
                   style={{
@@ -502,7 +506,7 @@ const Liabilities = ({ show, hide, active, activeLink }) => {
                     fontWeight: 500,
                   }}
                 >
-                  {selectAssetLv2?.title}
+                  {selectLiabilityLv2?.title}
                 </div>
               </div>
               <Card.Body>
