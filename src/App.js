@@ -78,7 +78,6 @@ function App() {
     { path: "/user/cashflow/top-merchant", comp: <TopMerchant /> },
     { path: "/user/cashflow/top-transactions", comp: <TopTransaction /> },
   ];
-
   return (
     <div className="main-wrapper">
       {accessToken && isExpanded && (
