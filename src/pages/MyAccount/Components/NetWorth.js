@@ -194,6 +194,22 @@ const NetWorth = () => {
             </h5>
 
             <hr />
+            <div className="d-flex align-items-center justify-content-between">
+              <h5 style={{ fontWeight: 600, color: "rgba(0, 39, 91, 1)" }}>
+                Bank
+              </h5>
+              <p
+                style={{
+                  color: "rgba(58, 195, 172, 1)",
+                  fontWeight: 600,
+                  fontSize: "16px",
+                  cursor: "pointer",
+                }}
+              >
+                ${assetsLiabilities?.totalLiabilitiesAmount}
+              </p>
+            </div>
+            <hr />
             <div style={{ height: "250px", overflowY: "scroll" }}>
               {assetsLiabilities?.assets?.length > 0 ? (
                 !isLoading ? (
@@ -215,7 +231,7 @@ const NetWorth = () => {
                               borderRadius: "50%",
                               width: "30px",
                               height: "30px",
-                              objectFit:'cover'
+                              objectFit: "cover",
                             }}
                             src="/images/Liability.png"
                             alt="..."
