@@ -61,6 +61,28 @@ export const apiSlice = createApi({
       }),
     }),
 
+    getGoal: builder.mutation({
+      query:(goadId) =>({
+        url:`/goal/get-goal/${goadId}`,
+        method:'GET'
+      })
+    }),
+
+    updateGoal:builder.mutation({
+      query:({goalId, goalData}) => ({
+        url:`/goal/update-goal/${goalId}`,
+        method:"PATCH",
+        body:goalData
+      })
+    }),
+
+    deleteGoal:builder.mutation({
+      query:(goalId) => ({
+        url:`/goal/delete-goal/${goalId}`,
+        method:"DELETE"
+      })
+    }),
+
     // ====== payday =======
     createPayday: builder.mutation({
       query: (data) => ({
@@ -331,6 +353,9 @@ export const {
 
   useCreateGoalsMutation,
   useGetGoalsMutation,
+  useGetGoalMutation,
+  useUpdateGoalMutation,
+  useDeleteGoalMutation,
 
   useCreatePaydayMutation,
   useGetPaydaysMutation,

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import { IoIosSettings } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
@@ -6,6 +6,7 @@ import { IoMdNotifications } from "react-icons/io";
 import { FaUserCircle } from "react-icons/fa";
 import { GoPlus } from "react-icons/go";
 import { RxCross2 } from "react-icons/rx";
+import { RxCheck } from "react-icons/rx";
 import { GiHamburgerMenu } from "react-icons/gi";
 import GoalComponent from "../HeaderComponents/GoalComponent";
 import PayDayComponent from "../HeaderComponents/PayDayComponent";
@@ -16,6 +17,8 @@ import AddAccount from "../HeaderComponents/AddAccount";
 import "./Header.css";
 import { selectAuth } from "../../features/authSlice";
 import { useSelector } from "react-redux";
+import { useGetGoalsMutation } from "../../features/apiSlice";
+import { getError } from "../../utils/error";
 
 export default function Header({ sidebarHandler }) {
   const { user, accessToken } = useSelector(selectAuth);
@@ -30,6 +33,23 @@ export default function Header({ sidebarHandler }) {
   const [settings, setSettings] = useState(false);
   const [addAccountModal, setAddAccountModal] = useState(false);
   const [addAccountLink, setAddAccountLink] = useState(1);
+  const [getGoals, {isLoading:goalsLoading}] = useGetGoalsMutation();
+  const [goalsOnTarget,setGoalsOnTarget] = useState(false)
+
+  const getAllGoals = async () => {
+    try {
+      const {goals} = await getGoals().unwrap();
+      const allOnTarget = goals.every(goal => goal?.onTarget);
+      setGoalsOnTarget(allOnTarget)
+
+    } catch (error) {
+      getError(error)
+    }
+  }
+
+  useEffect(() => {
+    getAllGoals()
+  },[goalsOnTarget])
 
   return (
     <>
@@ -126,21 +146,39 @@ export default function Header({ sidebarHandler }) {
                       >
                         Goals on target ?
                       </div>
-                      <div
-                        className="d-flex align-items-center mt-1"
-                        style={{
-                          padding: "2px",
-                          backgroundColor: "rgba(235, 241, 248, 1)",
-                          height: "20px",
-                          width: "40px",
-                          borderRadius: "22px",
-                          fontSize: "12px",
-                          color: "rgba(255, 1, 9, 1)",
-                          fontWeight: 400,
-                        }}
-                      >
-                        <RxCross2 /> <span>No</span>
-                      </div>
+                      {goalsOnTarget ? (
+                        <div
+                          className="d-flex align-items-center mt-1"
+                          style={{
+                            padding: "2px",
+                            backgroundColor: "rgba(235, 241, 248, 1)",
+                            height: "20px",
+                            width: "40px",
+                            borderRadius: "22px",
+                            fontSize: "12px",
+                            color: "green",
+                            fontWeight: 400,
+                          }}
+                        >
+                          <RxCheck /> <span>Yes</span>
+                        </div>
+                      ) : (
+                        <div
+                          className="d-flex align-items-center mt-1"
+                          style={{
+                            padding: "2px",
+                            backgroundColor: "rgba(235, 241, 248, 1)",
+                            height: "20px",
+                            width: "40px",
+                            borderRadius: "22px",
+                            fontSize: "12px",
+                            color: "rgba(255, 1, 9, 1)",
+                            fontWeight: 400,
+                          }}
+                        >
+                          <RxCross2 /> <span>No</span>
+                        </div>
+                      )}
                     </div>
                   </div>
 

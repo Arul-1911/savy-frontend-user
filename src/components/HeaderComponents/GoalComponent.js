@@ -12,7 +12,7 @@ import {
 } from "react-bootstrap";
 import { FiUpload } from "react-icons/fi";
 import FormField from "../layout/FormField";
-import { RxCrossCircled } from "react-icons/rx";
+import { RxCheck, RxCross2, RxCrossCircled } from "react-icons/rx";
 import { CalendarSVG } from "../svg/CalendarSVG";
 import Calendar from "../Calendar/Calendar";
 import {
@@ -146,6 +146,7 @@ const GoalComponent = ({ show, hide, active, activeLink }) => {
                 {goals?.length > 0 ? (
                   !goalsLoading ? (
                     goals?.map((data) => {
+                      // console.log('data',data)
                       return (
                         <div
                           className="mt-2"
@@ -189,9 +190,56 @@ const GoalComponent = ({ show, hide, active, activeLink }) => {
                                 color: "var(--primary-color)",
                                 fontSize: "12px",
                                 fontWeight: 600,
+                                width: "auto",
+                                display:'flex',
+                                justifyContent:'center',
+                                flexDirection:'column',
+                                alignItems:'center'
                               }}
                             >
                               ${data?.amount}
+                              <div
+                                style={{
+                                  color: "var(--primary-color)",
+                                  fontSize: "12px",
+                                  fontWeight: 600,
+                                  // marginLeft: "8px",
+                                }}
+                              >
+                                {data?.onTarget ? (
+                                  <div
+                                    className="d-flex align-items-center mt-1"
+                                    style={{
+                                      padding: "2px",
+                                      backgroundColor: "rgba(235, 241, 248, 1)",
+                                      height: "20px",
+                                      width: "40px",
+                                      borderRadius: "22px",
+                                      fontSize: "12px",
+                                      color: "green",
+                                      fontWeight: 400,
+                                    }}
+                                  >
+                                    <RxCheck /> <span>Yes</span>
+                                  </div>
+                                ) : (
+                                  <div
+                                    className="d-flex align-items-center mt-1"
+                                    style={{
+                                      padding: "2px",
+                                      backgroundColor: "rgba(235, 241, 248, 1)",
+                                      height: "20px",
+                                      width: "40px",
+                                      borderRadius: "22px",
+                                      fontSize: "12px",
+                                      color: "rgba(255, 1, 9, 1)",
+                                      fontWeight: 400,
+                                    }}
+                                  >
+                                    <RxCross2 /> <span>No</span>
+                                  </div>
+                                )}
+                              </div>
                             </div>
                           </div>
                         </div>
