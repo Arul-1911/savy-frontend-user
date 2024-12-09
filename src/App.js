@@ -47,10 +47,10 @@ function App() {
   const [isExpanded, setExpandState] = useState(window.innerWidth > 768);
   const sidebarHandler = () => setExpandState((prev) => !prev);
 
-  useEffect(async () => {
-    //  await getOptions({dispatch:dispatch ,token:isLoggedIn});
-    console.log(accessToken);
-  }, [accessToken]);
+  // useEffect(async () => {
+  //  await getOptions({dispatch:dispatch ,token:isLoggedIn});
+  // console.log(accessToken);
+  // }, [accessToken]);
 
   const routeList = [
     { path: "/user/connect-bank", comp: <ConnectBank /> },

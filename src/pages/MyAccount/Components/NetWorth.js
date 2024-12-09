@@ -6,6 +6,7 @@ import Assets from "./NetworthComponent/Assets";
 import { getError } from "../../../utils/error";
 import {
   imgAddr,
+  useDashboardDataMutation,
   useGetAssetsLiabilitiesMutation,
 } from "../../../features/apiSlice";
 import Skeleton from "react-loading-skeleton";
@@ -14,27 +15,49 @@ import Liabilities from "./NetworthComponent/Liabilities";
 const NetWorth = () => {
   const [getAssetsLiabilities, { isLoading }] =
     useGetAssetsLiabilitiesMutation();
+  const [getGraphData, { isLoading: getGraphDataLoading }] =
+    useDashboardDataMutation();
 
   const [showAssets, setShowAssets] = useState(false);
   const [showActiveAssets, setShowActiveAssets] = useState(1);
 
   const [showLiabilities, setShowLiabilities] = useState(false);
   const [showActiveLiabilities, setShowActiveLiabilities] = useState(1);
-
   const [assetsLiabilities, setAssetsLiabilities] = useState([]);
+  const [totalAssetsAmount, setTotalAssestAmount] = useState(0);
+  const [totalLiabilitiesAmount, setTotalLiabilitiesAmount] = useState(0);
+  const [totalNetWorth, setTotalNetWorth] = useState(0);
+  const [currNetWorth, setCurrNetWorth] = useState(0);
 
   useEffect(() => {
     getAllAssetsLibilities();
+    getTotalAmount();
   }, []);
 
   const getAllAssetsLibilities = async () => {
     try {
       const data = await getAssetsLiabilities().unwrap();
       setAssetsLiabilities(data);
+      setTotalAssestAmount(data?.totalAssetsAmount);
+      setTotalLiabilitiesAmount(data?.totalLiabilitiesAmount);
     } catch (error) {
       getError(error);
     }
   };
+
+  const getTotalAmount = async () => {
+    try {
+      const { dashboardData } = await getGraphData().unwrap();
+      const totalAmount = dashboardData?.card1?.["Total amount"] || 0;
+      setTotalNetWorth(totalAmount);
+    } catch (error) {
+      getError(error);
+    }
+  };
+
+  useEffect(() => {
+    setCurrNetWorth(totalNetWorth + totalAssetsAmount - totalLiabilitiesAmount);
+  }, [totalNetWorth, totalAssetsAmount, totalLiabilitiesAmount]);
 
   return (
     <>
@@ -44,7 +67,7 @@ const NetWorth = () => {
             Net worth
           </p>
           <h3 style={{ fontWeight: 600, color: "var(--primary-color)" }}>
-            $1,220.00
+            {`$${currNetWorth}`}
           </h3>
         </div>
         <div
