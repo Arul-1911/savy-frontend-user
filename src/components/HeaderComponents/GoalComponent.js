@@ -17,11 +17,16 @@ import { CalendarSVG } from "../svg/CalendarSVG";
 import Calendar from "../Calendar/Calendar";
 import {
   useCreateGoalsMutation,
+  useDeleteGoalMutation,
+  useGetGoalMutation,
   useGetGoalsMutation,
+  useUpdateBudgetMutation,
+  useUpdateGoalMutation,
 } from "../../features/apiSlice";
 import { getError } from "../../utils/error";
 import { getSuccess } from "../../utils/success";
 import Skeleton from "react-loading-skeleton";
+import { MdDelete } from "react-icons/md";
 
 const GoalComponent = ({ show, hide, active, activeLink }) => {
   const fileRef = useRef(null);
@@ -32,9 +37,15 @@ const GoalComponent = ({ show, hide, active, activeLink }) => {
   const [category, setCategory] = useState("");
   const [amount, setAmount] = useState("");
   const [goalDate, setGoalDate] = useState("");
+  const [goalId, setGoalId] = useState("");
+  const [goals, setGoals] = useState([]);
   const [createGoals, { isLoading }] = useCreateGoalsMutation();
   const [getGoals, { isLoading: goalsLoading }] = useGetGoalsMutation();
-  const [goals, setGoals] = useState([]);
+  const [getGoal, { isLoading: getGoalLoading }] = useGetGoalMutation();
+  const [updateGoal, { isLoading: updateGoalLoading }] =
+    useUpdateGoalMutation();
+  const [deleteGoal, { isLoading: deleteGoalLoading }] =
+    useDeleteGoalMutation();
 
   const savingFor = [
     "House Deposite",
@@ -52,7 +63,7 @@ const GoalComponent = ({ show, hide, active, activeLink }) => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result);
-        setIsFileSelected(true); // Mark as selected
+        setIsFileSelected(true); 
       };
       reader.readAsDataURL(file);
     }
@@ -60,7 +71,7 @@ const GoalComponent = ({ show, hide, active, activeLink }) => {
 
   const handleButtonClick = () => {
     if (fileRef.current) {
-      fileRef.current.click(); // Trigger the file input click
+      fileRef.current.click(); 
     }
   };
 
@@ -92,12 +103,108 @@ const GoalComponent = ({ show, hide, active, activeLink }) => {
     }
   }, [show]);
 
+  useEffect(() => {
+    if (goalId) {
+      handleGetGoal();
+    } else {
+      setAmount("");
+      setImage("");
+      setCategory("");
+      setGoalDate("");
+      setImagePreview("");
+    }
+  }, [goalId]);
+
+  // ========= GET ALL GOALS =======
   const getAllGoals = async () => {
     try {
       const { goals } = await getGoals().unwrap();
       setGoals(goals);
     } catch (error) {
       getError(error);
+    }
+  };
+
+  const handleGoalsListData = (goals) => {
+    setGoalId(goals?._id);
+    activeLink(6);
+  };
+
+  // ========= GET SINGLE GOAL =======
+  const handleGetGoal = async () => {
+    try {
+      if (!goalId) {
+        console.log("Goal ID is missing.");
+      }
+      const response = await getGoal(goalId).unwrap();
+
+      const { goal } = response;
+      setAmount(goal?.amount || "");
+      setImage(goal?.image || "");
+      setCategory(goal?.description || "");
+      setGoalDate((goal?.date && goal?.date.split("T")[0]) || "");
+    } catch (error) {
+      console.error("Error fetching goal:", error);
+      getError(error.message || "Error fetching goal details.");
+    }
+  };
+
+  // ============ UPDATE GOAL ============
+
+  const handleUpdateGoal = async (e) => {
+    e.preventDefault();
+
+    try {
+      if (goalId) {
+        const goalData = {
+          image: image,
+          description: category,
+          amount: amount,
+          date: goalDate,
+        };
+
+        const data = await updateGoal({ goalId, goalData }).unwrap();
+        getSuccess(data?.message);
+        getAllGoals();
+        activeLink(1);
+        // setGoalId('')
+      }
+    } catch (error) {
+      getError(error);
+    } finally {
+      setGoalId("");
+      setAmount("");
+      setCategory("");
+      setImage("");
+      setImagePreview("");
+      setGoalDate("");
+    }
+  };
+
+  // ========= DELETE GOAL ========
+  const handleDeleteGoal = async () => {
+    try {
+      const isDelete = window.confirm(
+        "Are you sure you want to delete this Goal"
+      );
+      if (isDelete) {
+        const data = await deleteGoal(goalId).unwrap();
+        getSuccess(data?.message);
+        getAllGoals();
+        activeLink(1);
+        setGoalId("");
+      } else {
+        return;
+      }
+    } catch (error) {
+      getError(error);
+    } finally {
+      setGoalId("");
+      setAmount("");
+      setImage("");
+      setCategory("");
+      setGoalDate("");
+      setImagePreview("");
     }
   };
 
@@ -151,10 +258,12 @@ const GoalComponent = ({ show, hide, active, activeLink }) => {
                         <div
                           className="mt-2"
                           key={data?._id}
+                          onClick={() => handleGoalsListData(data)}
                           style={{
                             backgroundColor: "rgba(245, 247, 248, 1)",
                             padding: "8px",
                             borderRadius: "10px",
+                            cursor: "pointer",
                           }}
                         >
                           <div className=" d-flex justify-content-between align-items-center">
@@ -191,10 +300,10 @@ const GoalComponent = ({ show, hide, active, activeLink }) => {
                                 fontSize: "12px",
                                 fontWeight: 600,
                                 width: "auto",
-                                display:'flex',
-                                justifyContent:'center',
-                                flexDirection:'column',
-                                alignItems:'center'
+                                display: "flex",
+                                justifyContent: "center",
+                                flexDirection: "column",
+                                alignItems: "center",
                               }}
                             >
                               ${data?.amount}
@@ -729,6 +838,195 @@ const GoalComponent = ({ show, hide, active, activeLink }) => {
           date={goalDate}
           setDate={setGoalDate}
         />
+      )}
+
+      {/* ==== update Goal ====== */}
+      {active === 6 && (
+        <>
+          <div className="d-flex align-items-center justify-content-between">
+            <IoArrowBackCircleOutline
+              color="rgba(92, 182, 249, 1)"
+              cursor={"pointer"}
+              size={28}
+              onClick={() => {
+                setGoalId("");
+                activeLink(1);
+              }}
+            />
+            <div
+              style={{
+                fontWeight: 600,
+                fontSize: "16px",
+                color: "rgba(55, 73, 87, 1)",
+              }}
+            >
+              Goal
+            </div>
+            <MdDelete
+              size={23}
+              color="red"
+              cursor={"pointer"}
+              onClick={handleDeleteGoal}
+            />
+          </div>
+
+          {!getGoalLoading && goalId ? (
+            <Form onSubmit={handleUpdateGoal}>
+              {/* <p
+                style={{
+                  color: "var(--primary-color)",
+                  fontWeight: 600,
+                  marginTop: "10px",
+                }}
+              >
+                Select Image
+              </p> */}
+
+              {/* <div
+                style={{
+                  border: "1px solid rgba(226, 242, 255, 1)",
+                  textAlign: "center",
+                  borderRadius: "10px",
+                }}
+              >
+                <FiUpload className="icon-md" />
+                <p
+                  style={{
+                    color: "rgba(55, 73, 87, 1)",
+                    fontWeight: 600,
+                    fontSize: "14px",
+                  }}
+                >
+                  Upload media
+                </p>
+                <p
+                  className="mt-2 px-4"
+                  style={{
+                    color: "rgba(55, 73, 87, 0.7)",
+                    fontWeight: 400,
+                    fontSize: "12px",
+                  }}
+                >
+                  Drag and drop your image file here or click to browse from
+                  your device
+                </p>
+                <input
+                  onChange={handleImageChange}
+                  style={{ display: "none" }}
+                  ref={fileRef}
+                  type="file"
+                  accept="image/*"
+                />
+                <button
+                  onClick={handleButtonClick}
+                  className="w-50 mb-2"
+                  style={{
+                    padding: "6px",
+                    border: "none",
+                    backgroundColor: "var(--primary-color)",
+                    color: "white",
+                    fontWeight: 600,
+                    borderRadius: "10px",
+                  }}
+                >
+                  Select Image
+                </button>
+              </div> */}
+
+              <div>
+                <p
+                  style={{
+                    color: "var(--primary-color)",
+                    fontWeight: 600,
+                    marginTop: "10px",
+                  }}
+                >
+                  Description
+                </p>
+                <FormField
+                  placeholder={"Enter description"}
+                  type={"text"}
+                  onChange={(e) => setCategory(e.target.value)}
+                  value={category}
+                />
+              </div>
+
+              <div>
+                <p
+                  style={{
+                    color: "var(--primary-color)",
+                    fontWeight: 600,
+                    marginTop: "10px",
+                  }}
+                >
+                  Amount
+                </p>
+                <FormField
+                  placeholder={"Enter amount"}
+                  type={"text"}
+                  onChange={(e) => setAmount(e.target.value)}
+                  value={amount}
+                />
+              </div>
+
+              <div>
+                <div
+                  className="my-3"
+                  style={{ fontWeight: 600, color: "var(--primary-color)" }}
+                >
+                  Date
+                </div>
+                <InputGroup className="mb-3">
+                  <Form.Control
+                    className="form-field"
+                    style={{ borderRight: "none" }}
+                    placeholder="Enter date"
+                    value={goalDate}
+                    aria-describedby="basic-addon1"
+                  />
+                  <InputGroup.Text
+                    onClick={() => {
+                      activeLink(5);
+                      setAlreadyActiveCalendar(6);
+                    }}
+                    style={{ cursor: "pointer" }}
+                    id="basic-addon1"
+                    className="grp_input"
+                  >
+                    <CalendarSVG />
+                  </InputGroup.Text>
+                </InputGroup>
+              </div>
+
+              <div className="text-center">
+                <button
+                  className="w-75 mt-3"
+                  style={{
+                    backgroundColor: "var(--primary-color)",
+                    padding: "10px",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "10px",
+                  }}
+                >
+                  {!updateGoalLoading ? "Update" : <Spinner size="sm" />}
+                </button>
+              </div>
+            </Form>
+          ) : (
+            [1, 2, 3].map((_, idx) => {
+              return (
+                <div key={idx}>
+                  <Skeleton
+                    className="rounded-2 mt-5"
+                    height={"40px"}
+                    width={"100%"}
+                  />
+                </div>
+              );
+            })
+          )}
+        </>
       )}
     </ModalWindow>
   );

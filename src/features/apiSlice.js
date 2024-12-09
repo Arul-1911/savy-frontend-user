@@ -62,8 +62,8 @@ export const apiSlice = createApi({
     }),
 
     getGoal: builder.mutation({
-      query:(goadId) =>({
-        url:`/goal/get-goal/${goadId}`,
+      query:(goalId) =>({
+        url:`/goal/get-goal/${goalId}`,
         method:'GET'
       })
     }),
