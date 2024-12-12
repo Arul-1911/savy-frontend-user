@@ -45,7 +45,7 @@ export default function ForgetPassword() {
     navigate("/user/reset-password");
     // if (!check && !otpCheck) {
     //   try {
-    //     await forgetPassword({ email }).unwrap();
+    //     await forgetPassword({ email,otp }).unwrap();
     //     localStorage.setItem("email", email);
     //     setCheck(true);
     //     return;

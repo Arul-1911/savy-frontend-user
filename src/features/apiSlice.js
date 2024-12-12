@@ -45,6 +45,14 @@ export const apiSlice = createApi({
       }),
     }),
 
+    loginOtp:builder.mutation({
+      query:(data) => ({
+        url:'/user/submit-login-otp',
+        method:'POST',
+        body:data
+      })
+    }),
+
     // ====== Goals =======
     createGoals: builder.mutation({
       query: (data) => ({
@@ -349,6 +357,7 @@ export const apiSlice = createApi({
 export const {
   useUserRegistrationMutation,
   useLoginUserMutation,
+  useLoginOtpMutation,
   useForgetPasswordMutation,
 
   useCreateGoalsMutation,

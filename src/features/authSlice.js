@@ -1,31 +1,33 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
-  user: localStorage.getItem("user")
-    ? JSON.parse(localStorage.getItem("user"))
-    : null,
-  accessToken: localStorage.getItem("accessToken")
-    ? JSON.parse(localStorage.getItem("accessToken"))
-    : null,
-};
-
 const authSlice = createSlice({
   name: "auth",
-  initialState,
+  initialState: {
+    user: JSON.parse(localStorage.getItem("user")) || null,
+    accessToken: JSON.parse(localStorage.getItem("accessToken")) || null,
+  },
   reducers: {
     setUser: (state, action) => {
-      state.user = action.payload;
-      localStorage.setItem("user", JSON.stringify(action.payload));
+      if (action.payload) {
+        state.user = action.payload;
+        localStorage.setItem("user", JSON.stringify(action.payload));
+      } else {
+        console.error("setUser called with undefined payload");
+      }
     },
     setAccessToken: (state, action) => {
-      state.accessToken = action.payload;
-      localStorage.setItem("accessToken", JSON.stringify(action.payload));
+      if (action.payload) {
+        state.accessToken = action.payload;
+        localStorage.setItem("accessToken", JSON.stringify(action.payload));
+      } else {
+        console.error("setAccessToken called with undefined payload");
+      }
     },
-
     clearAuth: (state) => {
       state.user = null;
       state.accessToken = null;
-      localStorage.clear();
+      localStorage.removeItem("user");
+      localStorage.removeItem("accessToken");
     },
   },
 });

@@ -22,9 +22,11 @@ export default function LoginScreen() {
     e.preventDefault();
     try {
       const data = await loginUser({ email, password }).unwrap();
-      dispatch(setAccessToken(data?.token));
-      dispatch(setUser(data?.user));
-      navigate("/user/dashboard");
+      // dispatch(setAccessToken(data?.token));
+      // dispatch(setUser(data?.user));
+      // navigate("/user/dashboard");
+      localStorage.setItem('email',email)
+      navigate('/user/otp')
       // navigate("/user/quick-access-passcode");
     } catch (error) {
       getError(error);

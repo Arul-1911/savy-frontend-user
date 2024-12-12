@@ -5,8 +5,7 @@ import { IoIosArrowForward } from "react-icons/io";
 import { IoMdNotifications } from "react-icons/io";
 import { FaUserCircle } from "react-icons/fa";
 import { GoPlus } from "react-icons/go";
-import { RxCross2 } from "react-icons/rx";
-import { RxCheck } from "react-icons/rx";
+import { RxCross2, RxCheck } from "react-icons/rx";
 import { GiHamburgerMenu } from "react-icons/gi";
 import GoalComponent from "../HeaderComponents/GoalComponent";
 import PayDayComponent from "../HeaderComponents/PayDayComponent";
@@ -33,23 +32,28 @@ export default function Header({ sidebarHandler }) {
   const [settings, setSettings] = useState(false);
   const [addAccountModal, setAddAccountModal] = useState(false);
   const [addAccountLink, setAddAccountLink] = useState(1);
-  const [getGoals, {isLoading:goalsLoading}] = useGetGoalsMutation();
-  const [goalsOnTarget,setGoalsOnTarget] = useState(false)
+  const [getGoals, { isLoading: goalsLoading }] = useGetGoalsMutation();
+  const [goalsOnTarget, setGoalsOnTarget] = useState(null); // changed to null for no goals state
 
   const getAllGoals = async () => {
     try {
-      const {goals} = await getGoals().unwrap();
-      const allOnTarget = goals.every(goal => goal?.onTarget);
-      setGoalsOnTarget(allOnTarget)
-
+      const { goals } = await getGoals().unwrap();
+      if (goals.length === 0) {
+        setGoalsOnTarget(null); // No goals to display
+      } else {
+        const allOnTarget = goals.every((goal) => goal?.onTarget);
+        setGoalsOnTarget(allOnTarget);
+      }
     } catch (error) {
-      getError(error)
+      getError(error);
     }
-  }
+  };
 
   useEffect(() => {
-    getAllGoals()
-  },[goalsOnTarget])
+    if (accessToken) {
+      getAllGoals();
+    }
+  }, [accessToken]);
 
   return (
     <>
@@ -146,35 +150,27 @@ export default function Header({ sidebarHandler }) {
                       >
                         Goals on target ?
                       </div>
-                      {goalsOnTarget ? (
+                      {goalsOnTarget === null ? (
                         <div
-                          className="d-flex align-items-center mt-1"
-                          style={{
-                            padding: "2px",
-                            backgroundColor: "rgba(235, 241, 248, 1)",
-                            height: "20px",
-                            width: "40px",
-                            borderRadius: "22px",
-                            fontSize: "12px",
-                            color: "green",
-                            fontWeight: 400,
-                          }}
+                          role="status"
+                          className="d-flex align-items-center mt-1 goal-status-no-goals"
+                          style={{color:'red'}}
+                        >
+                          No Goals
+                        </div>
+                      ) : goalsOnTarget ? (
+                        <div
+                          role="status"
+                          className="d-flex align-items-center mt-1 goal-status-on-target"
+                          style={{color:'green'}}
                         >
                           <RxCheck /> <span>Yes</span>
                         </div>
                       ) : (
                         <div
-                          className="d-flex align-items-center mt-1"
-                          style={{
-                            padding: "2px",
-                            backgroundColor: "rgba(235, 241, 248, 1)",
-                            height: "20px",
-                            width: "40px",
-                            borderRadius: "22px",
-                            fontSize: "12px",
-                            color: "rgba(255, 1, 9, 1)",
-                            fontWeight: 400,
-                          }}
+                          role="status"
+                          className="d-flex align-items-center mt-1 goal-status-not-on-target"
+                          style={{color:'red'}}
                         >
                           <RxCross2 /> <span>No</span>
                         </div>
@@ -263,7 +259,7 @@ export default function Header({ sidebarHandler }) {
           {/* Settings */}
           <SettingsComponent show={settings} hide={setSettings} />
 
-          {/* Goal  */}
+          {/* Goal */}
           <GoalComponent
             show={goalModal}
             hide={setGoalModal}
@@ -279,7 +275,10 @@ export default function Header({ sidebarHandler }) {
             activeLink={setPayDaysLink}
           />
 
-          {/* Add account */}
+          {/* Notification */}
+          <Notification show={notificationModal} hide={setNotificationModal} />
+
+          {/* Add Account */}
           <AddAccount
             show={addAccountModal}
             hide={setAddAccountModal}
@@ -287,11 +286,13 @@ export default function Header({ sidebarHandler }) {
             activeLink={setAddAccountLink}
           />
 
-          {/* Notification */}
-          <Notification show={notificationModal} hide={setNotificationModal} />
-
-          {/*Account Offcanvas */}
-          <OffcanvasAccount show={show} handleClose={handleClose} />
+          {/* Offcanvas Account */}
+          <OffcanvasAccount
+            show={show}
+            handleClose={handleClose}
+            user={user}
+            accessToken={accessToken}
+          />
         </>
       )}
     </>

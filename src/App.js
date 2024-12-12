@@ -37,6 +37,8 @@ import {
 } from "./pages/Cashflow";
 import SubscriptionPage from "./pages/Subscription/SubscriptionPage";
 import { selectAuth } from "./features/authSlice";
+import OtpPage from "./pages/OtpPage";
+// import OtpCard from "./pages/OtpPage";
 
 function App() {
   const { accessToken } = useSelector(selectAuth);
@@ -94,6 +96,7 @@ function App() {
         <Routes location={pageLocation} key={pageLocation.pathname}>
           <Route path="/" element={<GetStart />} />
           <Route path="/user/login" element={<LoginScreen />} />
+          <Route path="/user/otp" element={<OtpPage/>} />
           <Route path="/user/signup" element={<SignupScreen />} />
           <Route path="/user/forget-password" element={<ForgetPassword />} />
           <Route path="/user/reset-password" element={<ResetPassword />} />
