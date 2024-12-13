@@ -4,30 +4,38 @@ import { Button, Col, Form, Image, Row } from "react-bootstrap";
 import { getError } from "../utils/error";
 import FormField from "../components/layout/FormField";
 import LoginCard from "../components/layout/LoginCard";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 export default function SignupScreen() {
   const navigate = useNavigate();
-  const [mobile, setMobile] = useState("");
+  const [mobile, setMobile] = useState({ mobile: "", dialCode: "" });
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordError,setPasswordError] = useState('')
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleRegister = async (e) => {
     e.preventDefault();
 
+    const phone = `+${mobile.dialCode} ${mobile.mobile}`;
+    // console.log(phone,'phone')
     const user = {
-      mobile_no: "+61" + mobile,
+      mobile: phone,
       email,
       password,
       confirm_password: confirmPassword,
     };
 
+    // console.log(mobile?.mobile?.length)
     try {
-      if (mobile.length !== 9) {
-        throw new Error("Mobile number should be 9 digit");
+      if (mobile.mobile.length !== 9) {
+        throw new Error(
+          "Mobile number should be 9 digits (excluding country code)."
+        );
       }
       if (password !== confirmPassword) {
-        throw new Error("Password and confirm password are not matched");
+        throw new Error("Password and confirm password do not match.");
       } else {
         localStorage.setItem("userDetails", JSON.stringify(user));
         navigate("/user/passcode");
@@ -36,6 +44,26 @@ export default function SignupScreen() {
       getError(error);
     }
   };
+
+  const validatePassword = (value) => {
+    const strongPasswordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/;
+      if(value.length === 0){
+        setPasswordError('Password is required')
+      }else if(!strongPasswordRegex.test(value)){
+        setPasswordError(
+          "Password must be at least 8 characters, include uppercase, lowercase, a number, and a special character."
+        );
+      }else {
+        setPasswordError('')
+      }
+  }
+
+  const handlePasswordChange = (e) => {
+    const value = e.target.value
+    setPassword(value)
+    validatePassword(value)
+  }
 
   return (
     <LoginCard width={"450px"}>
@@ -67,19 +95,31 @@ export default function SignupScreen() {
           value={email}
         />
 
-        <FormField
-          placeholder={"Mobile"}
-          type={"tel"}
-          required
-          onChange={(e) => {
-            const inputValue = e.target.value;
-            const isValidNumber = /^\d{0,09}$/.test(inputValue);
-
-            if (isValidNumber) {
-              setMobile(inputValue);
-            }
+        <PhoneInput
+          containerClass="input-border rounded-md"
+          inputClass="w-100"
+          inputStyle={{
+            height: "2.7rem",
+            border: "1px solid rgba(217, 217, 217, 1)",
+            borderRadius: "4px",
+            width: "100%",
           }}
-          value={mobile}
+          country="au"
+          onlyCountries={["au"]}
+          enableSearch={true}
+          countryCodeEditable={false}
+          onChange={(phone, countryData) => {
+            setMobile({
+              mobile: phone.replace(countryData.dialCode, ""),
+              dialCode: countryData.dialCode,
+            });
+          }}
+          inputProps={{
+            name: "phone",
+            required: true,
+            // autoFocus: true,
+          }}
+          className="mb-3"
         />
 
         <FormField
@@ -87,8 +127,13 @@ export default function SignupScreen() {
           placeholder={"Password"}
           required
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={handlePasswordChange}
         />
+
+        {/* <div style={{color:'red', fontSize:'12px', marginBottom:'4px'}}>{passwordError}</div> */}
+        <Form.Control.Feedback type="invalid" style={{ display: "block" }}>
+          {passwordError}
+        </Form.Control.Feedback>
 
         <FormField
           type={"password"}
@@ -114,13 +159,14 @@ export default function SignupScreen() {
           <Col>
             <Button
               type="submit"
-              className="float-sm-end w-100 "
+              className="float-sm-end w-100"
               style={{
                 background: "var(--primary-color)",
                 fontWeight: 700,
                 fontSize: "12px",
                 padding: "10px",
               }}
+              disabled={passwordError.length > 0}
             >
               Continue
             </Button>
