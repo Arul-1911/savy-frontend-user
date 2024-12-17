@@ -64,6 +64,7 @@ const Transactions = () => {
       <h3
         style={{
           fontWeight: 600,
+          padding:'0px 12px'
         }}
       >
         Transactions
