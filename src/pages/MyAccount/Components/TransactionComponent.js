@@ -1,206 +1,226 @@
-import React, { useState } from "react";
-import { Col, Image, Row } from "react-bootstrap";
-import DashboardCard from "../../../components/layout/DasboardCard";
-import SearchField from "../../../components/layout/SearchField";
-import Calendar from "../../../components/Calendar/Calendar";
+import React, { useEffect, useState } from "react";
+import { FormControl, Image, InputGroup } from "react-bootstrap";
+import Skeleton from "react-loading-skeleton";
 import Filter from "../../../components/Filter/Filter";
+import DashboardCard from "../../../components/layout/DasboardCard";
+// import { MotionDiv } from "../../../components";
+import TransactionComponents from "../../Transactions/TransationComponents/TransactionComponents";
+import Calendar from "../../../components/Calendar/Calendar";
+import { formatDate } from "../../../components/FormateDateTime/FormatDateTime";
+import {
+  imgAddr,
+  useGetTransactionsMutation,
+} from "../../../features/apiSlice";
+import { getError } from "../../../utils/error";
 
-const TransactionsComponent = () => {
+const Transactions = () => {
+  const [transactionModal, setTransactionModal] = useState(false);
+  const [activeTransaction, setActiveTransaction] = useState(1);
   const [openCalendar, setOpenCalendar] = useState(false);
   const [openFilter, setOpenFilter] = useState(false);
+  const [getTransactions, { isLoading }] = useGetTransactionsMutation();
+  const [transactions, setTransactions] = useState([]);
+  const [transactionId, setTransactionId] = useState("");
+  const [date, setDate] = useState("");
+  const [query, setQuery] = useState("");
+  const [debounceQuery, setDebounceQuery] = useState("");
+  const skeletonArray = [1, 2, 3, 4, 5, 6, 7];
 
-  const todayyesterdayTransaction = [
-    {
-      text: "Trader Jane’s market",
-      subText: "at 14:30",
-      icons: "/icons/Rectangle 116.png",
-      amount: "$-20.00",
-    },
-    {
-      text: "C&C partners",
-      subText: "at 14:30",
-      icons: "/icons/Airbnb.png",
-      amount: "$-20.00",
-    },
-    {
-      text: "OW finance office",
-      subText: "at 14:30",
-      icons: "/icons/Rectangle 117.png",
-      amount: "$-20.00",
-    },
-    {
-      text: "Trader Jane’s market",
-      subText: "at 14:30",
-      icons: "/icons/Better Stack.png",
-      amount: "$-20.00",
-    },
-  ];
+  useEffect(() => {
+    getAllTransactions();
+  }, [date, debounceQuery]);
+
+  const getAllTransactions = async () => {
+    try {
+      const { transactions } = await getTransactions({
+        query: debounceQuery,
+        date,
+      }).unwrap();
+      setTransactions(transactions);
+    } catch (error) {
+      getError(error);
+    }
+  };
+
+  const handleTransaction = (tranId) => {
+    setTransactionModal(true);
+    setTransactionId(tranId);
+  };
+
+  const clearAllFilter = () => {
+    setQuery("");
+    setDate("");
+  };
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebounceQuery(query);
+    }, 450);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [query]);
 
   return (
-    <Row className="mt-4">
-      <Col>
-        <DashboardCard>
-          <div className="d-flex align-items-cente gap-3">
-            <div className="w-25">
-              <SearchField />
-            </div>
-            <Image
-              onClick={() => setOpenCalendar(true)}
-              style={{
-                color: "rgba(92, 182, 249, 1)",
-                fontWeight: 600,
-                fontSize: "16px",
-                backgroundColor: "rgba(242, 249, 255, 1)",
-                padding: "10px",
-                borderRadius: "20px",
-                cursor: "pointer",
-              }}
-              src="/icons/calendar.png"
-              alt="..."
-            />
-            <Image
-              onClick={() => setOpenFilter(true)}
-              style={{
-                color: "rgba(92, 182, 249, 1)",
-                fontWeight: 600,
-                fontSize: "16px",
-                backgroundColor: "rgba(242, 249, 255, 1)",
-                padding: "10px",
-                borderRadius: "20px",
-                cursor: "pointer",
-              }}
-              src="/icons/Filter.png"
-              alt="..."
-            />
+    <>
+      <h3
+        style={{
+          fontWeight: 600,
+        }}
+        className="mt-4 mb-3"
+      >
+        Transactions
+      </h3>
+      <DashboardCard>
+        <div className="d-flex align-items-center flex-wrap gap-3">
+          <div>
+            {/* <SearchField placeholder="Search" onSearch={setQuery} value={query} /> */}
+            <InputGroup>
+              <FormControl
+                style={{
+                  backgroundColor: "rgba(245, 247, 248, 1)",
+                  borderTopLeftRadius: "20px",
+                  borderBottomLeftRadius: "20px",
+                }}
+                type="text"
+                placeholder="Search"
+                className="border-0"
+                value={query}
+                // disabled={disabled}
+                onChange={(e) => setQuery(e.target.value)}
+              />
+              <InputGroup.Text
+                style={{
+                  borderTopRightRadius: "20px",
+                  borderBottomRightRadius: "20px",
+                  backgroundColor: "rgba(245, 247, 248, 1)",
+                }}
+                className="border-0"
+              ></InputGroup.Text>
+            </InputGroup>
           </div>
-
-          <div
-            className="mt-4"
+          <Image
+            onClick={() => setOpenCalendar(true)}
             style={{
-              color: "var(--primary-color)",
+              color: "rgba(92, 182, 249, 1)",
               fontWeight: 600,
               fontSize: "16px",
+              backgroundColor: "rgba(242, 249, 255, 1)",
+              padding: "10px",
+              borderRadius: "20px",
+              cursor: "pointer",
             }}
-          >
-            Today
-          </div>
+            src="/icons/calendar.png"
+            alt="..."
+          />
 
-          <ul className="market mt-2">
-            {todayyesterdayTransaction?.map((trans, idx) => {
-              return (
-                <li
-                  key={idx}
-                  className="d-flex justify-content-between align-items-center "
-                >
-                  <div className="d-flex align-items-center gap-2">
-                    <Image
-                      width={"50px"}
-                      height={"50px"}
-                      style={{ borderRadius: "50%" }}
-                      src={trans?.icons}
-                      alt="..."
-                    />
-                    <div>
-                      <div
-                        style={{
-                          fontSize: "rgba(55, 73, 87, 1)",
-                          fontSize: "16px",
-                        }}
-                      >
-                        {trans?.text}
-                      </div>
-                      <div
-                        style={{
-                          fontSize: "rgba(55, 73, 87, 0.7)",
-                          fontSize: "12px",
-                          fontWeight: 400,
-                        }}
-                      >
-                        {trans?.subText}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div
-                    style={{
-                      color: "var(--primary-color)",
-                      fontSize: "20px",
-                      fontWeight: 800,
-                    }}
-                  >
-                    {trans?.amount}
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-
-          <div
-            className="mt-4"
+          <button
+            className="px-3 py-1"
             style={{
+              backgroundColor: "white",
               color: "var(--primary-color)",
+              border: "1px solid #D2EBFD",
+              borderRadius: "18px",
+              fontSize: "12px",
               fontWeight: 600,
-              fontSize: "16px",
             }}
+            onClick={clearAllFilter}
           >
-            Yesterday
-          </div>
-          <ul className="market mt-2">
-            {todayyesterdayTransaction?.map((trans, idx) => {
-              return (
-                <li
-                  key={idx}
-                  className="d-flex justify-content-between align-items-center "
-                >
-                  <div className="d-flex align-items-center gap-2">
-                    <Image
-                      width={"50px"}
-                      height={"50px"}
-                      style={{ borderRadius: "50%" }}
-                      src={trans?.icons}
-                      alt="..."
-                    />
-                    <div>
-                      <div
-                        style={{
-                          fontSize: "rgba(55, 73, 87, 1)",
-                          fontSize: "16px",
-                        }}
-                      >
-                        {trans?.text}
-                      </div>
-                      <div
-                        style={{
-                          fontSize: "rgba(55, 73, 87, 0.7)",
-                          fontSize: "12px",
-                          fontWeight: 400,
-                        }}
-                      >
-                        {trans?.subText}
+            Clear All
+          </button>
+        </div>
+
+        <ul className="market mt-3">
+          {!isLoading ? (
+            transactions && transactions.length > 0 ? (
+              transactions?.map((tran) => {
+                return (
+                  <li
+                    style={{ cursor: "pointer" }}
+                    onClick={() => handleTransaction(tran._id)}
+                    key={tran?._id}
+                    className="d-flex justify-content-between align-items-center"
+                  >
+                    <div className="d-flex  gap-4">
+                      <Image
+                        width={"35px"}
+                        height={"35px"}
+                        style={{ borderRadius: "50%", objectFit: "cover" }}
+                        src={
+                          tran?.category?.image
+                            ? imgAddr + tran?.category?.image
+                            : "/icons/Rectangle 116.png"
+                        }
+                        alt="..."
+                      />
+                      <div>
+                        <div
+                          style={{
+                            fontSize: "rgba(55, 73, 87, 1)",
+                            fontSize: "16px",
+                          }}
+                        >
+                          {tran?.description}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: "rgba(55, 73, 87, 0.7)",
+                            fontSize: "12px",
+                            fontWeight: 400,
+                          }}
+                        >
+                          at {formatDate(tran?.date)}
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div
-                    style={{
-                      color: "var(--primary-color)",
-                      fontSize: "20px",
-                      fontWeight: 800,
-                    }}
-                  >
-                    {trans?.amount}
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
+                    <div
+                      style={{
+                        color: "var(--primary-color)",
+                        fontSize: "20px",
+                        fontWeight: 800,
+                      }}
+                    >
+                      {tran?.amount} $
+                    </div>
+                  </li>
+                );
+              })
+            ) : (
+              <h6 className="text-center p-5">No Transactions Found..</h6>
+            )
+          ) : (
+            skeletonArray?.map((_, i) => (
+              <li key={i} className={`p-2 `}>
+                <Skeleton
+                  className="rounded-1"
+                  height={"40px"}
+                  width={"100%"}
+                />
+              </li>
+            ))
+          )}
+        </ul>
+      </DashboardCard>
 
-          <Calendar show={openCalendar} hide={setOpenCalendar} />
-          <Filter show={openFilter} hide={setOpenFilter} />
-        </DashboardCard>
-      </Col>
-    </Row>
+      <TransactionComponents
+        show={transactionModal}
+        hide={setTransactionModal}
+        active={activeTransaction}
+        activeLink={setActiveTransaction}
+        transactionId={transactionId}
+      />
+
+      <Calendar
+        show={openCalendar}
+        hide={setOpenCalendar}
+        date={date}
+        setDate={setDate}
+      />
+      <Filter show={openFilter} hide={setOpenFilter} />
+    </>
   );
 };
 
-export default TransactionsComponent;
+export default Transactions;

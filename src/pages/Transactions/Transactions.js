@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Image } from "react-bootstrap";
+import { FormControl, Image, InputGroup } from "react-bootstrap";
 import DashboardCard from "../../components/layout/DasboardCard";
-import SearchField from "../../components/layout/SearchField";
 import { MotionDiv } from "../../components";
 import TransactionComponents from "./TransationComponents/TransactionComponents";
 import Calendar from "../../components/Calendar/Calendar";
@@ -10,7 +9,6 @@ import { getError } from "../../utils/error";
 import { imgAddr, useGetTransactionsMutation } from "../../features/apiSlice";
 import { formatDate } from "../../components/FormateDateTime/FormatDateTime";
 import Skeleton from "react-loading-skeleton";
-import { IoMdRefresh } from "react-icons/io";
 
 const Transactions = () => {
   const [transactionModal, setTransactionModal] = useState(false);
@@ -22,15 +20,19 @@ const Transactions = () => {
   const [transactionId, setTransactionId] = useState("");
   const [date, setDate] = useState("");
   const [query, setQuery] = useState("");
+  const [debounceQuery, setDebounceQuery] = useState("");
   const skeletonArray = [1, 2, 3, 4, 5, 6, 7];
 
   useEffect(() => {
     getAllTransactions();
-  }, [date, query]);
+  }, [date, debounceQuery]);
 
   const getAllTransactions = async () => {
     try {
-      const { transactions } = await getTransactions({ query, date }).unwrap();
+      const { transactions } = await getTransactions({
+        query: debounceQuery,
+        date,
+      }).unwrap();
       setTransactions(transactions);
     } catch (error) {
       getError(error);
@@ -47,6 +49,16 @@ const Transactions = () => {
     setDate("");
   };
 
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebounceQuery(query);
+    }, 450);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [query]);
+
   return (
     <MotionDiv>
       <h3
@@ -59,7 +71,44 @@ const Transactions = () => {
       <DashboardCard>
         <div className="d-flex align-items-center flex-wrap gap-3">
           <div>
-            <SearchField placeholder="Search" onSearch={setQuery} />
+            {/* <SearchField placeholder="Search" onSearch={setQuery} value={query} /> */}
+            <InputGroup>
+              <FormControl
+                style={{
+                  backgroundColor: "rgba(245, 247, 248, 1)",
+                  borderTopLeftRadius: "20px",
+                  borderBottomLeftRadius: "20px",
+                }}
+                type="text"
+                placeholder="Search"
+                className="border-0"
+                value={query}
+                // disabled={disabled}
+                onChange={(e) => setQuery(e.target.value)}
+              />
+              <InputGroup.Text
+                style={{
+                  borderTopRightRadius: "20px",
+                  borderBottomRightRadius: "20px",
+                  backgroundColor: "rgba(245, 247, 248, 1)",
+                }}
+                className="border-0"
+              >
+                {/* <button
+                  style={{
+                    backgroundColor: "rgba(92, 182, 249, 1)",
+                    color: "white",
+                    borderRadius: "50%",
+                    border: "none",
+                    outline: "none",
+                    background: "transparent",
+                  }}
+                  type="submit"
+                >
+                  <FaSearch color="rgba(0, 74, 173, 1)" size={14} />
+                </button> */}
+              </InputGroup.Text>
+            </InputGroup>
           </div>
           <Image
             onClick={() => setOpenCalendar(true)}
@@ -107,8 +156,9 @@ const Transactions = () => {
         </div>
 
         <ul className="market mt-3">
-          {!isLoading
-            ? transactions?.map((tran) => {
+          {!isLoading ? (
+            transactions && transactions.length > 0 ? (
+              transactions?.map((tran) => {
                 return (
                   <li
                     style={{ cursor: "pointer" }}
@@ -161,15 +211,20 @@ const Transactions = () => {
                   </li>
                 );
               })
-            : skeletonArray?.map((_, i) => (
-                <li key={i} className={`p-2 `}>
-                  <Skeleton
-                    className="rounded-1"
-                    height={"40px"}
-                    width={"100%"}
-                  />
-                </li>
-              ))}
+            ) : (
+              <h6 className="text-center p-5">No Transactions Found..</h6>
+            )
+          ) : (
+            skeletonArray?.map((_, i) => (
+              <li key={i} className={`p-2 `}>
+                <Skeleton
+                  className="rounded-1"
+                  height={"40px"}
+                  width={"100%"}
+                />
+              </li>
+            ))
+          )}
         </ul>
       </DashboardCard>
 
