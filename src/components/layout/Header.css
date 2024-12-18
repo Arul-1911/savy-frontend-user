@@ -1,6 +1,7 @@
 .customize-dashboard {
   display: flex;
   align-items: center;
+  width: auto;
 }
 
 .hamburger {
@@ -13,7 +14,7 @@
   align-items: center;
 }
 
-@media only screen and (max-width: 1250px) {
+@media only screen and (max-width: 1023px) {
   .customize-dashboard {
     display: none;
   }
@@ -30,4 +31,13 @@
   color: var(--primary-color);
   font-weight: 600;
   margin-top: 10px;
+}
+
+@media screen and (min-width: 1024px) and (max-width: 1200px) {
+  .dasboard-add-account {
+    display: none;
+  }
+  .custom-dasboard-payday {
+    display: none;
+  }
 }

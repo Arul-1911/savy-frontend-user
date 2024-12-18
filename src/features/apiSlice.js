@@ -45,12 +45,12 @@ export const apiSlice = createApi({
       }),
     }),
 
-    loginOtp:builder.mutation({
-      query:(data) => ({
-        url:'/user/submit-login-otp',
-        method:'POST',
-        body:data
-      })
+    loginOtp: builder.mutation({
+      query: (data) => ({
+        url: "/user/submit-login-otp",
+        method: "POST",
+        body: data,
+      }),
     }),
 
     // ====== Goals =======
@@ -70,25 +70,25 @@ export const apiSlice = createApi({
     }),
 
     getGoal: builder.mutation({
-      query:(goalId) =>({
-        url:`/goal/get-goal/${goalId}`,
-        method:'GET'
-      })
+      query: (goalId) => ({
+        url: `/goal/get-goal/${goalId}`,
+        method: "GET",
+      }),
     }),
 
-    updateGoal:builder.mutation({
-      query:({goalId, goalData}) => ({
-        url:`/goal/update-goal/${goalId}`,
-        method:"PATCH",
-        body:goalData
-      })
+    updateGoal: builder.mutation({
+      query: ({ goalId, goalData }) => ({
+        url: `/goal/update-goal/${goalId}`,
+        method: "PATCH",
+        body: goalData,
+      }),
     }),
 
-    deleteGoal:builder.mutation({
-      query:(goalId) => ({
-        url:`/goal/delete-goal/${goalId}`,
-        method:"DELETE"
-      })
+    deleteGoal: builder.mutation({
+      query: (goalId) => ({
+        url: `/goal/delete-goal/${goalId}`,
+        method: "DELETE",
+      }),
     }),
 
     // ====== payday =======
@@ -269,11 +269,26 @@ export const apiSlice = createApi({
     }),
 
     // ====== Transactions =======
+    // getTransactions: builder.mutation({
+    //   query: ({ query, date }) => ({
+    //     url: `/user/get-transactions?keyword=${query}&date=${date}`,
+    //     method: "GET",
+    //   }),
+    // }),
+
     getTransactions: builder.mutation({
-      query: ({ query, date }) => ({
-        url: `/user/get-transactions?keyword=${query}&date=${date}`,
-        method: "GET",
-      }),
+      query: ({ query, currentStart, currentEnd,date }) => {
+        let url = `/user/get-transactions?keyword=${query}&date=${date}`;
+
+        if (currentStart && currentEnd) {
+          url += `&currentStart=${currentStart}&currentEnd=${currentEnd}`;
+        }
+
+        return {
+          url,
+          method: "GET",
+        };
+      },
     }),
 
     getTransaction: builder.mutation({

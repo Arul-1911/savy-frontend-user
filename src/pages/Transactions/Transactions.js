@@ -9,8 +9,11 @@ import { getError } from "../../utils/error";
 import { imgAddr, useGetTransactionsMutation } from "../../features/apiSlice";
 import { formatDate } from "../../components/FormateDateTime/FormatDateTime";
 import Skeleton from "react-loading-skeleton";
+import { getDateRanges } from "../../components/DateRange/DateRange";
+import { useSelector } from "react-redux";
 
 const Transactions = () => {
+  const {period} = useSelector((state) => state.period )
   const [transactionModal, setTransactionModal] = useState(false);
   const [activeTransaction, setActiveTransaction] = useState(1);
   const [openCalendar, setOpenCalendar] = useState(false);
@@ -25,13 +28,17 @@ const Transactions = () => {
 
   useEffect(() => {
     getAllTransactions();
-  }, [date, debounceQuery]);
+  }, [date, debounceQuery, period]);
+
+  const dateRange = getDateRanges(period)
 
   const getAllTransactions = async () => {
     try {
       const { transactions } = await getTransactions({
         query: debounceQuery,
         date,
+        currentStart: dateRange?.currentStart,
+        currentEnd: dateRange?.currentEnd,
       }).unwrap();
       setTransactions(transactions);
     } catch (error) {

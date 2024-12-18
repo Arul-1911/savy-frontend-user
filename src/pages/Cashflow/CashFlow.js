@@ -33,7 +33,7 @@ const CashFlow = () => {
         previousStart: dateRange?.previousStart,
         previousEnd: dateRange?.previousEnd,
       }).unwrap();
-      console.log(data);
+      console.log(data,'overflow data');
       setOverview(data?.overview);
     } catch (error) {
       getError(error);

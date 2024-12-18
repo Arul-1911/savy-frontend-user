@@ -17,7 +17,7 @@ import { AiOutlineEdit } from "react-icons/ai";
 import { IoPricetagsOutline } from "react-icons/io5";
 import FormField from "../../../components/layout/FormField";
 import { GrCircleInformation } from "react-icons/gr";
-import SearchField from "../../../components/layout/SearchField";
+// import SearchField from "../../../components/layout/SearchField";
 import {
   imgAddr,
   useCreateTagMutation,
@@ -31,6 +31,8 @@ import Skeleton from "react-loading-skeleton";
 import { LuMinusSquare } from "react-icons/lu";
 import { formatDate } from "../../../components/FormateDateTime/FormatDateTime";
 import { getSuccess } from "../../../utils/success";
+  const skeletonArray = [1, 2, 3, 4, 5, 6, 7];
+
 
 const TransactionComponents = ({
   show,
@@ -106,6 +108,8 @@ const TransactionComponents = ({
       getSingleTransation();
     }
   }, [transactionId]);
+
+  // console.log('transaction', transaction)
 
   useEffect(() => {
     if (transaction) {
@@ -478,16 +482,19 @@ const TransactionComponents = ({
                   </div>
                 </div>
 
-                <div
+                <button
                   className="text-center mt-2"
                   style={{
                     fontSize: "12px",
                     color: "rgba(92, 182, 249, 1)",
                     fontWeight: "600",
+                    border: "none",
+                    background: "transparent",
                   }}
+                  onClick={() => activeLink(7)}
                 >
                   View History
-                </div>
+                </button>
               </Col>
 
               <Col
@@ -1088,6 +1095,129 @@ const TransactionComponents = ({
               Done
             </button>
           </div>
+        </>
+      )}
+
+      {/* ======== View History =============  */}
+      {active === 7 && (
+        <>
+          <div className="d-flex w-100 align-items-center">
+            <div>
+              <IoArrowBackCircleOutline
+                color="rgba(92, 182, 249, 1)"
+                cursor="pointer"
+                size={28}
+                onClick={() => {
+                  activeLink(1);
+                  // hide(false);
+                }}
+              />
+            </div>
+            <div
+              className="text-center w-100"
+              style={{
+                fontWeight: 600,
+                fontSize: "16px",
+                color: "rgba(55, 73, 87, 1)",
+                paddingRight: "10px",
+                fontFamily:'Inter'
+              }}
+            >
+              Transaction History
+            </div>
+          </div>
+          <p
+            className="text-center mt-1"
+            style={{ fontSize: "14px", color: "#374957B2", fontWeight:600 }}
+          >
+            {transaction?.description}
+          </p>
+
+          {!getTransactionLoading ? (
+            <Card
+              style={{ borderRadius: "5px", borderColor: "#E2F2FF" }}
+              className="mt-4"
+            >
+              <div className="d-flex justify-content-between align-items-center px-3 py-2">
+                <div style={{ color: "#374957B2", fontWeight:600, fontSize:'20px' }}>Total</div>
+                <div style={{ color: "#5CB6F9", fontWeight:600, fontSize:'20px' }}>{`$ ${transaction?.spend}`}</div>
+              </div>
+            </Card>
+          ) : (
+            <Skeleton className="rounded-1" height={"150px"} width={"100%"} />
+          )}
+
+          <ul className="market mt-4 mb-3">
+            {!getTransactionLoading ? (
+              transaction ? (
+                transaction?.history?.map((tran) => {
+                  return (
+                    <li
+                      style={{ cursor: "pointer" }}
+                      // onClick={() => handleTransaction(tran._id)}
+                      key={tran?._id}
+                      className="d-flex justify-content-between align-items-center"
+                    >
+                      <div className="d-flex  gap-4">
+                        <Image
+                          width={"35px"}
+                          height={"35px"}
+                          style={{ borderRadius: "50%", objectFit: "cover" }}
+                          src={
+                            tran?.category?.image
+                              ? imgAddr + tran?.category?.image
+                              : "/icons/Rectangle 116.png"
+                          }
+                          alt="..."
+                        />
+                        <div>
+                          <div
+                            style={{
+                              fontSize: "rgba(55, 73, 87, 1)",
+                              fontSize: "16px",
+                            }}
+                          >
+                            {tran?.description}
+                          </div>
+                          <div
+                            style={{
+                              fontSize: "rgba(55, 73, 87, 0.7)",
+                              fontSize: "12px",
+                              fontWeight: 400,
+                            }}
+                          >
+                            at {formatDate(tran?.date)}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div
+                        style={{
+                          color: "var(--primary-color)",
+                          fontSize: "20px",
+                          fontWeight: 800,
+                        }}
+                      >
+                        {tran?.amount} $
+                      </div>
+                    </li>
+                  );
+                })
+              ) : (
+                <h6 className="text-center p-5">No Transactions Found..</h6>
+              )
+            ) : (
+              skeletonArray?.map((_, i) => (
+                <li key={i} className={`p-2 `}>
+                  <Skeleton
+                    className="rounded-1"
+                    height={"40px"}
+                    width={"100%"}
+                  />
+                </li>
+              ))
+            )}
+          </ul>
         </>
       )}
     </ModalWindow>

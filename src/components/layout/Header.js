@@ -33,13 +33,13 @@ export default function Header({ sidebarHandler }) {
   const [addAccountModal, setAddAccountModal] = useState(false);
   const [addAccountLink, setAddAccountLink] = useState(1);
   const [getGoals, { isLoading: goalsLoading }] = useGetGoalsMutation();
-  const [goalsOnTarget, setGoalsOnTarget] = useState(null); // changed to null for no goals state
+  const [goalsOnTarget, setGoalsOnTarget] = useState(null); 
 
   const getAllGoals = async () => {
     try {
       const { goals } = await getGoals().unwrap();
       if (goals.length === 0) {
-        setGoalsOnTarget(null); // No goals to display
+        setGoalsOnTarget(null); 
       } else {
         const allOnTarget = goals.every((goal) => goal?.onTarget);
         setGoalsOnTarget(allOnTarget);
@@ -154,7 +154,7 @@ export default function Header({ sidebarHandler }) {
                         <div
                           role="status"
                           className="d-flex align-items-center mt-1 goal-status-no-goals"
-                          style={{color:'red'}}
+                          style={{ color: "red" }}
                         >
                           No Goals
                         </div>
@@ -162,7 +162,7 @@ export default function Header({ sidebarHandler }) {
                         <div
                           role="status"
                           className="d-flex align-items-center mt-1 goal-status-on-target"
-                          style={{color:'green'}}
+                          style={{ color: "green" }}
                         >
                           <RxCheck /> <span>Yes</span>
                         </div>
@@ -170,7 +170,7 @@ export default function Header({ sidebarHandler }) {
                         <div
                           role="status"
                           className="d-flex align-items-center mt-1 goal-status-not-on-target"
-                          style={{color:'red'}}
+                          style={{ color: "red" }}
                         >
                           <RxCross2 /> <span>No</span>
                         </div>
@@ -179,7 +179,7 @@ export default function Header({ sidebarHandler }) {
                   </div>
 
                   <div
-                    className="customize-dashboard"
+                    className="customize-dashboard custom-dasboard-payday"
                     onClick={() => {
                       setPayDays(true);
                       setPayDaysLink(1);
@@ -202,7 +202,7 @@ export default function Header({ sidebarHandler }) {
                   </div>
 
                   <div
-                    className="customize-dashboard py-3 px-4"
+                    className="customize-dashboard py-3 px-4 dasboard-add-account"
                     onClick={() => setAddAccountModal(true)}
                     style={{
                       backgroundColor: "var(--primary-color)",
