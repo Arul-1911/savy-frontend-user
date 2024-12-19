@@ -18,6 +18,7 @@ import BarsChart from "../components/Charts/BarsChart";
 import {
   imgAddr,
   useDashboardDataMutation,
+  useGetAssetsLiabilitiesMutation,
   useGetBillsMutation,
 } from "../features/apiSlice";
 import { getError } from "../utils/error";
@@ -35,6 +36,8 @@ const COLORS = [
 export default function Dashboard() {
   const [dashboardData, { isLoading }] = useDashboardDataMutation();
   const [getBills, { isLoading: billLoading }] = useGetBillsMutation();
+  const [getAssetsLiabilities, { isLoading: assetsLoading }] =
+    useGetAssetsLiabilitiesMutation();
   const [accountPortfolioActive, setAccountPortfolioActive] = useState(1);
   const [expenseActive, setExpenseActive] = useState(1);
 
@@ -46,9 +49,14 @@ export default function Dashboard() {
 
   const [dashboard, setDashboard] = useState({});
   const [bills, setBills] = useState();
+  const [totalNetWorth, setTotalNetWorth] = useState(0);
+  const [totalAssetsAmount, setTotalAssestAmount] = useState(0);
+  const [totalLiabilitiesAmount, setTotalLiabilitiesAmount] = useState(0);
+  const [currNetWorth, setCurrNetWorth] = useState(0);
 
   useEffect(() => {
     getDashboardData();
+    getAllAssetsLibilities();
   }, []);
 
   useEffect(() => {
@@ -70,10 +78,26 @@ export default function Dashboard() {
     try {
       const { data } = await dashboardData();
       setDashboard(data?.dashboardData);
+      setTotalNetWorth(data?.dashboardData?.card1?.["Total amount"] || 0);
     } catch (error) {
       getError(error);
     }
   };
+
+
+  const getAllAssetsLibilities = async () => {
+    try {
+      const data = await getAssetsLiabilities().unwrap();
+      setTotalAssestAmount(data?.totalAssetsAmount || 0);
+      setTotalLiabilitiesAmount(data?.totalLiabilitiesAmount || 0);
+    } catch (error) {
+      getError(error);
+    }
+  };
+
+  useEffect(() => {
+    setCurrNetWorth(totalNetWorth + totalAssetsAmount - totalLiabilitiesAmount);
+  }, [totalNetWorth, totalAssetsAmount, totalLiabilitiesAmount]);
 
   return (
     <MotionDiv>
@@ -786,7 +810,8 @@ export default function Dashboard() {
                         cursor: "pointer",
                       }}
                     >
-                      ${dashboard?.card1?.["Total amount"]}
+                      {/* ${dashboard?.card1?.["Total amount"]} */}
+                      {`$${currNetWorth}`}
                     </div>
                   </div>
 
@@ -805,7 +830,8 @@ export default function Dashboard() {
                         fontSize: "16px",
                       }}
                     >
-                      ${dashboard?.card1?.["Total amount"]}
+                      {/* ${dashboard?.card1?.["Total amount"]} */}
+                      {`$${totalAssetsAmount}`}
                     </div>
                   </div>
 
@@ -824,7 +850,7 @@ export default function Dashboard() {
                         fontSize: "16px",
                       }}
                     >
-                      $0
+                      {`$${totalLiabilitiesAmount}`}
                     </div>
                   </div>
                 </DashboardCard>
