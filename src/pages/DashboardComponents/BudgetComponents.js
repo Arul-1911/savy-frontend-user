@@ -32,14 +32,19 @@ import Skeleton from "react-loading-skeleton";
 import { getSuccess } from "../../utils/success";
 import FormField from "../../components/layout/FormField";
 import { MdDelete } from "react-icons/md";
+import { useSelector } from "react-redux";
+import { getDateRanges } from "../../components/DateRange/DateRange";
+
 
 const BudgetComponents = ({ show, hide, active, activeLink }) => {
   const [alreadyActiveFilter, setAlreadyActiveFilter] = useState(0);
   const [alreadyActiveCalendar, setAlreadyActiveCalendar] = useState(0);
   const [selectBudgetPeriod, setSelectbudgetPeriod] = useState("");
 
+  const { period } = useSelector((state) => state.period);
   const [getCategories, { isLoading }] = useGetCategoriesMutation();
   const [getPaydays, { isLoading: paydayLoading }] = useGetPaydaysMutation();
+
   const [saveBudget, { isLoading: budgetLoading }] = useSaveBudgetMutation();
   const [getBudgets, { isLoading: getBudgetLoading }] = useGetBudgetsMutation();
   const [getBudget, { isLoading: getBudgetListLoading }] =
@@ -110,7 +115,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
         getAllPaydays();
       }
     }
-  }, [active]);
+  }, [active, period]);
 
   useEffect(() => {
     if (budgetId) {
@@ -140,10 +145,15 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
     }
   };
 
+  const dateRange = getDateRanges(period);
+
   // ======= Getting all budget =======
   const getAllBudget = async () => {
     try {
-      const data = await getBudgets().unwrap();
+      const data = await getBudgets({
+        currentStart: dateRange?.currentStart,
+        currentEnd: dateRange?.currentEnd,
+      }).unwrap();
       setBudgets(data);
     } catch (error) {
       getError(error);

@@ -907,7 +907,7 @@ export default function Dashboard() {
                                       fontSize: "12px",
                                     }}
                                   >
-                                    $20 spent of {data?.budget_amount}
+                                    {/* $20 spent of {data?.budget_amount} */}
                                   </div>
                                 </div>
                               </div>

@@ -30,6 +30,8 @@ import { LuMinusSquare } from "react-icons/lu";
 import Skeleton from "react-loading-skeleton";
 import { getSuccess } from "../../utils/success";
 import { MdDelete } from "react-icons/md";
+import { useSelector } from "react-redux";
+import { getDateRanges } from "../../components/DateRange/DateRange";
 
 const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
   const [getCategories, { isLoading }] = useGetCategoriesMutation();
@@ -41,6 +43,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
     useUpdateBillMutation();
   const [deleteBill, { isLoading: deleteBillLoading }] =
     useDeleteBillMutation();
+  const { period } = useSelector((state) => state.period);
 
   const [selectActivePeriod, setSelectActivePeriod] = useState(0);
   const [activePopularCat, setActivePopularCat] = useState(0);
@@ -137,7 +140,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
     } else if (active === 4) {
       getAllBudget();
     }
-  }, [active, billId]);
+  }, [active, billId, period]);
 
   useEffect(() => {
     if (billId) {
@@ -152,9 +155,16 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
     activeLink(9);
   };
 
+  const dateRange = getDateRanges(period);
+
+  // ====== Get All bills =====
+
   const getAllBills = async () => {
     try {
-      const data = await getBills().unwrap();
+      const data = await getBills({
+        currentStart: dateRange?.currentStart,
+        currentEnd: dateRange?.currentEnd,
+      }).unwrap();
       setBills(data);
     } catch (error) {
       getError(error);

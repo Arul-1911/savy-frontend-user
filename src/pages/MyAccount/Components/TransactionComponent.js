@@ -12,8 +12,11 @@ import {
   useGetTransactionsMutation,
 } from "../../../features/apiSlice";
 import { getError } from "../../../utils/error";
+import { getDateRanges } from "../../../components/DateRange/DateRange";
+import { useSelector } from "react-redux";
 
 const Transactions = () => {
+    const {period} = useSelector((state) => state.period )
   const [transactionModal, setTransactionModal] = useState(false);
   const [activeTransaction, setActiveTransaction] = useState(1);
   const [openCalendar, setOpenCalendar] = useState(false);
@@ -26,21 +29,25 @@ const Transactions = () => {
   const [debounceQuery, setDebounceQuery] = useState("");
   const skeletonArray = [1, 2, 3, 4, 5, 6, 7];
 
-  useEffect(() => {
-    getAllTransactions();
-  }, [date, debounceQuery]);
-
-  const getAllTransactions = async () => {
-    try {
-      const { transactions } = await getTransactions({
-        query: debounceQuery,
-        date,
-      }).unwrap();
-      setTransactions(transactions);
-    } catch (error) {
-      getError(error);
-    }
-  };
+ useEffect(() => {
+     getAllTransactions();
+   }, [date, debounceQuery, period]);
+ 
+   const dateRange = getDateRanges(period)
+ 
+   const getAllTransactions = async () => {
+     try {
+       const { transactions } = await getTransactions({
+         query: debounceQuery,
+         date,
+         currentStart: dateRange?.currentStart,
+         currentEnd: dateRange?.currentEnd,
+       }).unwrap();
+       setTransactions(transactions);
+     } catch (error) {
+       getError(error);
+     }
+   };
 
   const handleTransaction = (tranId) => {
     setTransactionModal(true);

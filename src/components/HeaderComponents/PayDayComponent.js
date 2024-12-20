@@ -18,6 +18,9 @@ import {
 } from "../../features/apiSlice";
 import Skeleton from "react-loading-skeleton";
 import { MdDelete } from "react-icons/md";
+import { useSelector } from "react-redux";
+import { getDateRanges } from "../DateRange/DateRange";
+import { current } from "@reduxjs/toolkit";
 
 const PayDayComponent = ({ show, hide, active, activeLink }) => {
   const [getPaydays, { isLoading: getPaydayLoading }] = useGetPaydaysMutation();
@@ -25,6 +28,8 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
   const [updatePayday, { isLoading: updatePaydayLoading }] =
     useUpdatePaydayMutation();
   const [createPayday, { isLoading }] = useCreatePaydayMutation();
+
+  const { period } = useSelector((state) => state.period);
 
   const [alreadyActiveFilter, setAlreadyActiveFilter] = useState(0);
   const [alreadyActiveCalendar, setAlreadyActiveCalendar] = useState(0);
@@ -54,10 +59,12 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
       value: 30,
     },
   ];
+useEffect(() => {
+  if (active === 3 || period) {
+    getAllPadays();
+  }
+}, [active, period]);
 
-  useEffect(() => {
-    if (active === 3) getAllPadays();
-  }, [active]);
 
   useEffect(() => {
     if (paydayId) {
@@ -65,10 +72,15 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
     }
   }, [paydayId]);
 
+  const dateRange = getDateRanges(period);
+
   // ========= get paydays ===========
   const getAllPadays = async () => {
     try {
-      const data = await getPaydays().unwrap();
+      const data = await getPaydays({
+        currentStart: dateRange?.currentStart,
+        currentEnd: dateRange?.currentEnd,
+      }).unwrap();
       setPaydays(data);
     } catch (error) {
       getError(error);
@@ -170,61 +182,91 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
 
             <Card className="mt-3" style={{ borderRadius: "10px" }}>
               <Card.Body>
-                <div
-                  className="mt-2"
-                  style={{
-                    backgroundColor: "rgba(245, 247, 248, 1)",
-                    padding: "8px",
-                    borderRadius: "10px",
-                  }}
-                >
-                  <div className=" d-flex justify-content-between align-items-center">
-                    <div className="d-flex gap-2 align-items-center">
-                      <Image src="/images/Rectangle 116.png" alt="..." />
-                      <div>
+                {paydays?.paydays?.length > 0 ? (
+                  !getPaydayLoading ? (
+                    paydays?.paydays?.map((data) => {
+                      return (
                         <div
+                          onClick={() => handlePaydayList(data)}
+                          key={data?._id}
+                          className="mt-2"
                           style={{
-                            fontWeight: 500,
-                            color: "rgba(55, 73, 87, 1)",
-                            fontSize: "12px",
+                            backgroundColor: "rgba(245, 247, 248, 1)",
+                            padding: "8px",
+                            borderRadius: "10px",
+                            cursor: "pointer",
                           }}
                         >
-                          Cafe & Coffee
-                        </div>
-                        <div
-                          style={{
-                            fontWeight: 400,
-                            color: "rgba(159, 175, 198, 1)",
-                            fontSize: "10px",
-                          }}
-                        >
-                          $20 spent of 50
-                        </div>
-                      </div>
-                    </div>
+                          <div className=" d-flex justify-content-between align-items-center">
+                            <div className="d-flex gap-2 align-items-center">
+                              <Image
+                                src="/images/Rectangle 116.png"
+                                alt="..."
+                              />
+                              <div>
+                                <div
+                                  style={{
+                                    fontWeight: 600,
+                                    color: "rgba(55, 73, 87, 1)",
+                                    fontSize: "12px",
+                                  }}
+                                >
+                                  {data?.source}
+                                </div>
+                                <div
+                                  style={{
+                                    fontWeight: 400,
+                                    color: "rgba(159, 175, 198, 1)",
+                                    fontSize: "12px",
+                                  }}
+                                >
+                                  $20 spent of {data?.amount}
+                                </div>
+                              </div>
+                            </div>
 
-                    <div>
-                      <div
-                        style={{
-                          color: "var(--primary-color)",
-                          fontSize: "12px",
-                          fontWeight: 600,
-                        }}
-                      >
-                        $30.00
-                      </div>
-                      <div
-                        style={{
-                          fontWeight: 400,
-                          color: "rgba(159, 175, 198, 1)",
-                          fontSize: "10px",
-                        }}
-                      >
-                        remaining
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                            <div>
+                              <div
+                                className="text-end"
+                                style={{
+                                  color: "var(--primary-color)",
+                                  fontSize: "12px",
+                                  fontWeight: 600,
+                                }}
+                              >
+                                $ {data?.amount}
+                              </div>
+                              <div
+                                className="text-end"
+                                style={{
+                                  fontWeight: 400,
+                                  color: "rgba(159, 175, 198, 1)",
+                                  fontSize: "12px",
+                                }}
+                              >
+                                remaining
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })
+                  ) : (
+                    [1, 2, 3, 4, 5].map((_, idx) => {
+                      return (
+                        <div key={idx}>
+                          <Skeleton
+                            className="rounded-2"
+                            height={"40px"}
+                            width={"100%"}
+                          />
+                        </div>
+                      );
+                    })
+                  )
+                ) : (
+                  <div className="text-center">No paydays found!</div>
+                )}
 
                 <div className="d-flex justify-content-center mt-3">
                   {/* <button

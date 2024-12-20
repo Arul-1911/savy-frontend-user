@@ -108,8 +108,8 @@ export const apiSlice = createApi({
     }),
 
     getPaydays: builder.mutation({
-      query: () => ({
-        url: "/payday/get-paydays",
+      query: ({currentStart,currentEnd}) => ({
+        url: `/payday/get-paydays?currentStart=${currentStart}&currentEnd=${currentEnd}`,
         method: "GET",
       }),
     }),
@@ -139,8 +139,8 @@ export const apiSlice = createApi({
     }),
 
     getBudgets: builder.mutation({
-      query: () => ({
-        url: "/budget/get-budgets",
+      query: ({ currentStart, currentEnd, date }) => ({
+        url: `/budget/get-budgets?currentStart=${currentStart}&currentEnd=${currentEnd}`,
         method: "GET",
       }),
     }),
@@ -178,8 +178,8 @@ export const apiSlice = createApi({
     }),
 
     getBills: builder.mutation({
-      query: () => ({
-        url: "/bill/get-bills",
+      query: ({ currentStart, currentEnd }) => ({
+        url: `/bill/get-bills?currentStart=${currentStart}&currentEnd=${currentEnd}`,
         method: "GET",
       }),
     }),
@@ -277,7 +277,7 @@ export const apiSlice = createApi({
     // }),
 
     getTransactions: builder.mutation({
-      query: ({ query, currentStart, currentEnd,date }) => {
+      query: ({ query, currentStart, currentEnd, date }) => {
         let url = `/user/get-transactions?keyword=${query}&date=${date}`;
 
         if (currentStart && currentEnd) {
