@@ -11,11 +11,12 @@ const SettingsComponent = ({ show, hide }) => {
   // const [selectPeriod, setSelectPeriod] = useState("");
 
   const periods = [
+    "All Data",
+    "Past week",
     "Past months",
     "Past 3 months",
     "Past 6 months",
     "Past 12 months",
-    "Past week",
     // "Calendar fortnight",
     // "Calendar month",
     // "Calendar month (last business day)",
@@ -39,14 +40,15 @@ const SettingsComponent = ({ show, hide }) => {
         />
         <div
           style={{
-            margin: "auto 170px",
+            // margin: "auto 170px",
             fontWeight: 600,
             fontSize: "18px",
             color: "rgba(55, 73, 87, 1)",
+            width:'90%'
           }}
           className="text-center"
         >
-          Payday
+          Global Filter
         </div>
       </div>
 

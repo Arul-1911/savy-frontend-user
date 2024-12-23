@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  period: "Past months",
+  period: "All Data",
 };
 
 const periodSlice = createSlice({

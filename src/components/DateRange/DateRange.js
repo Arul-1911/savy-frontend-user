@@ -20,6 +20,15 @@ exports.getDateRanges = (period) => {
 
   let firstRangeStart, firstRangeEnd, secondRangeStart, secondRangeEnd;
 
+   if (period === "All Data") {
+     return {
+       currentStart: '',
+       currentEnd: '',
+      //  previousStart: '',
+      //  previousEnd: '',
+     };
+   }
+
   if (period === "Past week") {
     // Find the most recent Sunday
     const lastSunday = new Date(today);
