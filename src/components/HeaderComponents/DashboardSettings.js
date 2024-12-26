@@ -1,42 +1,78 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ModalWindow from "../modals/ModalWindow";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
-import { Button } from "react-bootstrap";
+import { Button, Spinner } from "react-bootstrap";
 import { LuEqual, LuMinusSquare, LuPlusSquare } from "react-icons/lu";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import {
+  useGetCustomizeDashboardQuery,
+  useUpdateCustomizeDashboardMutation,
+} from "../../features/apiSlice";
+import { getSuccess } from "../../utils/success";
+import { getError } from "../../utils/error";
+import { useDispatch } from "react-redux";
+import { setDisabled as setDisabledSlice } from "../../features/dashBoardSlice";
 
 const DashboardSettings = ({ show, hide, active }) => {
-  const [enabled, setEnabled] = useState([
-    "Cashflow",
-    "Financial passport",
-    "Recent Transactions",
-    "My Budget",
-    "Goals",
-  ]);
+  const dispatch = useDispatch();
+  const { data: dashBoardSettings, isLoading } =
+    useGetCustomizeDashboardQuery();
+  const [updateDashboardSettings, { isLoading: updateLoading }] =
+    useUpdateCustomizeDashboardMutation();
 
-  const [disabled, setDisabled] = useState(["Upcoming Bills", "Pay Countdown"]);
+  const [enabled, setEnabled] = useState([]);
+  const [disabled, setDisabled] = useState([]);
+
+  useEffect(() => {
+    if (dashBoardSettings) {
+      setEnabled(dashBoardSettings?.dashboard?.enabled || []);
+      setDisabled(dashBoardSettings?.dashboard?.disabled || []);
+    }
+  }, [dashBoardSettings]);
 
   const handleDragEnd = (result) => {
     const { source, destination } = result;
     if (!destination) return;
 
-    const sourceList = source.droppableId === "enabled" ? enabled : disabled;
+    const sourceList =
+      source.droppableId === "enabled" ? [...enabled] : [...disabled];
     const destinationList =
-      destination.droppableId === "enabled" ? enabled : disabled;
-    const setSourceList =
-      source.droppableId === "enabled" ? setEnabled : setDisabled;
-    const setDestinationList =
-      destination.droppableId === "enabled" ? setEnabled : setDisabled;
+      destination.droppableId === "enabled" ? [...enabled] : [...disabled];
 
-    if (source.droppableId === destination.droppableId) {
-      const [reorderedItem] = sourceList.splice(source.index, 1);
+    // Moving within same List
+    if (source?.droppableId === destination?.droppableId) {
+      const [reorderedItem] = sourceList?.splice(source.index, 1);
       sourceList.splice(destination.index, 0, reorderedItem);
-      setSourceList([...sourceList]);
+
+      if (source.droppableId === "enabled") {
+        setEnabled(sourceList);
+      } else {
+        setDisabled(sourceList);
+      }
     } else {
-      const [movedItem] = sourceList.splice(source.index, 1);
-      destinationList.splice(destination.index, 0, movedItem);
-      setSourceList([...sourceList]);
-      setDestinationList([...destinationList]);
+      //Moving between Diffrent
+      const [moveditem] = sourceList.splice(source.index, 1);
+      destinationList.splice(destination.index, 0, moveditem);
+
+      if (source.droppableId === "enabled") {
+        setEnabled(sourceList);
+        setDisabled(destinationList);
+      } else {
+        setEnabled(destinationList);
+        setDisabled(sourceList);
+      }
+    }
+  };
+
+  const handleSave = async () => {
+    try {
+      await updateDashboardSettings({ enabled, disabled }).unwrap();
+      dispatch(setDisabledSlice(disabled));
+      hide(false);
+      getSuccess("Dashboard Updated Successfully");
+    } catch (err) {
+      getError(err.message);
+      console.error(err);
     }
   };
 
@@ -53,11 +89,12 @@ const DashboardSettings = ({ show, hide, active }) => {
             />
 
             <h6 style={{ color: "rgba(0, 74, 173, 1)" }}>
-              Customize dashboard
+              Customise dashboard
             </h6>
 
             <div>
               <Button
+                onClick={handleSave}
                 variant="transparent"
                 size="sm"
                 className="py-2 px-3 m-0 fw-bold rounded-pill"
@@ -67,7 +104,7 @@ const DashboardSettings = ({ show, hide, active }) => {
                   border: "0.5px solid gray",
                 }}
               >
-                Save
+                {updateLoading ? <Spinner size="sm" /> : "save"}
               </Button>
             </div>
           </div>
@@ -90,7 +127,7 @@ const DashboardSettings = ({ show, hide, active }) => {
                     ref={provided.innerRef}
                     style={{ minHeight: "1rem" }}
                   >
-                    {enabled.map((item, index) => (
+                    {enabled?.map((item, index) => (
                       <Draggable key={item} draggableId={item} index={index}>
                         {(provided, snapshot) => (
                           <div
@@ -138,7 +175,7 @@ const DashboardSettings = ({ show, hide, active }) => {
                     ref={provided.innerRef}
                     style={{ minHeight: "1rem" }}
                   >
-                    {disabled.map((item, index) => (
+                    {disabled?.map((item, index) => (
                       <Draggable key={item} draggableId={item} index={index}>
                         {(provided, snapshot) => (
                           <div

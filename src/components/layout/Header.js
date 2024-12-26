@@ -18,6 +18,7 @@ import { selectAuth } from "../../features/authSlice";
 import { useSelector } from "react-redux";
 import { useGetGoalsMutation } from "../../features/apiSlice";
 import { getError } from "../../utils/error";
+import DashboardSettings from "../HeaderComponents/DashboardSettings";
 
 export default function Header({ sidebarHandler }) {
   const { user, accessToken } = useSelector(selectAuth);
@@ -33,13 +34,20 @@ export default function Header({ sidebarHandler }) {
   const [addAccountModal, setAddAccountModal] = useState(false);
   const [addAccountLink, setAddAccountLink] = useState(1);
   const [getGoals, { isLoading: goalsLoading }] = useGetGoalsMutation();
-  const [goalsOnTarget, setGoalsOnTarget] = useState(null); 
+  const [goalsOnTarget, setGoalsOnTarget] = useState(null);
+  const [showCustomDashboard, setShowCustomDashboard] = useState(false);
+
+  const disabled = useSelector((state) => state?.dashBoard?.disabled);
+
+  const isCardDisabled = (cardname) => {
+    return disabled?.includes(cardname);
+  };
 
   const getAllGoals = async () => {
     try {
       const { goals } = await getGoals().unwrap();
       if (goals.length === 0) {
-        setGoalsOnTarget(null); 
+        setGoalsOnTarget(null);
       } else {
         const allOnTarget = goals.every((goal) => goal?.onTarget);
         setGoalsOnTarget(allOnTarget);
@@ -64,7 +72,7 @@ export default function Header({ sidebarHandler }) {
               <Col className="customize-dashboard" md={3}>
                 <div className="d-flex gap-3 align-items-center">
                   <div
-                    onClick={() => setSettings(true)}
+                    onClick={() => setSettings(!settings)}
                     style={{
                       backgroundColor: "rgba(245, 247, 248, 1)",
                       borderRadius: "100%",
@@ -81,6 +89,7 @@ export default function Header({ sidebarHandler }) {
                   </div>
 
                   <div
+                    onClick={() => setShowCustomDashboard(!showCustomDashboard)}
                     className="p-3 d-flex align-items-center"
                     style={{
                       backgroundColor: "rgba(235, 241, 248, 1)",
@@ -88,6 +97,7 @@ export default function Header({ sidebarHandler }) {
                       fontSize: "12px",
                       color: "var(--primary-color)",
                       fontWeight: 400,
+                      cursor:'pointer'
                     }}
                   >
                     <img src="/images/badge.png" alt="..." />{" "}
@@ -110,75 +120,77 @@ export default function Header({ sidebarHandler }) {
                     onClick={() => sidebarHandler()}
                   />
 
-                  <div
-                    className="d-flex align-items-center gap-3"
-                    style={{
-                      backgroundColor: "rgba(242, 249, 255, 1)",
-                      height: "50px",
-                      width: "200px",
-                      borderRadius: "22px",
-                    }}
-                  >
+                  {!isCardDisabled("Goals") && (
                     <div
-                      onClick={() => {
-                        setGoalModal(true);
-                        setGoalBackLink(1);
-                      }}
-                      className="d-flex align-items-center py-3 px-3"
+                      className="d-flex align-items-center gap-3"
                       style={{
-                        cursor: "pointer",
-                        backgroundColor: "rgba(235, 241, 248, 1)",
+                        backgroundColor: "rgba(242, 249, 255, 1)",
+                        height: "50px",
+                        width: "200px",
                         borderRadius: "22px",
-                        fontSize: "12px",
-                        color: "var(--primary-color)",
-                        fontWeight: 400,
                       }}
                     >
-                      <img src="/images/badge.png" alt="..." />{" "}
-                      <span>Goal</span>
-                      <IoIosArrowForward size={16} />
-                    </div>
-
-                    <div>
                       <div
+                        onClick={() => {
+                          setGoalModal(true);
+                          setGoalBackLink(1);
+                        }}
+                        className="d-flex align-items-center py-3 px-3"
                         style={{
-                          fontSize: "11px",
+                          cursor: "pointer",
+                          backgroundColor: "rgba(235, 241, 248, 1)",
+                          borderRadius: "22px",
+                          fontSize: "12px",
                           color: "var(--primary-color)",
                           fontWeight: 400,
-                          marginLeft: "-10px",
                         }}
                       >
-                        Goals on target ?
+                        <img src="/images/badge.png" alt="..." />{" "}
+                        <span>Goal</span>
+                        <IoIosArrowForward size={16} />
                       </div>
-                      {goalsOnTarget === null ? (
-                        <div
-                          role="status"
-                          className="d-flex align-items-center mt-1 goal-status-no-goals"
-                          style={{ color: "red" }}
-                        >
-                          No Goals
-                        </div>
-                      ) : goalsOnTarget ? (
-                        <div
-                          role="status"
-                          className="d-flex align-items-center mt-1 goal-status-on-target"
-                          style={{ color: "green" }}
-                        >
-                          <RxCheck /> <span>Yes</span>
-                        </div>
-                      ) : (
-                        <div
-                          role="status"
-                          className="d-flex align-items-center mt-1 goal-status-not-on-target"
-                          style={{ color: "red" }}
-                        >
-                          <RxCross2 /> <span>No</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
 
-                  <div
+                      <div>
+                        <div
+                          style={{
+                            fontSize: "11px",
+                            color: "var(--primary-color)",
+                            fontWeight: 400,
+                            marginLeft: "-10px",
+                          }}
+                        >
+                          Goals on target ?
+                        </div>
+                        {goalsOnTarget === null ? (
+                          <div
+                            role="status"
+                            className="d-flex align-items-center mt-1 goal-status-no-goals"
+                            style={{ color: "red" }}
+                          >
+                            No Goals
+                          </div>
+                        ) : goalsOnTarget ? (
+                          <div
+                            role="status"
+                            className="d-flex align-items-center mt-1 goal-status-on-target"
+                            style={{ color: "green" }}
+                          >
+                            <RxCheck /> <span>Yes</span>
+                          </div>
+                        ) : (
+                          <div
+                            role="status"
+                            className="d-flex align-items-center mt-1 goal-status-not-on-target"
+                            style={{ color: "red" }}
+                          >
+                            <RxCross2 /> <span>No</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                 {!isCardDisabled('Pay Countdown')&&( <div
                     className="customize-dashboard custom-dasboard-payday"
                     onClick={() => {
                       setPayDays(true);
@@ -199,7 +211,7 @@ export default function Header({ sidebarHandler }) {
                     <img src="/images/badge.png" alt="..." />{" "}
                     <span>Payday</span>
                     <IoIosArrowForward size={16} />
-                  </div>
+                  </div>)}
 
                   <div
                     className="customize-dashboard py-3 px-4 dasboard-add-account"
@@ -258,6 +270,12 @@ export default function Header({ sidebarHandler }) {
 
           {/* Settings */}
           <SettingsComponent show={settings} hide={setSettings} />
+
+          <DashboardSettings
+            show={showCustomDashboard}
+            hide={setShowCustomDashboard}
+            active={1}
+          />
 
           {/* Goal */}
           <GoalComponent

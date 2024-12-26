@@ -4,11 +4,13 @@ import loadingReducer from "./features/loadingSlice";
 import { apiSlice } from "./features/apiSlice";
 import authReducer from "./features/authSlice";
 import periodReducer from "./features/periodSlice";
+import dashBoardReducer from "./features/dashBoardSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
   loading: loadingReducer,
   period: periodReducer,
+  dashBoard: dashBoardReducer,
   [apiSlice.reducerPath]: apiSlice.reducer,
 });
 

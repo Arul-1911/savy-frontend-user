@@ -24,8 +24,8 @@ exports.getDateRanges = (period) => {
      return {
        currentStart: '',
        currentEnd: '',
-      //  previousStart: '',
-      //  previousEnd: '',
+       previousStart: '',
+       previousEnd: '',
      };
    }
 

@@ -108,7 +108,7 @@ export const apiSlice = createApi({
     }),
 
     getPaydays: builder.mutation({
-      query: ({currentStart,currentEnd}) => ({
+      query: ({ currentStart, currentEnd }) => ({
         url: `/payday/get-paydays?currentStart=${currentStart}&currentEnd=${currentEnd}`,
         method: "GET",
       }),
@@ -215,11 +215,65 @@ export const apiSlice = createApi({
     }),
 
     // ====== Cashflow =======
+    // getCashflow: builder.mutation({
+    //   query: ({ currentStart, currentEnd, previousStart, previousEnd }) => ({
+    //     url: `/user/get-cashflow-data-overview?currentStart=${currentStart}&currentEnd=${currentEnd}&previousStart=${previousStart}&previousEnd=${previousEnd}`,
+    //     method: "GET",
+    //   }),
+    // }),
+
+    // getCashflowMoneyIn: builder.mutation({
+    //   query: ({
+    //     currentStart,
+    //     currentEnd,
+    //     previousStart,
+    //     previousEnd,
+    //     filter,
+    //   }) => ({
+    //     url: `/user/get-cashflow-data-in?currentStart=${currentStart}&currentEnd=${currentEnd}&previousStart=${previousStart}&previousEnd=${previousEnd}&filter=${filter}`,
+    //     method: "GET",
+    //   }),
+    // }),
+
+    // getCashflowMoneyOut: builder.mutation({
+    //   query: ({
+    //     currentStart,
+    //     currentEnd,
+    //     previousStart,
+    //     previousEnd,
+    //     filter,
+    //   }) => ({
+    //     url: `/user/get-cashflow-data-out?currentStart=${currentStart}&currentEnd=${currentEnd}&previousStart=${previousStart}&previousEnd=${previousEnd}&filter=${filter}`,
+    //     method: "GET",
+    //   }),
+    // }),
+
+    // getCashflowNet: builder.mutation({
+    //   query: ({
+    //     currentStart,
+    //     currentEnd,
+    //     previousStart,
+    //     previousEnd,
+    //     filter,
+    //   }) => ({
+    //     url: `/user/get-cashflow-data-net?currentStart=${currentStart}&currentEnd=${currentEnd}&previousStart=${previousStart}&previousEnd=${previousEnd}&filter=${filter}`,
+    //     method: "GET",
+    //   }),
+    // }),
+
     getCashflow: builder.mutation({
-      query: ({ currentStart, currentEnd, previousStart, previousEnd }) => ({
-        url: `/user/get-cashflow-data-overview?currentStart=${currentStart}&currentEnd=${currentEnd}&previousStart=${previousStart}&previousEnd=${previousEnd}`,
-        method: "GET",
-      }),
+      query: ({ currentStart, currentEnd, previousStart, previousEnd }) => {
+        const params = new URLSearchParams();
+        if (currentStart) params.append("currentStart", currentStart);
+        if (currentEnd) params.append("currentEnd", currentEnd);
+        if (previousStart) params.append("previousStart", previousStart);
+        if (previousEnd) params.append("previousEnd", previousEnd);
+
+        return {
+          url: `/user/get-cashflow-data-overview?${params.toString()}`,
+          method: "GET",
+        };
+      },
     }),
 
     getCashflowMoneyIn: builder.mutation({
@@ -229,10 +283,19 @@ export const apiSlice = createApi({
         previousStart,
         previousEnd,
         filter,
-      }) => ({
-        url: `/user/get-cashflow-data-in?currentStart=${currentStart}&currentEnd=${currentEnd}&previousStart=${previousStart}&previousEnd=${previousEnd}&filter=${filter}`,
-        method: "GET",
-      }),
+      }) => {
+        const params = new URLSearchParams();
+        if (currentStart) params.append("currentStart", currentStart);
+        if (currentEnd) params.append("currentEnd", currentEnd);
+        if (previousStart) params.append("previousStart", previousStart);
+        if (previousEnd) params.append("previousEnd", previousEnd);
+        if (filter) params.append("filter", filter);
+
+        return {
+          url: `/user/get-cashflow-data-in?${params.toString()}`,
+          method: "GET",
+        };
+      },
     }),
 
     getCashflowMoneyOut: builder.mutation({
@@ -242,10 +305,18 @@ export const apiSlice = createApi({
         previousStart,
         previousEnd,
         filter,
-      }) => ({
-        url: `/user/get-cashflow-data-out?currentStart=${currentStart}&currentEnd=${currentEnd}&previousStart=${previousStart}&previousEnd=${previousEnd}&filter=${filter}`,
-        method: "GET",
-      }),
+      }) => {
+        const params = new URLSearchParams();
+        if (currentStart) params.append("currentStart", currentStart);
+        if (currentEnd) params.append("currentEnd", currentEnd);
+        if (previousStart) params.append("previousStart", previousStart);
+        if (previousEnd) params.append("previousEnd", previousEnd);
+        if (filter) params.append("filter", filter);
+        return {
+          url: `/user/get-cashflow-data-out?${params.toString()}`,
+          method: "GET",
+        };
+      },
     }),
 
     getCashflowNet: builder.mutation({
@@ -255,10 +326,18 @@ export const apiSlice = createApi({
         previousStart,
         previousEnd,
         filter,
-      }) => ({
-        url: `/user/get-cashflow-data-net?currentStart=${currentStart}&currentEnd=${currentEnd}&previousStart=${previousStart}&previousEnd=${previousEnd}&filter=${filter}`,
-        method: "GET",
-      }),
+      }) => {
+        const params = new URLSearchParams();
+        if (currentStart) params.append("currentStart", currentStart);
+        if (currentEnd) params.append("currentEnd", currentEnd);
+        if (previousStart) params.append("previousStart", previousStart);
+        if (previousEnd) params.append("previousEnd", previousEnd);
+        if (filter) params.append("filter", filter);
+        return {
+          url: `/user/get-cashflow-data-net?${params.toString()}`,
+          method: "GET",
+        };
+      },
     }),
 
     getCashflowListData: builder.mutation({
@@ -361,10 +440,34 @@ export const apiSlice = createApi({
 
     // ====== Dashboard =======
     dashboardData: builder.mutation({
-      query: () => ({
-        url: "/user/get-graph-data",
+      query: ({ currentStart, currentEnd }) => ({
+        url: `/user/get-graph-data?currentStart=${currentStart}&currentEnd=${currentEnd}`,
         method: "GET",
       }),
+    }),
+
+    //======= CUSTOMIZE DASHBOARD =======
+    getCustomizeDashboard: builder.query({
+      query: () => ({
+        url: "/user/get-dashboard-settings",
+        method: "GET",
+      }),
+      providesTags: ["DashboardSettings"],
+    }),
+
+    updateCustomizeDashboard: builder.mutation({
+      query: ({ enabled, disabled }) => ({
+        url: "/user/update-dashboard-settings",
+        method: "PATCH",
+        body: {
+          enabled,
+          disabled,
+        },
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }),
+      invalidatesTags: ["DashboardSettings"],
     }),
   }),
 });
@@ -415,6 +518,8 @@ export const {
   useGetAssetsLiabilitiesMutation,
 
   useDashboardDataMutation,
+  useGetCustomizeDashboardQuery,
+  useUpdateCustomizeDashboardMutation,
 
   useGetTransactionsMutation,
   useGetTransactionMutation,

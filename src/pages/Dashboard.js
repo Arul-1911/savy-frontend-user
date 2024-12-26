@@ -20,10 +20,15 @@ import {
   useDashboardDataMutation,
   useGetAssetsLiabilitiesMutation,
   useGetBillsMutation,
+  useGetCustomizeDashboardQuery,
 } from "../features/apiSlice";
 import { getError } from "../utils/error";
 import { formatDate } from "../components/FormateDateTime/FormatDateTime";
 import Skeleton from "react-loading-skeleton";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { setDisabled } from "../features/dashBoardSlice";
+import { getDateRanges } from "../components/DateRange/DateRange";
 
 const COLORS = [
   { start: "rgba(36, 204, 167, 1)", end: "rgba(74, 86, 226, 1)" },
@@ -34,7 +39,11 @@ const COLORS = [
 ];
 
 export default function Dashboard() {
+   const {period} = useSelector((state) => state.period )
   const [dashboardData, { isLoading }] = useDashboardDataMutation();
+  const { data: dashBoardSettings, isLoading: getCustomDashboardLoading } =
+    useGetCustomizeDashboardQuery();
+
   const [getBills, { isLoading: billLoading }] = useGetBillsMutation();
   const [getAssetsLiabilities, { isLoading: assetsLoading }] =
     useGetAssetsLiabilitiesMutation();
@@ -54,10 +63,25 @@ export default function Dashboard() {
   const [totalLiabilitiesAmount, setTotalLiabilitiesAmount] = useState(0);
   const [currNetWorth, setCurrNetWorth] = useState(0);
 
+  const dispatch = useDispatch();
+
+  
+  const disabled = useSelector((state) => state?.dashBoard?.disabled);
+
+  useEffect(() => {
+    if (dashBoardSettings) {
+      dispatch(setDisabled(dashBoardSettings?.dashboard?.disabled || []));
+    }
+  }, [dashBoardSettings, dispatch]);
+
+  // console.log(disabled, "disabled");
+
+    const dateRange = getDateRanges(period)
+
   useEffect(() => {
     getDashboardData();
     getAllAssetsLibilities();
-  }, []);
+  }, [period]);
 
   useEffect(() => {
     if (expenseActive === 2) {
@@ -76,14 +100,16 @@ export default function Dashboard() {
 
   const getDashboardData = async () => {
     try {
-      const { data } = await dashboardData();
+      const { data } = await dashboardData({
+        currentStart: dateRange?.currentStart,
+        currentEnd: dateRange?.currentEnd,
+      });
       setDashboard(data?.dashboardData);
       setTotalNetWorth(data?.dashboardData?.card1?.["Total amount"] || 0);
     } catch (error) {
       getError(error);
     }
   };
-
 
   const getAllAssetsLibilities = async () => {
     try {
@@ -98,6 +124,10 @@ export default function Dashboard() {
   useEffect(() => {
     setCurrNetWorth(totalNetWorth + totalAssetsAmount - totalLiabilitiesAmount);
   }, [totalNetWorth, totalAssetsAmount, totalLiabilitiesAmount]);
+
+  const isCardDisabled = (cardname) => {
+    return disabled?.includes(cardname)
+  }
 
   return (
     <MotionDiv>
@@ -856,239 +886,247 @@ export default function Dashboard() {
                 </DashboardCard>
               </Col>
 
-              <Col>
-                <DashboardCard>
-                  <h4 style={{ fontWeight: 600, color: "rgba(0, 39, 91, 1)" }}>
-                    Budget
-                  </h4>
+              {!isCardDisabled("My Budget") && (
+                <Col>
+                  <DashboardCard>
+                    <h4
+                      style={{ fontWeight: 600, color: "rgba(0, 39, 91, 1)" }}
+                    >
+                      Budget
+                    </h4>
 
-                  {dashboard?.budgets?.length > 0 ? (
-                    !isLoading ? (
-                      dashboard?.budgets?.map((data) => {
-                        return (
-                          <div
-                            className="mt-3"
-                            style={{
-                              backgroundColor: "rgba(245, 247, 248, 1)",
-                              padding: "10px",
-                              borderRadius: "10px",
-                            }}
-                          >
-                            <div className=" d-flex justify-content-between align-items-center">
-                              <div className="d-flex gap-2 align-items-center">
-                                <Image
-                                  style={{
-                                    width: "35px",
-                                    height: "35px",
-                                    objectFit: "cover",
-                                    borderRadius: "50%",
-                                  }}
-                                  src={
-                                    data?.category?.image
-                                      ? imgAddr + data?.category?.image
-                                      : "/images/Rectangle 116.png"
-                                  }
-                                  alt="..."
-                                />
+                    {dashboard?.budgets?.length > 0 ? (
+                      !isLoading ? (
+                        dashboard?.budgets?.map((data) => {
+                          return (
+                            <div
+                              className="mt-3"
+                              style={{
+                                backgroundColor: "rgba(245, 247, 248, 1)",
+                                padding: "10px",
+                                borderRadius: "10px",
+                              }}
+                            >
+                              <div className=" d-flex justify-content-between align-items-center">
+                                <div className="d-flex gap-2 align-items-center">
+                                  <Image
+                                    style={{
+                                      width: "35px",
+                                      height: "35px",
+                                      objectFit: "cover",
+                                      borderRadius: "50%",
+                                    }}
+                                    src={
+                                      data?.category?.image
+                                        ? imgAddr + data?.category?.image
+                                        : "/images/Rectangle 116.png"
+                                    }
+                                    alt="..."
+                                  />
+                                  <div>
+                                    <div
+                                      style={{
+                                        fontWeight: 600,
+                                        color: "rgba(55, 73, 87, 1)",
+                                        fontSize: "12px",
+                                      }}
+                                    >
+                                      {data?.category?.name}
+                                    </div>
+                                    <div
+                                      style={{
+                                        fontWeight: 600,
+                                        color: "rgba(159, 175, 198, 1)",
+                                        fontSize: "12px",
+                                      }}
+                                    >
+                                      {/* $20 spent of {data?.budget_amount} */}
+                                    </div>
+                                  </div>
+                                </div>
+
                                 <div>
                                   <div
+                                    className="text-end"
                                     style={{
-                                      fontWeight: 600,
-                                      color: "rgba(55, 73, 87, 1)",
+                                      color: "rgba(92, 182, 249, 1)",
                                       fontSize: "12px",
                                     }}
                                   >
-                                    {data?.category?.name}
+                                    $ {data?.budget_amount}
                                   </div>
+
                                   <div
                                     style={{
-                                      fontWeight: 600,
-                                      color: "rgba(159, 175, 198, 1)",
+                                      color: "rgba(55, 73, 87, 0.8)",
                                       fontSize: "12px",
                                     }}
                                   >
-                                    {/* $20 spent of {data?.budget_amount} */}
+                                    remaining
                                   </div>
-                                </div>
-                              </div>
-
-                              <div>
-                                <div
-                                  className="text-end"
-                                  style={{
-                                    color: "rgba(92, 182, 249, 1)",
-                                    fontSize: "12px",
-                                  }}
-                                >
-                                  $ {data?.budget_amount}
-                                </div>
-
-                                <div
-                                  style={{
-                                    color: "rgba(55, 73, 87, 0.8)",
-                                    fontSize: "12px",
-                                  }}
-                                >
-                                  remaining
                                 </div>
                               </div>
                             </div>
-                          </div>
-                        );
-                      })
+                          );
+                        })
+                      ) : (
+                        [1, 2].map((_, i) => (
+                          <Col key={i} className={`p-2`}>
+                            <Skeleton
+                              className="rounded-2"
+                              height={"40px"}
+                              width={"100%"}
+                            />
+                          </Col>
+                        ))
+                      )
                     ) : (
-                      [1, 2].map((_, i) => (
-                        <Col key={i} className={`p-2`}>
-                          <Skeleton
-                            className="rounded-2"
-                            height={"40px"}
-                            width={"100%"}
-                          />
-                        </Col>
-                      ))
-                    )
-                  ) : (
-                    <div
-                      className="mt-3"
-                      style={{ fontSize: "16px", fontWeight: 600 }}
-                    >
-                      No Budget Added!
+                      <div
+                        className="mt-3"
+                        style={{ fontSize: "16px", fontWeight: 600 }}
+                      >
+                        No Budget Added!
+                      </div>
+                    )}
+
+                    <div className="mt-3 text-center">
+                      <Link
+                        onClick={() => setShowBudget(true)}
+                        style={{
+                          color: "var(--primary-color)",
+                          fontSize: "16px",
+                          fontWeight: 600,
+                          textDecoration: "underline",
+                        }}
+                        to=""
+                      >
+                        View budget
+                      </Link>
                     </div>
-                  )}
+                  </DashboardCard>
+                </Col>
+              )}
 
-                  <div className="mt-3 text-center">
-                    <Link
-                      onClick={() => setShowBudget(true)}
-                      style={{
-                        color: "var(--primary-color)",
-                        fontSize: "16px",
-                        fontWeight: 600,
-                        textDecoration: "underline",
-                      }}
-                      to=""
+              {!isCardDisabled("Upcoming Bills") && (
+                <Col>
+                  <DashboardCard>
+                    <h4
+                      style={{ fontWeight: 600, color: "rgba(0, 39, 91, 1)" }}
                     >
-                      View budget
-                    </Link>
-                  </div>
-                </DashboardCard>
-              </Col>
+                      Upcoming Bills
+                    </h4>
 
-              <Col>
-                <DashboardCard>
-                  <h4 style={{ fontWeight: 600, color: "rgba(0, 39, 91, 1)" }}>
-                    Upcoming Bills
-                  </h4>
+                    {dashboard?.bills?.length > 0 ? (
+                      !isLoading ? (
+                        dashboard?.bills?.map((data) => {
+                          return (
+                            <div
+                              className="mt-3"
+                              style={{
+                                backgroundColor: "rgba(245, 247, 248, 1)",
+                                padding: "10px",
+                                borderRadius: "10px",
+                              }}
+                            >
+                              <div className=" d-flex justify-content-between align-items-center">
+                                <div className="d-flex gap-2 align-items-center">
+                                  <Image
+                                    style={{
+                                      width: "35px",
+                                      height: "35px",
+                                      objectFit: "cover",
+                                      borderRadius: "50%",
+                                    }}
+                                    src={
+                                      data?.category?.image
+                                        ? imgAddr + data?.category?.image
+                                        : "/images/Rectangle 116.png"
+                                    }
+                                    alt="..."
+                                  />
+                                  <div>
+                                    <div
+                                      style={{
+                                        fontWeight: 600,
+                                        color: "rgba(55, 73, 87, 1)",
+                                        fontSize: "12px",
+                                      }}
+                                    >
+                                      {data?.category?.name}
+                                    </div>
+                                    <div
+                                      style={{
+                                        fontWeight: 600,
+                                        color: "rgba(159, 175, 198, 1)",
+                                        fontSize: "12px",
+                                      }}
+                                    >
+                                      {/* $20 spent of {data?.budget_amount} */}
+                                    </div>
+                                  </div>
+                                </div>
 
-                  {dashboard?.bills?.length > 0 ? (
-                    !isLoading ? (
-                      dashboard?.bills?.map((data) => {
-                        return (
-                          <div
-                            className="mt-3"
-                            style={{
-                              backgroundColor: "rgba(245, 247, 248, 1)",
-                              padding: "10px",
-                              borderRadius: "10px",
-                            }}
-                          >
-                            <div className=" d-flex justify-content-between align-items-center">
-                              <div className="d-flex gap-2 align-items-center">
-                                <Image
-                                  style={{
-                                    width: "35px",
-                                    height: "35px",
-                                    objectFit: "cover",
-                                    borderRadius: "50%",
-                                  }}
-                                  src={
-                                    data?.category?.image
-                                      ? imgAddr + data?.category?.image
-                                      : "/images/Rectangle 116.png"
-                                  }
-                                  alt="..."
-                                />
                                 <div>
                                   <div
+                                    className="text-end"
                                     style={{
-                                      fontWeight: 600,
-                                      color: "rgba(55, 73, 87, 1)",
+                                      color: "rgba(92, 182, 249, 1)",
                                       fontSize: "12px",
                                     }}
                                   >
-                                    {data?.category?.name}
+                                    $ {data?.budget_amount}
                                   </div>
+
                                   <div
                                     style={{
-                                      fontWeight: 600,
-                                      color: "rgba(159, 175, 198, 1)",
+                                      color: "rgba(55, 73, 87, 0.8)",
                                       fontSize: "12px",
                                     }}
                                   >
-                                    $20 spent of {data?.budget_amount}
+                                    {/* remaining */}
                                   </div>
-                                </div>
-                              </div>
-
-                              <div>
-                                <div
-                                  className="text-end"
-                                  style={{
-                                    color: "rgba(92, 182, 249, 1)",
-                                    fontSize: "12px",
-                                  }}
-                                >
-                                  $ {data?.budget_amount}
-                                </div>
-
-                                <div
-                                  style={{
-                                    color: "rgba(55, 73, 87, 0.8)",
-                                    fontSize: "12px",
-                                  }}
-                                >
-                                  remaining
                                 </div>
                               </div>
                             </div>
-                          </div>
-                        );
-                      })
+                          );
+                        })
+                      ) : (
+                        [1, 2].map((_, i) => (
+                          <Col key={i} className={`p-2`}>
+                            <Skeleton
+                              className="rounded-2"
+                              height={"40px"}
+                              width={"100%"}
+                            />
+                          </Col>
+                        ))
+                      )
                     ) : (
-                      [1, 2].map((_, i) => (
-                        <Col key={i} className={`p-2`}>
-                          <Skeleton
-                            className="rounded-2"
-                            height={"40px"}
-                            width={"100%"}
-                          />
-                        </Col>
-                      ))
-                    )
-                  ) : (
-                    <div
-                      className="mt-3"
-                      style={{ fontSize: "16px", fontWeight: 600 }}
-                    >
-                      No Bills Added!
-                    </div>
-                  )}
+                      <div
+                        className="mt-3"
+                        style={{ fontSize: "16px", fontWeight: 600 }}
+                      >
+                        No Bills Added!
+                      </div>
+                    )}
 
-                  <div className="mt-3 text-center">
-                    <Link
-                      onClick={() => setShowBills(true)}
-                      style={{
-                        color: "var(--primary-color)",
-                        fontSize: "16px",
-                        fontWeight: 600,
-                        textDecoration: "underline",
-                      }}
-                      to=""
-                    >
-                      View bills
-                    </Link>
-                  </div>
-                </DashboardCard>
-              </Col>
+                    <div className="mt-3 text-center">
+                      <Link
+                        onClick={() => setShowBills(true)}
+                        style={{
+                          color: "var(--primary-color)",
+                          fontSize: "16px",
+                          fontWeight: 600,
+                          textDecoration: "underline",
+                        }}
+                        to=""
+                      >
+                        View bills
+                      </Link>
+                    </div>
+                  </DashboardCard>
+                </Col>
+              )}
             </>
           ) : (
             [1, 2, 3].map((_, i) => (
@@ -1103,85 +1141,89 @@ export default function Dashboard() {
           )}
         </Row>
 
-        <Row className="mt-4">
-          <Col>
-            <DashboardCard>
-              <div className="d-flex align-items-center justify-content-between">
-                <h4 style={{ fontWeight: 600, color: "rgba(0, 39, 91, 1)" }}>
-                  Transactions
-                </h4>
-                <div
-                  className="px-3 py-1"
-                  style={{
-                    color: "rgba(92, 182, 249, 1)",
-                    fontWeight: 600,
-                    fontSize: "12px",
-                    backgroundColor: "rgba(242, 249, 255, 1)",
-                    borderRadius: "20px",
-                    cursor: "pointer",
-                  }}
-                >
-                  <Link to={"/user/transactions"}>View all</Link>
+        {!isCardDisabled("Recent Transactions") && (
+          <Row className="mt-4">
+            <Col>
+              <DashboardCard>
+                <div className="d-flex align-items-center justify-content-between">
+                  <h4 style={{ fontWeight: 600, color: "rgba(0, 39, 91, 1)" }}>
+                    Transactions
+                  </h4>
+                  <div
+                    className="px-3 py-1"
+                    style={{
+                      color: "rgba(92, 182, 249, 1)",
+                      fontWeight: 600,
+                      fontSize: "12px",
+                      backgroundColor: "rgba(242, 249, 255, 1)",
+                      borderRadius: "20px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <Link to={"/user/transactions"}>View all</Link>
+                  </div>
                 </div>
-              </div>
 
-              <ul className="market mt-2">
-                {!isLoading
-                  ? dashboard?.transactions?.map((data, idx) => {
-                      return (
-                        <li
-                          key={idx}
-                          className="d-flex justify-content-between align-items-center "
-                        >
-                          <div className="d-flex align-items-center gap-2">
-                            <Image
-                              width={"35px"}
-                              height={"35px"}
-                              style={{
-                                borderRadius: "50%",
-                                objectFit: "cover",
-                              }}
-                              src={
-                                data?.category?.image
-                                  ? imgAddr + data?.category?.image
-                                  : "/icons/Rectangle 116.png"
-                              }
-                              alt="..."
-                            />
-                            <div>
-                              <div
+                <ul className="market mt-2">
+                  {!isLoading ? (
+                    dashboard?.transactions?.length > 0 ? (
+                      dashboard?.transactions?.map((data, idx) => {
+                        return (
+                          <li
+                            key={idx}
+                            className="d-flex justify-content-between align-items-center "
+                          >
+                            <div className="d-flex align-items-center gap-2">
+                              <Image
+                                width={"35px"}
+                                height={"35px"}
                                 style={{
-                                  fontSize: "rgba(55, 73, 87, 1)",
-                                  fontSize: "16px",
+                                  borderRadius: "50%",
+                                  objectFit: "cover",
                                 }}
-                              >
-                                {data?.description}
-                              </div>
-                              <div
-                                style={{
-                                  fontSize: "rgba(55, 73, 87, 0.7)",
-                                  fontSize: "12px",
-                                  fontWeight: 400,
-                                }}
-                              >
-                                at {formatDate(data?.date)}
+                                src={
+                                  data?.category?.image
+                                    ? imgAddr + data?.category?.image
+                                    : "/icons/Rectangle 116.png"
+                                }
+                                alt="..."
+                              />
+                              <div>
+                                <div
+                                  style={{
+                                    fontSize: "16px",
+                                  }}
+                                >
+                                  {data?.description}
+                                </div>
+                                <div
+                                  style={{
+                                    fontSize: "12px",
+                                    fontWeight: 400,
+                                  }}
+                                >
+                                  at {formatDate(data?.date)}
+                                </div>
                               </div>
                             </div>
-                          </div>
 
-                          <div
-                            style={{
-                              color: "var(--primary-color)",
-                              fontSize: "20px",
-                              fontWeight: 800,
-                            }}
-                          >
-                            {data?.amount} $
-                          </div>
-                        </li>
-                      );
-                    })
-                  : [1, 2, 3, 4, 5].map((_, i) => (
+                            <div
+                              style={{
+                                color: "var(--primary-color)",
+                                fontSize: "20px",
+                                fontWeight: 800,
+                              }}
+                            >
+                              {data?.amount} $
+                            </div>
+                          </li>
+                        );
+                      })
+                    ) : (
+                      <li className="text-center">No transactions found</li>
+                    )
+                  ) : (
+                    [1, 2, 3, 4, 5].map((_, i) => (
                       <Col key={i} className={`p-2`}>
                         <Skeleton
                           className="rounded-2"
@@ -1189,11 +1231,13 @@ export default function Dashboard() {
                           width={"100%"}
                         />
                       </Col>
-                    ))}
-              </ul>
-            </DashboardCard>
-          </Col>
-        </Row>
+                    ))
+                  )}
+                </ul>
+              </DashboardCard>
+            </Col>
+          </Row>
+        )}
       </Container>
 
       {/* Budget */}

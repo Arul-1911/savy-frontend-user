@@ -11,6 +11,7 @@ import {
 } from "../../../features/apiSlice";
 import Skeleton from "react-loading-skeleton";
 import Liabilities from "./NetworthComponent/Liabilities";
+import { useSelector } from "react-redux";
 
 const NetWorth = () => {
   const [getAssetsLiabilities, { isLoading }] =
@@ -28,6 +29,14 @@ const NetWorth = () => {
   const [totalLiabilitiesAmount, setTotalLiabilitiesAmount] = useState(0);
   const [totalNetWorth, setTotalNetWorth] = useState(0);
   const [currNetWorth, setCurrNetWorth] = useState(0);
+
+  const disabled = useSelector((state) => state?.dashBoard?.disabled) || [];
+
+  // console.log(disabled, "disabled from my account");
+
+  const isCardDisabled = (cardname) => {
+    return disabled?.includes(cardname);
+  };
 
   useEffect(() => {
     getAllAssetsLibilities();
@@ -70,22 +79,25 @@ const NetWorth = () => {
             {`$${currNetWorth}`}
           </h3>
         </div>
-        <div
-          className="d-flex align-items-center"
-          style={{
-            paddingLeft: "30px",
-            backgroundColor: "var(--primary-color)",
-            height: "40px",
-            width: "180px",
-            borderRadius: "22px",
-            fontSize: "12px",
-            color: "white",
-            fontWeight: 600,
-            cursor: "pointer",
-          }}
-        >
-          See financial reports <IoIosArrowForward size={16} />
-        </div>
+        {/* Conditionally render the "Financial passport" container */}
+        {!isCardDisabled("Financial passport") && (
+          <div
+            className="d-flex align-items-center"
+            style={{
+              paddingLeft: "30px",
+              backgroundColor: "var(--primary-color)",
+              height: "40px",
+              width: "180px",
+              borderRadius: "22px",
+              fontSize: "12px",
+              color: "white",
+              fontWeight: 600,
+              cursor: "pointer",
+            }}
+          >
+            See financial reports <IoIosArrowForward size={16} />
+          </div>
+        )}
       </div>
 
       <Row className="mt-3 g-3">
