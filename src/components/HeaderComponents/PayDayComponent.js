@@ -12,6 +12,7 @@ import { getError } from "../../utils/error";
 import { getSuccess } from "../../utils/success";
 import {
   useCreatePaydayMutation,
+  useDeletePaydayMutation,
   useGetPaydayMutation,
   useGetPaydaysMutation,
   useUpdatePaydayMutation,
@@ -28,6 +29,7 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
   const [updatePayday, { isLoading: updatePaydayLoading }] =
     useUpdatePaydayMutation();
   const [createPayday, { isLoading }] = useCreatePaydayMutation();
+  const [deletePayday] = useDeletePaydayMutation();
 
   const { period } = useSelector((state) => state.period);
 
@@ -59,18 +61,23 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
       value: 30,
     },
   ];
-useEffect(() => {
-  if (active === 3 || period) {
-    getAllPadays();
-  }
-}, [active, period]);
-
+  useEffect(() => {
+    if (active === 3 || period) {
+      getAllPadays();
+    }
+  }, [active, period]);
 
   useEffect(() => {
     if (paydayId) {
       getSinglePayday();
     }
   }, [paydayId]);
+
+  useEffect(() => {
+    if (active === 6 && paydayId) {
+      getSinglePayday();
+    }
+  }, [active]);
 
   const dateRange = getDateRanges(period);
 
@@ -152,6 +159,26 @@ useEffect(() => {
       setAmount("");
     } catch (error) {
       getError(error);
+    }
+  };
+
+  // ============ DELETE PAYDAY ===========
+
+  const handleDeletePayDay = async () => {
+    try {
+      const isDelete = window.confirm(
+        "Are you sure you want to delete this PayDay"
+      );
+      if (isDelete) {
+        const data = await deletePayday(paydayId).unwrap();
+        getSuccess(data?.message);
+        activeLink(1);
+      } else {
+        return;
+      }
+    } catch (error) {
+      getError(error);
+    } finally {
     }
   };
 
@@ -677,7 +704,7 @@ useEffect(() => {
                 size={23}
                 color="red"
                 cursor={"pointer"}
-                // onClick={handleDeleteBill}
+                onClick={handleDeletePayDay}
               />
             </div>
 

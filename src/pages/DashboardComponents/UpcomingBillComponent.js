@@ -34,6 +34,7 @@ import { useSelector } from "react-redux";
 import { getDateRanges } from "../../components/DateRange/DateRange";
 
 const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
+  
   const [getCategories, { isLoading }] = useGetCategoriesMutation();
   const [getBudgets, { isLoading: budgetLoading }] = useGetBudgetsMutation();
   const [createBill, { isLoading: billLoading }] = useCreateBillMutation();
@@ -184,7 +185,10 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
   // ======= Getting all budget =======
   const getAllBudget = async () => {
     try {
-      const { budgets } = await getBudgets().unwrap();
+      const { budgets } = await getBudgets({
+        currentStart: dateRange?.currentStart,
+        currentEnd: dateRange?.currentEnd,
+      }).unwrap();
       setBudgets(budgets);
     } catch (error) {
       getError(error);

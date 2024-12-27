@@ -20,6 +20,7 @@ import { FiEdit } from "react-icons/fi";
 import { getError } from "../../utils/error";
 import {
   imgAddr,
+  useDeleteBudgetMutation,
   useGetBudgetMutation,
   useGetBudgetsMutation,
   useGetCategoriesMutation,
@@ -34,7 +35,6 @@ import FormField from "../../components/layout/FormField";
 import { MdDelete } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { getDateRanges } from "../../components/DateRange/DateRange";
-
 
 const BudgetComponents = ({ show, hide, active, activeLink }) => {
   const [alreadyActiveFilter, setAlreadyActiveFilter] = useState(0);
@@ -51,6 +51,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
     useGetBudgetMutation();
   const [updateBudget, { isLoading: updateBudgetListLoading }] =
     useUpdateBudgetMutation();
+  const [deleteBudget] = useDeleteBudgetMutation();
 
   const [categories, setCategories] = useState([]);
   const [paydays, setPaydays] = useState([]);
@@ -280,9 +281,14 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
   // ======== delete budget ===========
   const handleDeleteBudget = async () => {
     try {
-      window.alert("Are you sure you want  to delete this budget");
-      activeLink(1);
-      hide();
+      const deleted = window.confirm(
+        "Are you sure you want to delete this Budget"
+      );
+      if (deleted) {
+        const data = await deleteBudget(budgetId).unwrap();
+        getSuccess(data?.message);
+        activeLink(1);
+      } else return;
     } catch (error) {
       getError(error);
     }

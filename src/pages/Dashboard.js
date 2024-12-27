@@ -91,7 +91,10 @@ export default function Dashboard() {
 
   const getUpcomingBills = async () => {
     try {
-      const { bills } = await getBills().unwrap();
+      const { bills } = await getBills({
+        currentStart: dateRange?.currentStart,
+        currentEnd: dateRange?.currentEnd,
+      }).unwrap();
       setBills(bills);
     } catch (error) {
       getError(error);

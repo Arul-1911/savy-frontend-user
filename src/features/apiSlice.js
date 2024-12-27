@@ -160,6 +160,13 @@ export const apiSlice = createApi({
       }),
     }),
 
+    deleteBudget: builder.mutation({
+      query: (budgetId) => ({
+        url: `/budget/delete-budget/${budgetId}`,
+        method: "DELETE",
+      }),
+    }),
+
     // ====== Category =======
     getCategories: builder.mutation({
       query: () => ({
@@ -536,6 +543,7 @@ export const {
   useGetBudgetsMutation,
   useGetBudgetMutation,
   useUpdateBudgetMutation,
+  useDeleteBudgetMutation,
 
   useGetCategoriesMutation,
 
