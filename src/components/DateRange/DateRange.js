@@ -3,6 +3,9 @@ exports.getDateRanges = (period) => {
   const currentYear = today.getFullYear();
   const currentMonth = today.getMonth() + 1; // JavaScript months are 0-11
 
+  const DAYS_IN_WEEK = 7;
+  const MONTHS_IN_YEAR = 12;
+
   const formatDate = (date) => {
     const year = date?.getFullYear();
     const month = String(date?.getMonth() + 1).padStart(2, "0"); // Months are 0-11
@@ -19,15 +22,14 @@ exports.getDateRanges = (period) => {
   };
 
   let firstRangeStart, firstRangeEnd, secondRangeStart, secondRangeEnd;
-
-   if (period === "All Data") {
-     return {
-       currentStart: '',
-       currentEnd: '',
-       previousStart: '',
-       previousEnd: '',
-     };
-   }
+  if (period === "All Data") {
+    return {
+      currentStart: "",
+      currentEnd: "",
+      previousStart: "",
+      previousEnd: "",
+    };
+  }
 
   if (period === "Past week") {
     // Find the most recent Sunday
@@ -36,7 +38,7 @@ exports.getDateRanges = (period) => {
 
     // Last week's Monday to Sunday
     const lastMonday = new Date(lastSunday);
-    lastMonday.setDate(lastSunday.getDate() - 6);
+    lastMonday.setDate(lastSunday.getDate() - (DAYS_IN_WEEK - 1));
 
     firstRangeStart = new Date(lastMonday);
     firstRangeEnd = new Date(lastSunday);
@@ -46,7 +48,7 @@ exports.getDateRanges = (period) => {
     prevSunday.setDate(lastMonday.getDate() - 1);
 
     const prevMonday = new Date(prevSunday);
-    prevMonday.setDate(prevSunday.getDate() - 6);
+    prevMonday.setDate(prevSunday.getDate() - (DAYS_IN_WEEK - 1));
 
     secondRangeStart = new Date(prevMonday);
     secondRangeEnd = new Date(prevSunday);
@@ -102,12 +104,12 @@ exports.getDateRanges = (period) => {
     );
   } else if (period === "Past 12 months") {
     // First range: Last 12 months
-    firstRangeStart = createDate(currentYear - 1, currentMonth, 1); // October 1st, last year
+    firstRangeStart = createDate(currentYear - 1, currentMonth, 1);
     firstRangeEnd = createDate(
       currentYear,
       currentMonth - 1,
       getLastDayOfMonth(currentYear, currentMonth - 1)
-    ); // Last day of last month
+    );
 
     // Second range: The 12 months before that
     secondRangeStart = createDate(currentYear - 2, currentMonth, 1);
@@ -116,6 +118,14 @@ exports.getDateRanges = (period) => {
       currentMonth - 1,
       getLastDayOfMonth(currentYear - 1, currentMonth - 1)
     );
+  } else {
+    // Handle invalid period input
+    return {
+      currentStart: "",
+      currentEnd: "",
+      previousStart: "",
+      previousEnd: "",
+    };
   }
 
   return {

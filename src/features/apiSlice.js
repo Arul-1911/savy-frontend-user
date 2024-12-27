@@ -222,6 +222,48 @@ export const apiSlice = createApi({
     //   }),
     // }),
 
+    getCashflow: builder.mutation({
+      query: (args) => {
+        const { currentStart, currentEnd, previousStart, previousEnd } = args;
+
+        // Function to get start and end dates for a given month
+        function getMonthStartEnd(date) {
+          const year = date.getFullYear();
+          const month = date.getMonth();
+          return {
+            start: new Date(year, month, 1).toISOString().slice(0, 10),
+            end: new Date(year, month + 1, 0).toISOString().slice(0, 10),
+          };
+        }
+
+        let _currentStart = currentStart;
+        let _currentEnd = currentEnd;
+        let _previousStart = previousStart;
+        let _previousEnd = previousEnd;
+
+        // Handle empty currentStart and currentEnd
+        if (!currentStart && !currentEnd) {
+          const currentDate = new Date();
+          const { start, end } = getMonthStartEnd(currentDate);
+          _currentStart = start;
+          _currentEnd = end;
+        }
+        // Handle empty previousStart and previousEnd
+        if (!previousStart && !previousEnd) {
+          const previousDate = new Date();
+          previousDate.setMonth(previousDate.getMonth() - 1);
+          const { start, end } = getMonthStartEnd(previousDate);
+          _previousStart = start;
+          _previousEnd = end;
+        }
+
+        return {
+          url: `/user/get-cashflow-data-overview?currentStart=${_currentStart}&currentEnd=${_currentEnd}&previousStart=${_previousStart}&previousEnd=${_previousEnd}`,
+          method: "GET",
+        };
+      },
+    }),
+
     // getCashflowMoneyIn: builder.mutation({
     //   query: ({
     //     currentStart,
@@ -261,20 +303,20 @@ export const apiSlice = createApi({
     //   }),
     // }),
 
-    getCashflow: builder.mutation({
-      query: ({ currentStart, currentEnd, previousStart, previousEnd }) => {
-        const params = new URLSearchParams();
-        if (currentStart) params.append("currentStart", currentStart);
-        if (currentEnd) params.append("currentEnd", currentEnd);
-        if (previousStart) params.append("previousStart", previousStart);
-        if (previousEnd) params.append("previousEnd", previousEnd);
+    // getCashflow: builder.mutation({
+    //   query: ({ currentStart, currentEnd, previousStart, previousEnd }) => {
+    //     const params = new URLSearchParams();
+    //     if (currentStart) params.append("currentStart", currentStart);
+    //     if (currentEnd) params.append("currentEnd", currentEnd);
+    //     if (previousStart) params.append("previousStart", previousStart);
+    //     if (previousEnd) params.append("previousEnd", previousEnd);
 
-        return {
-          url: `/user/get-cashflow-data-overview?${params.toString()}`,
-          method: "GET",
-        };
-      },
-    }),
+    //     return {
+    //       url: `/user/get-cashflow-data-overview?${params.toString()}`,
+    //       method: "GET",
+    //     };
+    //   },
+    // }),
 
     getCashflowMoneyIn: builder.mutation({
       query: ({

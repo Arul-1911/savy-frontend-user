@@ -12,12 +12,15 @@ import {
 import Skeleton from "react-loading-skeleton";
 import Liabilities from "./NetworthComponent/Liabilities";
 import { useSelector } from "react-redux";
+import { getDateRanges } from "../../../components/DateRange/DateRange";
 
 const NetWorth = () => {
   const [getAssetsLiabilities, { isLoading }] =
     useGetAssetsLiabilitiesMutation();
   const [getGraphData, { isLoading: getGraphDataLoading }] =
     useDashboardDataMutation();
+
+  const { period } = useSelector((state) => state.period);
 
   const [showAssets, setShowAssets] = useState(false);
   const [showActiveAssets, setShowActiveAssets] = useState(1);
@@ -54,9 +57,14 @@ const NetWorth = () => {
     }
   };
 
+  const dateRange = getDateRanges(period);
+
   const getTotalAmount = async () => {
     try {
-      const { dashboardData } = await getGraphData().unwrap();
+      const { dashboardData } = await getGraphData({
+        currentStart: dateRange?.currentStart,
+        currentEnd: dateRange?.currentEnd,
+      }).unwrap();
       const totalAmount = dashboardData?.card1?.["Total amount"] || 0;
       setTotalNetWorth(totalAmount);
     } catch (error) {
