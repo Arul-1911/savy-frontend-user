@@ -19,15 +19,15 @@ export default function SignupScreen() {
     e.preventDefault();
 
     const phone = `+${mobile.dialCode} ${mobile.mobile}`;
-    // console.log(phone,'phone')
+ 
     const user = {
-      mobile: phone,
+      mobile_no: phone,
       email,
       password,
       confirm_password: confirmPassword,
     };
 
-    // console.log(mobile?.mobile?.length)
+  
     try {
       if (mobile.mobile.length !== 9) {
         throw new Error(
@@ -117,7 +117,6 @@ export default function SignupScreen() {
           inputProps={{
             name: "phone",
             required: true,
-            // autoFocus: true,
           }}
           className="mb-3"
         />
