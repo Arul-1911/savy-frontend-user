@@ -112,19 +112,18 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
     } else if (active === 2) {
       getAllCategories();
     } else if (active === 3) {
-      {
-        getAllPaydays();
-      }
+      getAllPaydays();
     }
   }, [active, period]);
 
   useEffect(() => {
     if (budgetId) {
+      getAllPaydays();
       handleBudgetList();
       getAllCategories();
-      getAllPaydays();
     }
   }, [budgetId]);
+
 
   // ======= Getting all categories =======
   const getAllCategories = async () => {
@@ -139,7 +138,11 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
   // ======= Getting all paydays =======
   const getAllPaydays = async () => {
     try {
-      const { data } = await getPaydays();
+      const  data  = await getPaydays({
+        currentStart: dateRange?.currentStart,
+        currentEnd: dateRange?.currentEnd,
+      }).unwrap();
+      console.log("Payday API response:", data?.paydays);
       setPaydays(data?.paydays);
     } catch (error) {
       getError(error);

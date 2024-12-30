@@ -643,7 +643,7 @@ export default function Dashboard() {
                           />
                         </div>
                       </Carousel.Item>
-                      <Carousel.Item>
+                      {/* <Carousel.Item>
                         <Row className="d-flex justify-content-between gap-3 px-3 mt-2">
                           <Col
                             className="p-3"
@@ -786,7 +786,7 @@ export default function Dashboard() {
                             </div>
                           </div>
                         </Row>
-                      </Carousel.Item>
+                      </Carousel.Item> */}
                     </Carousel>
                   )}
                 </div>
