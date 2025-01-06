@@ -434,6 +434,23 @@ export const apiSlice = createApi({
       }),
     }),
 
+    // ======== EXPORT TRANSACTION CSV =========
+    getDownloadTransaction: builder.mutation({
+      query: ({ currentStart, currentEnd }) => {
+        let url = `/user/get-transactions-csv?`;
+
+        if (currentStart && currentEnd) {
+          url += `&currentStart=${currentStart}&currentEnd=${currentEnd}`;
+        }
+
+        return {
+          url,
+          method: "GET",
+          responseHandler: (response) => response.blob(),
+        };
+      },
+    }),
+
     // ====== Tags =======
     createTag: builder.mutation({
       query: (data) => ({
@@ -518,6 +535,30 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["DashboardSettings"],
     }),
+
+    //========== BUCKET & CATEGORY ==============
+    getBuckets: builder.query({
+      query: () => ({
+        url: "/bucket/get-buckets",
+        method: "GET",
+      }),
+    }),
+
+    getbucketCategories: builder.query({
+      query: ({ bucketId }) => ({
+        url: `/category/get-categorys?bucket=${bucketId}`,
+        method: "GET",
+      }),
+    }),
+
+    getTipTopics: builder.query({
+      query: ({ categoryId }) => ({
+        url: `/tiptopic/get-tiptopics?category=${categoryId}`,
+        method: "GET",
+      }),
+    }),
+
+    // === end of query ====
   }),
 });
 
@@ -575,6 +616,12 @@ export const {
   useGetTransactionMutation,
   useUpdateTransactionMutation,
 
+  useGetDownloadTransactionMutation,
+
   useCreateTagMutation,
   useGetTagsMutation,
+
+  useGetBucketsQuery,
+  useGetbucketCategoriesQuery,
+  useGetTipTopicsQuery,
 } = apiSlice;

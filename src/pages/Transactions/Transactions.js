@@ -1,24 +1,33 @@
 import React, { useEffect, useState } from "react";
-import { FormControl, Image, InputGroup } from "react-bootstrap";
+import { FormControl, Image, InputGroup, Spinner } from "react-bootstrap";
 import DashboardCard from "../../components/layout/DasboardCard";
 import { MotionDiv } from "../../components";
 import TransactionComponents from "./TransationComponents/TransactionComponents";
 import Calendar from "../../components/Calendar/Calendar";
 import Filter from "../../components/Filter/Filter";
 import { getError } from "../../utils/error";
-import { imgAddr, useGetTransactionsMutation } from "../../features/apiSlice";
+import {
+  imgAddr,
+  useGetDownloadTransactionMutation,
+  useGetDownloadTransactionQuery,
+  useGetTransactionsMutation,
+} from "../../features/apiSlice";
 import { formatDate } from "../../components/FormateDateTime/FormatDateTime";
 import Skeleton from "react-loading-skeleton";
 import { getDateRanges } from "../../components/DateRange/DateRange";
 import { useSelector } from "react-redux";
+import { BiExport } from "react-icons/bi";
+import { toast } from "react-toastify";
 
 const Transactions = () => {
-  const {period} = useSelector((state) => state.period )
+  const { period } = useSelector((state) => state.period);
   const [transactionModal, setTransactionModal] = useState(false);
   const [activeTransaction, setActiveTransaction] = useState(1);
   const [openCalendar, setOpenCalendar] = useState(false);
   const [openFilter, setOpenFilter] = useState(false);
   const [getTransactions, { isLoading }] = useGetTransactionsMutation();
+  const [exportTransaction, { isLoading: ExportLoading }] =
+    useGetDownloadTransactionMutation();
   const [transactions, setTransactions] = useState([]);
   const [transactionId, setTransactionId] = useState("");
   const [date, setDate] = useState("");
@@ -30,8 +39,9 @@ const Transactions = () => {
     getAllTransactions();
   }, [date, debounceQuery, period]);
 
-  const dateRange = getDateRanges(period)
+  const dateRange = getDateRanges(period);
 
+  //get All transactions
   const getAllTransactions = async () => {
     try {
       const { transactions } = await getTransactions({
@@ -45,6 +55,72 @@ const Transactions = () => {
       getError(error);
     }
   };
+
+  // Export transactions
+  const getExportTransaction = async () => {
+    try {
+      const response = await exportTransaction({
+        currentStart: dateRange?.currentStart,
+        currentEnd: dateRange?.currentEnd,
+      }).unwrap();
+
+      if (!response) {
+        toast.error(" No data");
+        return;
+      }
+      const blob = response instanceof Blob ? response : new Blob([response]);
+
+      try {
+        const responseText = await blob.text();
+        const rows = responseText.split("\n");
+
+        // If no rows found
+        if (rows.length <= 1) {
+          toast.error("No transaction to export");
+          return;
+        }
+
+        const header = rows[0].split(",");
+        const cleanedHeader = header.map((col) => col.replace(/"/g, "").trim());
+        const transactionIdIndex = cleanedHeader.indexOf("Transaction ID");
+
+        if (transactionIdIndex !== -1) {
+          cleanedHeader.splice(transactionIdIndex, 1);
+
+          const modifiedRows = rows.map((row, index) => {
+            if (index === 0) {
+              return cleanedHeader.join(",");
+            }
+
+            const columns = row.split(",");
+            if (columns.length > transactionIdIndex) {
+              columns.splice(transactionIdIndex, 1);
+            }
+            return columns.join(",");
+          });
+
+          const modifiedCsv = modifiedRows.join("\n");
+          const modifiedBlob = new Blob([modifiedCsv], { type: "text/csv" });
+          const filename = "Transactions.csv";
+          const link = document.createElement("a");
+          const url = window.URL.createObjectURL(modifiedBlob);
+          link.href = url;
+          link.setAttribute("download", filename);
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(url);
+        } else {
+          toast.error("Transaction ID column not found in CSV.");
+        }
+      } catch (error) {
+        toast.error("Error processing CSV data.");
+      }
+    } catch (error) {
+      getError(error);
+    }
+  };
+
 
   const handleTransaction = (tranId) => {
     setTransactionModal(true);
@@ -68,14 +144,37 @@ const Transactions = () => {
 
   return (
     <MotionDiv>
-      <h3
-        style={{
-          fontWeight: 600,
-          padding:'0px 12px'
-        }}
-      >
-        Transactions
-      </h3>
+      <div className="transaction-header mb-4 d-flex align-items-center flex-wrap justify-between w-100">
+        <h3 className="transaction-title">Transactions</h3>
+        <button
+          className="export-button"
+          onClick={getExportTransaction}
+          style={{
+            // paddingLeft: "30px",
+            backgroundColor: "var(--primary-color)",
+            height: "50px",
+            width: "200px",
+            borderRadius: "22px",
+            fontSize: "14px",
+            color: "white",
+            fontWeight: 600,
+            cursor: "pointer",
+            border: "none",
+            // padding:'10px'
+          }}
+        >
+          {ExportLoading ? (
+            <Spinner size="sm" />
+          ) : (
+            <>
+              <span style={{ marginRight: "4px", fontSize: "16px" }}>
+                <BiExport />
+              </span>
+              <span>Export Transactions</span>
+            </>
+          )}
+        </button>
+      </div>
       <DashboardCard>
         <div className="d-flex align-items-center flex-wrap gap-3">
           <div>

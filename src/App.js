@@ -38,6 +38,7 @@ import {
 import SubscriptionPage from "./pages/Subscription/SubscriptionPage";
 import { selectAuth } from "./features/authSlice";
 import OtpPage from "./pages/OtpPage";
+import TipTopicListPage from "./pages/TipTopicListPage";
 // import OtpCard from "./pages/OtpPage";
 
 function App() {
@@ -79,6 +80,7 @@ function App() {
     { path: "/user/cashflow/top-bucket", comp: <TopBucket /> },
     { path: "/user/cashflow/top-merchant", comp: <TopMerchant /> },
     { path: "/user/cashflow/top-transactions", comp: <TopTransaction /> },
+    { path: "/user/dashboard/tiptopics/:categoryId", comp:<TipTopicListPage/> },
   ];
   return (
     <div className="main-wrapper">

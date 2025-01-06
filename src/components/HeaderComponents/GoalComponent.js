@@ -27,6 +27,8 @@ import { getError } from "../../utils/error";
 import { getSuccess } from "../../utils/success";
 import Skeleton from "react-loading-skeleton";
 import { MdDelete } from "react-icons/md";
+import { toast } from "react-toastify";
+import { imgAddr } from "../../features/apiSlice";
 
 const GoalComponent = ({ show, hide, active, activeLink }) => {
   const fileRef = useRef(null);
@@ -48,47 +50,70 @@ const GoalComponent = ({ show, hide, active, activeLink }) => {
     useDeleteGoalMutation();
 
   const savingFor = [
-    "House Deposite",
+    "House Deposit",
     "Saving",
     "Car",
     "Investment",
-    "Credite card",
+    "Credit card",
     "Cash",
   ];
 
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setImage(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-        setIsFileSelected(true); 
-      };
-      reader.readAsDataURL(file);
+  // const handleImageChange = (event) => {
+  //   const file = event.target.files[0];
+  //   if (file) {
+  //     setImage(file);
+  //     const reader = new FileReader();
+  //     reader.onloadend = () => {
+  //       setImagePreview(reader.result);
+  //       setIsFileSelected(true);
+  //     };
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
+
+  const handleImageChange = (e) => {
+    const selectedImg = e?.target?.files[0];
+
+    if (selectedImg) {
+      if (selectedImg.size > 5 * 1024 * 1024) {
+        toast.error("Image size should be less than 5MB");
+      } else {
+        setImage(selectedImg);
+        setImagePreview(URL.createObjectURL(selectedImg));
+        toast.success("Image added successfully!");
+      }
     }
   };
 
   const handleButtonClick = () => {
     if (fileRef.current) {
-      fileRef.current.click(); 
+      fileRef.current.click();
     }
   };
+
+  // ========== CREATE A GOAL ================
 
   const handleSubmitGoals = async () => {
     if (!isFileSelected) {
       getError("Please select an image before submitting.");
     }
 
-    const goalData = {
-      description: category,
-      amount,
-      image,
-      date: goalDate,
-    };
+    // const goalData = {
+    //   description: category,
+    //   amount,
+    //   image,
+    //   date: goalDate,
+    // };
+
+    const form = new FormData();
+
+    form.append("description", category);
+    form.append("image", image);
+    form.append("amount", amount);
+    form.append("date", goalDate);
 
     try {
-      const data = await createGoals(goalData).unwrap();
+      const data = await createGoals(form).unwrap();
       getSuccess(data?.message);
       activeLink(1);
       hide();
@@ -253,7 +278,7 @@ const GoalComponent = ({ show, hide, active, activeLink }) => {
                 {goals?.length > 0 ? (
                   !goalsLoading ? (
                     goals?.map((data) => {
-                      // console.log('data',data)
+                      // console.log("data", data);
                       return (
                         <div
                           className="mt-2"
@@ -269,7 +294,17 @@ const GoalComponent = ({ show, hide, active, activeLink }) => {
                           <div className=" d-flex justify-content-between align-items-center">
                             <div className="d-flex gap-2 align-items-center">
                               <Image
-                                src={"/images/Rectangle 116.png"}
+                                width={"35px"}
+                                height={"35px"}
+                                style={{
+                                  borderRadius: "50%",
+                                  objectFit: "cover",
+                                }}
+                                src={
+                                  data?.image
+                                    ? imgAddr + data?.image
+                                    : "/images/Rectangle 116.png"
+                                }
                                 alt="..."
                               />
                               <div>
@@ -297,7 +332,7 @@ const GoalComponent = ({ show, hide, active, activeLink }) => {
                             <div
                               style={{
                                 color: "var(--primary-color)",
-                                fontSize: "12px",
+                                fontSize: "15px",
                                 fontWeight: 600,
                                 width: "auto",
                                 display: "flex",
@@ -474,6 +509,27 @@ const GoalComponent = ({ show, hide, active, activeLink }) => {
               >
                 Select Image
               </button>
+
+              <div
+                className="text-center"
+                style={{
+                  color: "rgba(55, 73, 87, 1)",
+                  fontWeight: 400,
+                  fontSize: "12px",
+                }}
+              >
+                {imagePreview && (
+                  <img
+                    style={{
+                      width: "100%",
+                      height: "150px",
+                      borderRadius: "10px",
+                    }}
+                    src={imagePreview}
+                    alt="..."
+                  />
+                )}
+              </div>
             </div>
 
             <div>
@@ -516,7 +572,9 @@ const GoalComponent = ({ show, hide, active, activeLink }) => {
                       backgroundColor: "rgba(250, 250, 250, 1)",
                       color: "var(--primary-color)",
                       fontSize: "10px",
+                      cursor: "pointer",
                     }}
+                    onClick={() => setCategory(data)}
                   >
                     {data}
                   </div>
@@ -573,7 +631,7 @@ const GoalComponent = ({ show, hide, active, activeLink }) => {
 
             <div className="text-center">
               <button
-                onClick={() => activeLink(3)}
+                onClick={() => activeLink(4)}
                 className="w-75 mt-3"
                 style={{
                   backgroundColor: "var(--primary-color)",
@@ -590,7 +648,7 @@ const GoalComponent = ({ show, hide, active, activeLink }) => {
         </div>
       )}
 
-      {active === 3 && (
+      {/* {active === 3 && (
         <>
           <div className="d-flex">
             <div
@@ -656,7 +714,7 @@ const GoalComponent = ({ show, hide, active, activeLink }) => {
             </button>
           </div>
         </>
-      )}
+      )} */}
 
       {active === 4 && (
         <>
@@ -665,7 +723,7 @@ const GoalComponent = ({ show, hide, active, activeLink }) => {
               color="rgba(92, 182, 249, 1)"
               cursor={"pointer"}
               size={28}
-              onClick={() => activeLink(3)}
+              onClick={() => activeLink(2)}
             />
             <div
               style={{
@@ -816,6 +874,7 @@ const GoalComponent = ({ show, hide, active, activeLink }) => {
             <button
               className="w-75 mt-3"
               onClick={handleSubmitGoals}
+              // type="submit"
               style={{
                 backgroundColor: "var(--primary-color)",
                 padding: "10px",
