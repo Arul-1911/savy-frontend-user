@@ -149,6 +149,7 @@ const Transactions = () => {
         <button
           className="export-button"
           onClick={getExportTransaction}
+          disabled={!transactions || transactions.length === 0 || ExportLoading}
           style={{
             // paddingLeft: "30px",
             backgroundColor: "var(--primary-color)",
