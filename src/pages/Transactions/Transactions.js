@@ -18,12 +18,14 @@ import { getDateRanges } from "../../components/DateRange/DateRange";
 import { useSelector } from "react-redux";
 import { BiExport } from "react-icons/bi";
 import { toast } from "react-toastify";
+import RangeCalendar from "../../components/Calendar/RangeCalender";
 
 const Transactions = () => {
   const { period } = useSelector((state) => state.period);
   const [transactionModal, setTransactionModal] = useState(false);
   const [activeTransaction, setActiveTransaction] = useState(1);
   const [openCalendar, setOpenCalendar] = useState(false);
+  const [openRangeCalendar, setOpenRangeCalendar] = useState(false);
   const [openFilter, setOpenFilter] = useState(false);
   const [getTransactions, { isLoading }] = useGetTransactionsMutation();
   const [exportTransaction, { isLoading: ExportLoading }] =
@@ -31,6 +33,8 @@ const Transactions = () => {
   const [transactions, setTransactions] = useState([]);
   const [transactionId, setTransactionId] = useState("");
   const [date, setDate] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [query, setQuery] = useState("");
   const [debounceQuery, setDebounceQuery] = useState("");
   const skeletonArray = [1, 2, 3, 4, 5, 6, 7];
@@ -41,14 +45,24 @@ const Transactions = () => {
 
   const dateRange = getDateRanges(period);
 
+  const setDateRange = ({ startDate, endDate }) => {
+    setStartDate(startDate);
+    setEndDate(endDate);
+    setOpenRangeCalendar(false);
+  };
+
+  const handleRangeCalendarClose = () => {
+    setOpenRangeCalendar(false);
+  };
+
   //get All transactions
   const getAllTransactions = async () => {
     try {
       const { transactions } = await getTransactions({
         query: debounceQuery,
         date,
-        currentStart: dateRange?.currentStart,
-        currentEnd: dateRange?.currentEnd,
+        currentStart: startDate || dateRange?.currentStart,
+        currentEnd: endDate || dateRange?.currentEnd,
       }).unwrap();
       setTransactions(transactions);
     } catch (error) {
@@ -60,8 +74,9 @@ const Transactions = () => {
   const getExportTransaction = async () => {
     try {
       const response = await exportTransaction({
-        currentStart: dateRange?.currentStart,
-        currentEnd: dateRange?.currentEnd,
+        currentStart: startDate,
+        currentEnd: endDate,
+        date,
       }).unwrap();
 
       if (!response) {
@@ -121,7 +136,6 @@ const Transactions = () => {
     }
   };
 
-
   const handleTransaction = (tranId) => {
     setTransactionModal(true);
     setTransactionId(tranId);
@@ -130,6 +144,12 @@ const Transactions = () => {
   const clearAllFilter = () => {
     setQuery("");
     setDate("");
+    setStartDate("");
+    setEndDate("");
+  };
+
+  const openRangeDatePicker = () => {
+    setOpenRangeCalendar(true);
   };
 
   useEffect(() => {
@@ -146,36 +166,61 @@ const Transactions = () => {
     <MotionDiv>
       <div className="transaction-header mb-4 d-flex align-items-center flex-wrap justify-between w-100">
         <h3 className="transaction-title">Transactions</h3>
-        <button
-          className="export-button"
-          onClick={getExportTransaction}
-          disabled={!transactions || transactions.length === 0 || ExportLoading}
-          style={{
-            // paddingLeft: "30px",
-            backgroundColor: "var(--primary-color)",
-            height: "50px",
-            width: "200px",
-            borderRadius: "22px",
-            fontSize: "14px",
-            color: "white",
-            fontWeight: 600,
-            cursor: "pointer",
-            border: "none",
-            // padding:'10px'
-          }}
-        >
-          {ExportLoading ? (
-            <Spinner size="sm" />
-          ) : (
-            <>
-              <span style={{ marginRight: "4px", fontSize: "16px" }}>
-                <BiExport />
-              </span>
-              <span>Export Transactions</span>
-            </>
-          )}
-        </button>
+        <div className="d-flex align-items-center export-button">
+          <Image
+            onClick={openRangeDatePicker}
+            style={{
+              color: "rgba(92, 182, 249, 1)",
+              fontWeight: 600,
+              fontSize: "16px",
+              backgroundColor: "rgba(242, 249, 255, 1)",
+              padding: "10px",
+              borderRadius: "20px",
+              cursor: "pointer",
+              marginRight: "10px",
+            }}
+            src="/icons/calendar.png"
+            alt="..."
+          />
+          <div className="calendar-container" style={{ marginLeft: "20px" }}>
+            <RangeCalendar
+              show={openRangeCalendar}
+              onConfirm={handleRangeCalendarClose}
+              hide={setOpenRangeCalendar}
+              setDateRange={setDateRange}
+            />
+          </div>
+          <button
+            onClick={getExportTransaction}
+            disabled={
+              !transactions || transactions.length === 0 || ExportLoading
+            }
+            style={{
+              backgroundColor: "var(--primary-color)",
+              height: "50px",
+              width: "200px",
+              borderRadius: "22px",
+              fontSize: "14px",
+              color: "white",
+              fontWeight: 600,
+              cursor: "pointer",
+              border: "none",
+            }}
+          >
+            {ExportLoading ? (
+              <Spinner size="sm" />
+            ) : (
+              <>
+                <span style={{ marginRight: "4px", fontSize: "16px" }}>
+                  <BiExport />
+                </span>
+                <span>Export Transactions</span>
+              </>
+            )}
+          </button>
+        </div>
       </div>
+
       <DashboardCard>
         <div className="d-flex align-items-center flex-wrap gap-3">
           <div>
@@ -201,21 +246,7 @@ const Transactions = () => {
                   backgroundColor: "rgba(245, 247, 248, 1)",
                 }}
                 className="border-0"
-              >
-                {/* <button
-                  style={{
-                    backgroundColor: "rgba(92, 182, 249, 1)",
-                    color: "white",
-                    borderRadius: "50%",
-                    border: "none",
-                    outline: "none",
-                    background: "transparent",
-                  }}
-                  type="submit"
-                >
-                  <FaSearch color="rgba(0, 74, 173, 1)" size={14} />
-                </button> */}
-              </InputGroup.Text>
+              ></InputGroup.Text>
             </InputGroup>
           </div>
           <Image
@@ -247,20 +278,6 @@ const Transactions = () => {
           >
             Clear All
           </button>
-
-          {/* <button
-            className="px-3 py-1"
-            style={{
-              backgroundColor: "white",
-              color: "var(--primary-color)",
-              border: "1px solid #D2EBFD",
-              borderRadius: "18px",
-              fontSize: "12px",
-              fontWeight: 600,
-            }}
-          >
-            Refresh <IoMdRefresh />
-          </button> */}
         </div>
 
         <ul className="market mt-3">

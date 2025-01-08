@@ -16,7 +16,7 @@ export const getError = (error) => {
 
 export const toastOptions = {
   position: "top-right",
-  autoClose: 3000,
+  autoClose: 2000,
   pauseOnHover: true,
   draggable: true,
   theme: "colored",
