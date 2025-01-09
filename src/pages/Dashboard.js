@@ -377,6 +377,7 @@ export default function Dashboard() {
                               fontSize: "20px",
                               fontWeight: 600,
                             }}
+                            title=""
                           >
                             {dashboard?.card1?.moneyInVsMoneyOut[0].uv}$
                           </div>
@@ -410,6 +411,7 @@ export default function Dashboard() {
                               fontSize: "20px",
                               fontWeight: 600,
                             }}
+                            title=""
                           >
                             {dashboard?.card1?.moneyInVsMoneyOut[1].uv}$
                           </div>
@@ -532,7 +534,7 @@ export default function Dashboard() {
                       fontWeight: 600,
                     }}
                   >
-                    Money In
+                    Money In 
                   </li>
                 </ul>
 

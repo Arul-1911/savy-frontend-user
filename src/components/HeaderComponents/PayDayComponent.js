@@ -247,7 +247,7 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
                                     fontSize: "12px",
                                   }}
                                 >
-                                  $20 spent of {data?.amount}
+                                  {/* $20 spent of {data?.amount} */}
                                 </div>
                               </div>
                             </div>
@@ -607,7 +607,7 @@ const PayDayComponent = ({ show, hide, active, activeLink }) => {
                                     fontSize: "12px",
                                   }}
                                 >
-                                  $20 spent of {data?.amount}
+                                  {/* $20 spent of {data?.amount} */}
                                 </div>
                               </div>
                             </div>

@@ -418,7 +418,8 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                                   fontSize: "12px",
                                 }}
                               >
-                                $20 spent of {data?.budget_amount}
+                                {/* $20 spent of {data?.budget_amount} */}
+                                 {data?.budget_amount}
                               </div>
                             </div>
                           </div>

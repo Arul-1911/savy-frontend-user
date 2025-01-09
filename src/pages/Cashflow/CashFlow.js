@@ -51,7 +51,7 @@ const CashFlow = () => {
           >
             Cashflow
           </h3>
-          <button
+          {/* <button
             onClick={() => setSettingModal(true)}
             style={{
               padding: "10px",
@@ -65,7 +65,7 @@ const CashFlow = () => {
             }}
           >
             <IoSettingsOutline size={18} /> Settings
-          </button>
+          </button> */}
         </div>
 
         <ul className="my_account_portfolio mt-2">

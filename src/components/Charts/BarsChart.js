@@ -41,7 +41,7 @@ const BarsChart = ({
         textAnchor="middle"
         dominantBaseline="middle"
       >
-        {val}
+        {String(val)}
       </text>
     );
   };
@@ -50,6 +50,26 @@ const BarsChart = ({
     { value: data && data[0]?.name, type: "square", color: barGrad1 },
     { value: data && data[1]?.name, type: "square", color: barGrad3 },
   ];
+
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div
+          className="custom-tooltip"
+          style={{
+            padding: "10px",
+            border: "1px solid #ccc",
+            backgroundColor: "white",
+          }}
+        >
+          <p className="label">{`${label}`}</p>
+          <p className="label">{`$:${String(payload[0].value)}`}</p>
+        </div>
+      );
+    }
+
+    return null;
+  };
 
   return (
     <ResponsiveContainer width={width} height={height}>
@@ -82,7 +102,7 @@ const BarsChart = ({
             interval={0}
           />
         )}
-        <Tooltip />
+        <Tooltip content={<CustomTooltip />} />
         {cashFlow && (
           <Legend
             payload={legendPayload}
@@ -106,6 +126,7 @@ const BarsChart = ({
               key={`cell-${index}`}
               cursor="pointer"
               fill={`url(#colorUv${index})`}
+              
             />
           ))}
         </Bar>
