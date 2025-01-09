@@ -1111,7 +1111,7 @@ export default function Dashboard() {
                         className="mt-3"
                         style={{ fontSize: "16px", fontWeight: 600 }}
                       >
-                        No Bills Added!
+                        No Bills Added!!
                       </div>
                     )}
 
