@@ -5,6 +5,7 @@ const authSlice = createSlice({
   initialState: {
     user: JSON.parse(localStorage.getItem("user")) || null,
     accessToken: JSON.parse(localStorage.getItem("accessToken")) || null,
+    selectAccountId:null
   },
   reducers: {
     setUser: (state, action) => {
@@ -23,15 +24,20 @@ const authSlice = createSlice({
         console.error("setAccessToken called with undefined payload");
       }
     },
+    setSelectAccountId: (state,action) => {
+      state.selectAccountId = action.payload
+    },
     clearAuth: (state) => {
       state.user = null;
       state.accessToken = null;
+      state.selectAccountId = null
       localStorage.removeItem("user");
       localStorage.removeItem("accessToken");
     },
   },
 });
 
-export const { setUser, setAccessToken, clearAuth } = authSlice.actions;
+export const { setUser, setAccessToken, clearAuth, setSelectAccountId } = authSlice.actions;
+export const selectAccountId = (state) => state.auth.selectAccountId;
 export const selectAuth = (state) => state.auth;
 export default authSlice.reducer;

@@ -405,11 +405,11 @@ export const apiSlice = createApi({
     // }),
 
     getTransactions: builder.mutation({
-      query: ({ query, currentStart, currentEnd, date }) => {
-        let url = `/user/get-transactions?keyword=${query}&date=${date}`;
+      query: ({ query, currentStart, currentEnd, date, account_id }) => {
+        let url = `/user/get-transactions?keyword=${query}&date=${date}&account_id=${account_id}`;
 
         if (currentStart && currentEnd) {
-          url += `&currentStart=${currentStart}&currentEnd=${currentEnd}`;
+          url += `¤tStart=${currentStart}¤tEnd=${currentEnd}`;
         }
 
         return {
@@ -436,11 +436,11 @@ export const apiSlice = createApi({
 
     // ======== EXPORT TRANSACTION CSV =========
     getDownloadTransaction: builder.mutation({
-      query: ({ currentStart, currentEnd }) => {
+      query: ({ currentStart, currentEnd, account_id }) => {
         let url = `/user/get-transactions-csv?`;
 
         if (currentStart && currentEnd) {
-          url += `&currentStart=${currentStart}&currentEnd=${currentEnd}`;
+          url += `&currentStart=${currentStart}&currentEnd=${currentEnd}&account_id=${account_id}`;
         }
 
         return {
@@ -506,8 +506,8 @@ export const apiSlice = createApi({
 
     // ====== Dashboard =======
     dashboardData: builder.mutation({
-      query: ({ currentStart, currentEnd }) => ({
-        url: `/user/get-graph-data?currentStart=${currentStart}&currentEnd=${currentEnd}`,
+      query: ({ currentStart, currentEnd, account_id }) => ({
+        url: `/user/get-graph-data?currentStart=${currentStart}&currentEnd=${currentEnd}&account_id=${account_id}`,
         method: "GET",
       }),
     }),

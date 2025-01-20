@@ -19,6 +19,7 @@ import { useSelector } from "react-redux";
 import { useGetGoalsMutation } from "../../features/apiSlice";
 import { getError } from "../../utils/error";
 import DashboardSettings from "../HeaderComponents/DashboardSettings";
+import MultipleAccounts from "../HeaderComponents/MultipleAccounts";
 
 export default function Header({ sidebarHandler }) {
   const { user, accessToken } = useSelector(selectAuth);
@@ -97,13 +98,30 @@ export default function Header({ sidebarHandler }) {
                       fontSize: "12px",
                       color: "var(--primary-color)",
                       fontWeight: 400,
-                      cursor:'pointer'
+                      cursor: "pointer",
                     }}
                   >
                     <img src="/images/badge.png" alt="..." />{" "}
                     <span>Customise dasboard</span>
                     <IoIosArrowForward size={16} />
                   </div>
+                </div>
+              </Col>
+
+              <Col>
+                <div
+                  className="p-1 d-flex align-items-center"
+                  // style={{
+                  //   backgroundColor: "rgba(235, 241, 248, 1)",
+                  //   borderRadius: "22px",
+                  //   fontSize: "12px",
+                  //   color: "var(--primary-color)",
+                  //   fontWeight: 400,
+                  //   cursor: "pointer",
+                  //   width:'65%'
+                  // }}
+                >
+                  <MultipleAccounts />
                 </div>
               </Col>
 
@@ -190,31 +208,33 @@ export default function Header({ sidebarHandler }) {
                     </div>
                   )}
 
-                 {!isCardDisabled('Pay Countdown')&&( <div
-                    className="customize-dashboard custom-dasboard-payday"
-                    onClick={() => {
-                      setPayDays(true);
-                      setPayDaysLink(1);
-                    }}
-                    style={{
-                      cursor: "pointer",
-                      padding: "26px",
-                      backgroundColor: "rgba(235, 241, 248, 1)",
-                      height: "50px",
-                      width: "140px",
-                      borderRadius: "22px",
-                      fontSize: "12px",
-                      color: "var(--primary-color)",
-                      fontWeight: 500,
-                    }}
-                  >
-                    <img src="/images/badge.png" alt="..." />{" "}
-                    <span>Payday</span>
-                    <IoIosArrowForward size={16} />
-                  </div>)}
+                  {!isCardDisabled("Pay Countdown") && (
+                    <div
+                      className="customize-dashboard custom-dasboard-payday"
+                      onClick={() => {
+                        setPayDays(true);
+                        setPayDaysLink(1);
+                      }}
+                      style={{
+                        cursor: "pointer",
+                        padding: "26px",
+                        backgroundColor: "rgba(235, 241, 248, 1)",
+                        height: "50px",
+                        width: "140px",
+                        borderRadius: "22px",
+                        fontSize: "12px",
+                        color: "var(--primary-color)",
+                        fontWeight: 500,
+                      }}
+                    >
+                      <img src="/images/badge.png" alt="..." />{" "}
+                      <span>Payday</span>
+                      <IoIosArrowForward size={16} />
+                    </div>
+                  )}
 
                   <div
-                    className="customize-dashboard py-3 px-4 dasboard-add-account"
+                    className="customize-dashboard py-3 px-3 dasboard-add-account"
                     onClick={() => setAddAccountModal(true)}
                     style={{
                       backgroundColor: "var(--primary-color)",

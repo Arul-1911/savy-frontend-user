@@ -20,7 +20,7 @@ const BaseCalendar = ({
   const [endDateValue, setEndDateValue] = useState(null);
   const [startDateError, setStartDateError] = useState(null);
   const [endDateError, setEndDateError] = useState(null);
-  const [resetFlag, setResetFlag] = useState(false); // Add a reset flag
+  const [resetFlag, setResetFlag] = useState(false); 
 
   const today = dayjs();
   const startDateRef = useRef(null);
@@ -31,7 +31,7 @@ const BaseCalendar = ({
     setEndDateValue(null);
     setStartDateError(null);
     setEndDateError(null);
-    setResetFlag((prev) => !prev); // Toggle reset flag to force re-render
+    setResetFlag((prev) => !prev);
   };
 
   const handleStartDateChange = (newDate) => {
@@ -196,7 +196,7 @@ const BaseCalendar = ({
                     }}
                     onClick={handleConfirm}
                   >
-                    Confirm
+                    Get Data
                   </button>
                 </div>
               </CardBody>
@@ -303,7 +303,7 @@ const BaseCalendar = ({
                     }}
                     onClick={handleConfirm}
                   >
-                    Confirm
+                    Get Data
                   </button>
                 </div>
               </CardBody>

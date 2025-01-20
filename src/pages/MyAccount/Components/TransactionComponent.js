@@ -14,6 +14,7 @@ import {
 import { getError } from "../../../utils/error";
 import { getDateRanges } from "../../../components/DateRange/DateRange";
 import { useSelector } from "react-redux";
+import { selectAccountId } from "../../../features/authSlice";
 
 const Transactions = () => {
   const { period } = useSelector((state) => state.period);
@@ -29,11 +30,14 @@ const Transactions = () => {
   const [debounceQuery, setDebounceQuery] = useState("");
   const skeletonArray = [1, 2, 3, 4, 5, 6, 7];
 
+  const dateRange = getDateRanges(period);
+
+  const accountID = useSelector(selectAccountId);
+  
+
   useEffect(() => {
     getAllTransactions();
-  }, [date, debounceQuery, period]);
-
-  const dateRange = getDateRanges(period);
+  }, [date, debounceQuery, period, accountID]);
 
   const getAllTransactions = async () => {
     try {
@@ -42,6 +46,7 @@ const Transactions = () => {
         date,
         currentStart: dateRange?.currentStart,
         currentEnd: dateRange?.currentEnd,
+        account_id: accountID,
       }).unwrap();
       setTransactions(transactions);
     } catch (error) {

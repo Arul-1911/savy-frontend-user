@@ -29,6 +29,7 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { setDisabled } from "../features/dashBoardSlice";
 import { getDateRanges } from "../components/DateRange/DateRange";
+import { selectAccountId } from "../features/authSlice";
 
 const COLORS = [
   { start: "rgba(36, 204, 167, 1)", end: "rgba(74, 86, 226, 1)" },
@@ -65,6 +66,8 @@ export default function Dashboard() {
 
   const dispatch = useDispatch();
 
+  const accountID = useSelector(selectAccountId);
+
   
   const disabled = useSelector((state) => state?.dashBoard?.disabled);
 
@@ -81,7 +84,7 @@ export default function Dashboard() {
   useEffect(() => {
     getDashboardData();
     getAllAssetsLibilities();
-  }, [period]);
+  }, [period, accountID]);
 
   useEffect(() => {
     if (expenseActive === 2) {
@@ -106,6 +109,7 @@ export default function Dashboard() {
       const { data } = await dashboardData({
         currentStart: dateRange?.currentStart,
         currentEnd: dateRange?.currentEnd,
+        account_id: accountID,
       });
       setDashboard(data?.dashboardData);
       setTotalNetWorth(data?.dashboardData?.card1?.["Total amount"] || 0);

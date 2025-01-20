@@ -19,6 +19,7 @@ import { useSelector } from "react-redux";
 import { BiExport } from "react-icons/bi";
 import { toast } from "react-toastify";
 import RangeCalendar from "../../components/Calendar/RangeCalender";
+import { selectAccountId } from "../../features/authSlice";
 
 const Transactions = () => {
   const { period } = useSelector((state) => state.period);
@@ -38,10 +39,13 @@ const Transactions = () => {
   const [query, setQuery] = useState("");
   const [debounceQuery, setDebounceQuery] = useState("");
   const skeletonArray = [1, 2, 3, 4, 5, 6, 7];
+  const [exportTrigger, setExportTrigger] = useState(false);
+
+  const accountID = useSelector(selectAccountId);
 
   useEffect(() => {
     getAllTransactions();
-  }, [date, debounceQuery, period]);
+  }, [date, debounceQuery, period, accountID]);
 
   const dateRange = getDateRanges(period);
 
@@ -49,7 +53,15 @@ const Transactions = () => {
     setStartDate(startDate);
     setEndDate(endDate);
     setOpenRangeCalendar(false);
+    setExportTrigger(true);
   };
+
+  useEffect(() => {
+    if (exportTrigger) {
+      getExportTransaction();
+      setExportTrigger(false);
+    }
+  }, [exportTrigger]);
 
   const handleRangeCalendarClose = () => {
     setOpenRangeCalendar(false);
@@ -63,6 +75,7 @@ const Transactions = () => {
         date,
         currentStart: startDate || dateRange?.currentStart,
         currentEnd: endDate || dateRange?.currentEnd,
+        account_id: accountID,
       }).unwrap();
       setTransactions(transactions);
     } catch (error) {
@@ -71,52 +84,33 @@ const Transactions = () => {
   };
 
   // Export transactions
-  const getExportTransaction = async () => {
-    try {
-      const response = await exportTransaction({
-        currentStart: startDate,
-        currentEnd: endDate,
-        date,
-      }).unwrap();
-
-      if (!response) {
-        toast.error(" No data");
-        return;
-      }
-      const blob = response instanceof Blob ? response : new Blob([response]);
-
+    const getExportTransaction = async () => {
       try {
-        const responseText = await blob.text();
-        const rows = responseText.split("\n");
+        const response = await exportTransaction({
+          currentStart: startDate,
+          currentEnd: endDate,
+          date,
+          account_id: accountID,
+        }).unwrap();
 
-        // If no rows found
-        if (rows.length <= 1) {
-          toast.error("No transaction to export");
+        if (!response) {
+          toast.error("No data");
           return;
         }
+        const blob = response instanceof Blob ? response : new Blob([response]);
 
-        const header = rows[0].split(",");
-        const cleanedHeader = header.map((col) => col.replace(/"/g, "").trim());
-        const transactionIdIndex = cleanedHeader.indexOf("Transaction ID");
+        try {
+          const responseText = await blob.text();
+          const rows = responseText.split("\n");
 
-        if (transactionIdIndex !== -1) {
-          cleanedHeader.splice(transactionIdIndex, 1);
+          // If no rows found
+          if (rows.length <= 1) {
+            toast.error("No transaction to export");
+            return;
+          }
 
-          const modifiedRows = rows.map((row, index) => {
-            if (index === 0) {
-              return cleanedHeader.join(",");
-            }
-
-            const columns = row.split(",");
-            if (columns.length > transactionIdIndex) {
-              columns.splice(transactionIdIndex, 1);
-            }
-            return columns.join(",");
-          });
-
-          const modifiedCsv = modifiedRows.join("\n");
-          const modifiedBlob = new Blob([modifiedCsv], { type: "text/csv" });
-          const filename = "Transactions.csv";
+          const filename = "Transactions";
+          const modifiedBlob = new Blob([responseText], { type: "text/csv" });
           const link = document.createElement("a");
           const url = window.URL.createObjectURL(modifiedBlob);
           link.href = url;
@@ -125,16 +119,13 @@ const Transactions = () => {
           link.click();
           document.body.removeChild(link);
           window.URL.revokeObjectURL(url);
-        } else {
-          toast.error("Transaction ID column not found in CSV.");
+        } catch (error) {
+          toast.error("Error processing CSV data.");
         }
       } catch (error) {
-        toast.error("Error processing CSV data.");
+        getError(error);
       }
-    } catch (error) {
-      getError(error);
-    }
-  };
+    };
 
   const handleTransaction = (tranId) => {
     setTransactionModal(true);
@@ -167,7 +158,7 @@ const Transactions = () => {
       <div className="transaction-header mb-4 d-flex align-items-center flex-wrap justify-between w-100">
         <h3 className="transaction-title">Transactions</h3>
         <div className="d-flex align-items-center export-button">
-          <Image
+          {/* <Image
             onClick={openRangeDatePicker}
             style={{
               color: "rgba(92, 182, 249, 1)",
@@ -181,20 +172,22 @@ const Transactions = () => {
             }}
             src="/icons/calendar.png"
             alt="..."
-          />
+          /> */}
           <div className="calendar-container" style={{ marginLeft: "20px" }}>
             <RangeCalendar
               show={openRangeCalendar}
               onConfirm={handleRangeCalendarClose}
               hide={setOpenRangeCalendar}
               setDateRange={setDateRange}
+              handleExport={getExportTransaction}
             />
           </div>
           <button
-            onClick={getExportTransaction}
-            disabled={
-              !transactions || transactions.length === 0 || ExportLoading
-            }
+            // onClick={getExportTransaction}
+            onClick={openRangeDatePicker}
+            // disabled={
+            //   !transactions || transactions.length === 0 || ExportLoading
+            // }
             style={{
               backgroundColor: "var(--primary-color)",
               height: "50px",
