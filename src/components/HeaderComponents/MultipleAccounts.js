@@ -1,26 +1,47 @@
 // src/components/MultipleAccounts.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setSelectAccountId, selectAuth } from "../../features/authSlice";
+import {
+  setSelectAccountId,
+  selectAuth,
+  setUser,
+} from "../../features/authSlice";
 import { Dropdown } from "react-bootstrap";
 import { Col } from "react-bootstrap";
+import { useGetUserProfileMutation } from "../../features/apiSlice";
+import { getError } from "../../utils/error";
+import AddAccount from "./AddAccount";
+import { GoPlus } from "react-icons/go";
 
 const MultipleAccounts = () => {
-  const { user, selectAccountId } = useSelector(selectAuth); // Using selectAccountId here
+  const { selectAccountId } = useSelector(selectAuth);
+  const [getUserProfile, { isLoading }] = useGetUserProfileMutation();
   const [accounts, setAccounts] = useState([]);
   const dispatch = useDispatch();
   const isFirstRender = useRef(true);
+  const [addAccountModal, setAddAccountModal] = useState(false);
+  const [addAccountLink, setAddAccountLink] = useState(1);
+
+  const fetchprofile = async () => {
+    try {
+      const { user } = await getUserProfile().unwrap();
+      if (user && user?.accounts && user?.accounts?.length > 0) {
+        setUser(user);
+        setAccounts(user?.accounts);
+        if (isFirstRender.current && !selectAccountId) {
+          const defaultAccount = user?.accounts[0].account_id;
+          dispatch(setSelectAccountId(defaultAccount));
+          isFirstRender.current = false;
+        }
+      }
+    } catch (error) {
+      getError(error);
+    }
+  };
 
   useEffect(() => {
-    if (user && user?.accounts && user?.accounts?.length > 0) {
-      setAccounts(user?.accounts);
-      if (isFirstRender.current && !selectAccountId) {
-        const defaultAccount = user?.accounts[0].account_id;
-        dispatch(setSelectAccountId(defaultAccount));
-        isFirstRender.current = false;
-      }
-    }
-  }, [user, dispatch, selectAccountId]);
+    fetchprofile();
+  }, [dispatch, selectAccountId]);
 
   const handleAccountChange = (accountId) => {
     dispatch(setSelectAccountId(accountId));
@@ -48,15 +69,15 @@ const MultipleAccounts = () => {
             style={{
               backgroundColor: "transparent",
               border: "none",
-              fontSize: "12px",
+              fontSize: "13px",
               fontWeight: 400,
               color: "var(--primary-color)",
             }}
           >
             {accounts?.find((acc) => acc.account_id === selectAccountId)
-              ?.user_name || "Select Account"}
+              ?.account_name || "Select Account"}
           </Dropdown.Toggle>
-          <Dropdown.Menu style={{ fontSize: "13px" }}>
+          <Dropdown.Menu style={{ fontSize: "14px", marginTop:'6px' }}>
             {accounts?.map((acc) => (
               <Dropdown.Item
                 key={acc._id}
@@ -65,14 +86,39 @@ const MultipleAccounts = () => {
                   color: "var(--primary-color)",
                 }}
               >
-                {acc.user_name}
+                {acc.account_name}
               </Dropdown.Item>
             ))}
+            <div
+              className="mt-3 p-2"
+              onClick={() => setAddAccountModal(true)}
+              style={{
+                backgroundColor: "var(--primary-color)",
+                borderRadius: "22px",
+                fontSize: "13px",
+                color: "white",
+                fontWeight: 400,
+                cursor: "pointer",
+                marginLeft:'70px',
+                width:'fit-content'
+              }}
+            >
+              <GoPlus size={12} /> Add account
+            </div>{" "}
+            <AddAccount
+              show={addAccountModal}
+              hide={setAddAccountModal}
+              active={addAccountLink}
+              activeLink={setAddAccountLink}
+            />
+            
           </Dropdown.Menu>
         </Dropdown>
       </div>
     </Col>
   );
 };
+
+
 
 export default MultipleAccounts;

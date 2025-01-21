@@ -34,7 +34,7 @@ const AddAccount = ({ show, hide, active, activeLink }) => {
         />
       )}
 
-      {active === 2 && (
+      {/* {active === 2 && (
         <FinancialPolicy
           containerDiv={false}
           goBack={() => activeLink(1)}
@@ -108,7 +108,7 @@ const AddAccount = ({ show, hide, active, activeLink }) => {
           goBack={() => activeLink(10)}
           next={() => hide(false)}
         />
-      )}
+      )} */}
     </ModalWindow>
   );
 };

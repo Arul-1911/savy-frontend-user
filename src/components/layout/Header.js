@@ -233,7 +233,7 @@ export default function Header({ sidebarHandler }) {
                     </div>
                   )}
 
-                  <div
+                  {/* <div
                     className="customize-dashboard py-3 px-3 dasboard-add-account"
                     onClick={() => setAddAccountModal(true)}
                     style={{
@@ -246,7 +246,7 @@ export default function Header({ sidebarHandler }) {
                     }}
                   >
                     <GoPlus size={16} /> Add account
-                  </div>
+                  </div> */}
 
                   <div
                     onClick={() => setNotificationModal(true)}
@@ -317,12 +317,12 @@ export default function Header({ sidebarHandler }) {
           <Notification show={notificationModal} hide={setNotificationModal} />
 
           {/* Add Account */}
-          <AddAccount
+          {/* <AddAccount
             show={addAccountModal}
             hide={setAddAccountModal}
             active={addAccountLink}
             activeLink={setAddAccountLink}
-          />
+          /> */}
 
           {/* Offcanvas Account */}
           <OffcanvasAccount

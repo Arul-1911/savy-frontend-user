@@ -221,19 +221,26 @@ export const apiSlice = createApi({
       }),
     }),
 
-    // ====== Cashflow =======
-    // getCashflow: builder.mutation({
-    //   query: ({ currentStart, currentEnd, previousStart, previousEnd }) => ({
-    //     url: `/user/get-cashflow-data-overview?currentStart=${currentStart}&currentEnd=${currentEnd}&previousStart=${previousStart}&previousEnd=${previousEnd}`,
-    //     method: "GET",
-    //   }),
-    // }),
+    // ======= Add New Bank Account =======
+    getAddNewBankAccount: builder.mutation({
+      query: () => ({
+        url: "/user/add-bank",
+        method: "GET",
+      }),
+    }),
+
+    // ======= Profile =======
+    getUserProfile: builder.mutation({
+      query: () => ({
+        url: "user/get-profile",
+        method: "GET",
+      }),
+    }),
 
     getCashflow: builder.mutation({
       query: (args) => {
         const { currentStart, currentEnd, previousStart, previousEnd } = args;
 
-        // Function to get start and end dates for a given month
         function getMonthStartEnd(date) {
           const year = date.getFullYear();
           const month = date.getMonth();
@@ -248,14 +255,14 @@ export const apiSlice = createApi({
         let _previousStart = previousStart;
         let _previousEnd = previousEnd;
 
-        // Handle empty currentStart and currentEnd
+      
         if (!currentStart && !currentEnd) {
           const currentDate = new Date();
           const { start, end } = getMonthStartEnd(currentDate);
           _currentStart = start;
           _currentEnd = end;
         }
-        // Handle empty previousStart and previousEnd
+    
         if (!previousStart && !previousEnd) {
           const previousDate = new Date();
           previousDate.setMonth(previousDate.getMonth() - 1);
@@ -271,59 +278,6 @@ export const apiSlice = createApi({
       },
     }),
 
-    // getCashflowMoneyIn: builder.mutation({
-    //   query: ({
-    //     currentStart,
-    //     currentEnd,
-    //     previousStart,
-    //     previousEnd,
-    //     filter,
-    //   }) => ({
-    //     url: `/user/get-cashflow-data-in?currentStart=${currentStart}&currentEnd=${currentEnd}&previousStart=${previousStart}&previousEnd=${previousEnd}&filter=${filter}`,
-    //     method: "GET",
-    //   }),
-    // }),
-
-    // getCashflowMoneyOut: builder.mutation({
-    //   query: ({
-    //     currentStart,
-    //     currentEnd,
-    //     previousStart,
-    //     previousEnd,
-    //     filter,
-    //   }) => ({
-    //     url: `/user/get-cashflow-data-out?currentStart=${currentStart}&currentEnd=${currentEnd}&previousStart=${previousStart}&previousEnd=${previousEnd}&filter=${filter}`,
-    //     method: "GET",
-    //   }),
-    // }),
-
-    // getCashflowNet: builder.mutation({
-    //   query: ({
-    //     currentStart,
-    //     currentEnd,
-    //     previousStart,
-    //     previousEnd,
-    //     filter,
-    //   }) => ({
-    //     url: `/user/get-cashflow-data-net?currentStart=${currentStart}&currentEnd=${currentEnd}&previousStart=${previousStart}&previousEnd=${previousEnd}&filter=${filter}`,
-    //     method: "GET",
-    //   }),
-    // }),
-
-    // getCashflow: builder.mutation({
-    //   query: ({ currentStart, currentEnd, previousStart, previousEnd }) => {
-    //     const params = new URLSearchParams();
-    //     if (currentStart) params.append("currentStart", currentStart);
-    //     if (currentEnd) params.append("currentEnd", currentEnd);
-    //     if (previousStart) params.append("previousStart", previousStart);
-    //     if (previousEnd) params.append("previousEnd", previousEnd);
-
-    //     return {
-    //       url: `/user/get-cashflow-data-overview?${params.toString()}`,
-    //       method: "GET",
-    //     };
-    //   },
-    // }),
 
     getCashflowMoneyIn: builder.mutation({
       query: ({
@@ -397,13 +351,6 @@ export const apiSlice = createApi({
     }),
 
     // ====== Transactions =======
-    // getTransactions: builder.mutation({
-    //   query: ({ query, date }) => ({
-    //     url: `/user/get-transactions?keyword=${query}&date=${date}`,
-    //     method: "GET",
-    //   }),
-    // }),
-
     getTransactions: builder.mutation({
       query: ({ query, currentStart, currentEnd, date, account_id }) => {
         let url = `/user/get-transactions?keyword=${query}&date=${date}&account_id=${account_id}`;
@@ -594,7 +541,9 @@ export const {
   useUpdateBillMutation,
   useDeleteBillMutation,
 
+  useGetUserProfileMutation,
   useGetSubscriptionsMutation,
+  useGetAddNewBankAccountMutation,
 
   useGetCashflowMutation,
   useGetCashflowMoneyInMutation,

@@ -1,28 +1,40 @@
-import React from "react";
+import React, { useState } from "react"; // Import useState
 import { useNavigate } from "react-router-dom";
-import { Button, Col, Image, Row } from "react-bootstrap";
-import { ToastContainer } from "react-toastify";
+import { Button, Col, Image, Row, Spinner } from "react-bootstrap"; // Import Spinner
+import { ToastContainer, toast } from "react-toastify";
 import LoginCard from "../../components/layout/LoginCard";
 import { getError } from "../../utils/error";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { RxCrossCircled } from "react-icons/rx";
+import { useGetAddNewBankAccountMutation } from "../../features/apiSlice";
+
 
 export default function ConnectBank({
   startScreen,
   goBack,
   containerDiv,
   infoNext,
-  next,
   bankDetails,
 }) {
   const navigate = useNavigate();
+  const [getAddNewBankAccount] = useGetAddNewBankAccountMutation();
+  const [loading, setLoading] = useState(false)
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); 
     try {
-      next ? next() : navigate("/user/financial-policy");
+      const response = await getAddNewBankAccount();
+
+      if (response?.data?.success) {
+        window.location.href = response?.data?.consentUrl;
+      } else {
+        toast.error(response?.data?.message || "Failed to get consent URL");
+      }
     } catch (error) {
       getError(error);
+    } finally {
+      setLoading(false); 
     }
   };
 
@@ -31,9 +43,9 @@ export default function ConnectBank({
       infoNext();
     } else {
       navigate("/");
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("user");
-      localStorage.removeItem("bankToken");
+      // localStorage.removeItem("accessToken");
+      // localStorage.removeItem("user");
+      // localStorage.removeItem("bankToken");
     }
   };
 
@@ -46,7 +58,7 @@ export default function ConnectBank({
     >
       {startScreen && (
         <div className="d-flex align-items-center justify-content-between mb-3">
-          <div>
+          {/* <div>
             <IoArrowBackCircleOutline
               color="rgba(92, 182, 249, 1)"
               cursor={"pointer"}
@@ -55,7 +67,7 @@ export default function ConnectBank({
                 goBack ? goBack() : navigate("/user/choose-bank")
               }
             />
-          </div>
+          </div> */}
 
           <div>
             <Image
@@ -130,17 +142,19 @@ export default function ConnectBank({
               fontWeight: 700,
               fontSize: "12px",
               padding: "10px",
+              opacity: loading ? 0.7 : 1, // Add opacity during loading
             }}
+            disabled={loading} // Disable button during loading
             onClick={handleSubmit}
           >
-            Continue
+            {loading ? <Spinner animation="border" size="sm" /> : "Continue"}
           </Button>
         </Col>
       </Row>
 
       <Row className="mt-2 px-5">
         <Col>
-          <Button
+          {/* <Button
             className="float-sm-end w-100 "
             style={{
               background: "white",
@@ -152,7 +166,7 @@ export default function ConnectBank({
             onClick={handleCancel}
           >
             Cancel
-          </Button>
+          </Button> */}
         </Col>
       </Row>
 
