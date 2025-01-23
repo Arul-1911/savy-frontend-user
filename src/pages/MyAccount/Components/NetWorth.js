@@ -44,7 +44,9 @@ const NetWorth = () => {
 
   useEffect(() => {
     getAllAssetsLibilities();
-    getTotalAmount();
+    if (accountID) {
+      getTotalAmount();
+    }
   }, [accountID]);
 
   const getAllAssetsLibilities = async () => {
@@ -95,7 +97,7 @@ const NetWorth = () => {
             </div>
           )}
         </div>
-        
+
         {!isCardDisabled("Financial passport") && (
           <div
             className="d-flex align-items-center"

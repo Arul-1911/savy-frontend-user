@@ -29,7 +29,11 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { setDisabled } from "../features/dashBoardSlice";
 import { getDateRanges } from "../components/DateRange/DateRange";
-import { selectAccountId, selectAuth, userDetails } from "../features/authSlice";
+import {
+  selectAccountId,
+  selectAuth,
+  userDetails,
+} from "../features/authSlice";
 
 const COLORS = [
   { start: "rgba(36, 204, 167, 1)", end: "rgba(74, 86, 226, 1)" },
@@ -89,7 +93,9 @@ export default function Dashboard() {
   const dateRange = getDateRanges(period);
 
   useEffect(() => {
-    getDashboardData();
+    if (accountID) {
+      getDashboardData();
+    }
     getAllAssetsLibilities();
   }, [period, accountID]);
 
@@ -142,7 +148,7 @@ export default function Dashboard() {
   const isCardDisabled = (cardname) => {
     return disabled?.includes(cardname);
   };
-  
+
   return (
     <MotionDiv>
       <Container fluid>
@@ -543,7 +549,7 @@ export default function Dashboard() {
                           : "rgba(55, 73, 87, 0.7)",
                       cursor: "pointer",
                       fontWeight: 600,
-                      marginRight:'10px'
+                      marginRight: "10px",
                     }}
                   >
                     Money In
@@ -657,7 +663,6 @@ export default function Dashboard() {
                           />
                         </div>
                       </Carousel.Item>
-                     
                     </Carousel>
                   )}
                 </div>

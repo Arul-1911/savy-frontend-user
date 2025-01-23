@@ -23,7 +23,9 @@ const CashFlow = () => {
   const accountID = useSelector(selectAccountId);
 
   useEffect(() => {
-    getCashflowData();
+  if(accountID){
+      getCashflowData();
+  }
   }, [period, accountID]);
 
   const dateRange = getDateRanges(period);
