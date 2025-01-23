@@ -76,7 +76,7 @@ export default function ViewCard(props) {
 
   const { loading, error, dispatch, success } = reducerProps;
 
-  console.log({error});
+  // console.log({error});
   // useEffect(() => {
   //   if (error) {
   //     toast.error(error, toastOptions);
@@ -88,7 +88,7 @@ export default function ViewCard(props) {
   //   }
   // }, [error, success]);
 
-  console.log("data in card: ",data);
+  // console.log("data in card: ",data);
 
   const fields = Object.entries(keyProps);
   return (

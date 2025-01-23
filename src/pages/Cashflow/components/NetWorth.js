@@ -15,6 +15,7 @@ import PieCharts from "../../../components/Charts/PieChart";
 import Skeleton from "react-loading-skeleton";
 import { useSelector } from "react-redux";
 import { getDateRanges } from "../../../components/DateRange/DateRange";
+import { selectAccountId } from "../../../features/authSlice";
 
 const data = [
   {
@@ -59,11 +60,13 @@ const NetWorth = ({ accountPortfolioActive }) => {
   const [bucketOpen, setBucketOpen] = useState(false);
   const [net, setNet] = useState([]);
 
+    const accountID = useSelector(selectAccountId);
+
   useEffect(() => {
     if (accountPortfolioActive) {
       getNetData();
     }
-  }, [accountPortfolioActive, selectBucketName, period]);
+  }, [accountPortfolioActive, selectBucketName, period, accountID]);
 
   const dateRange = getDateRanges(period);
 
@@ -75,6 +78,7 @@ const NetWorth = ({ accountPortfolioActive }) => {
         previousStart: dateRange?.previousStart,
         previousEnd: dateRange?.previousEnd,
         filter: selectBucketName.toLowerCase(),
+        account_id: accountID,
       }).unwrap();
       setNet(net);
     } catch (error) {

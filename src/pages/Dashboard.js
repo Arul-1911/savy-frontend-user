@@ -29,7 +29,7 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { setDisabled } from "../features/dashBoardSlice";
 import { getDateRanges } from "../components/DateRange/DateRange";
-import { selectAccountId } from "../features/authSlice";
+import { selectAccountId, selectAuth, userDetails } from "../features/authSlice";
 
 const COLORS = [
   { start: "rgba(36, 204, 167, 1)", end: "rgba(74, 86, 226, 1)" },
@@ -40,7 +40,7 @@ const COLORS = [
 ];
 
 export default function Dashboard() {
-   const {period} = useSelector((state) => state.period )
+  const { period } = useSelector((state) => state.period);
   const [dashboardData, { isLoading }] = useDashboardDataMutation();
   const { data: dashBoardSettings, isLoading: getCustomDashboardLoading } =
     useGetCustomizeDashboardQuery();
@@ -68,7 +68,16 @@ export default function Dashboard() {
 
   const accountID = useSelector(selectAccountId);
 
-  
+  const { user } = useSelector(selectAuth);
+
+  const currentAccount = user?.accounts?.find(
+    (account) => account.account_id === accountID
+  );
+  const isCreditCard = currentAccount?.is_credit_card;
+  const creditCardAmount = isCreditCard
+    ? currentAccount?.credit_limit
+    : dashboard?.card1?.["Credit Card"] || 0;
+
   const disabled = useSelector((state) => state?.dashBoard?.disabled);
 
   useEffect(() => {
@@ -77,9 +86,7 @@ export default function Dashboard() {
     }
   }, [dashBoardSettings, dispatch]);
 
-  // console.log(disabled, "disabled");
-
-    const dateRange = getDateRanges(period)
+  const dateRange = getDateRanges(period);
 
   useEffect(() => {
     getDashboardData();
@@ -133,9 +140,9 @@ export default function Dashboard() {
   }, [totalNetWorth, totalAssetsAmount, totalLiabilitiesAmount]);
 
   const isCardDisabled = (cardname) => {
-    return disabled?.includes(cardname)
-  }
-
+    return disabled?.includes(cardname);
+  };
+  
   return (
     <MotionDiv>
       <Container fluid>
@@ -302,7 +309,7 @@ export default function Dashboard() {
                             fontSize: "30px",
                           }}
                         >
-                          ${dashboard?.card1?.["Credit Card"]}
+                          ${creditCardAmount}
                         </div>
                       </div>
 
@@ -339,7 +346,7 @@ export default function Dashboard() {
                         </div>
                         <BarsChart
                           data={dashboard?.card1?.moneyInVsMoneyOut}
-                          width={200}
+                          width={235}
                           height={220}
                           moneyInvsOut={true}
                           color={COLORS}
@@ -536,9 +543,10 @@ export default function Dashboard() {
                           : "rgba(55, 73, 87, 0.7)",
                       cursor: "pointer",
                       fontWeight: 600,
+                      marginRight:'10px'
                     }}
                   >
-                    Money In 
+                    Money In
                   </li>
                 </ul>
 
@@ -649,150 +657,7 @@ export default function Dashboard() {
                           />
                         </div>
                       </Carousel.Item>
-                      {/* <Carousel.Item>
-                        <Row className="d-flex justify-content-between gap-3 px-3 mt-2">
-                          <Col
-                            className="p-3"
-                            style={{
-                              backgroundColor: "rgba(245, 247, 248, 1)",
-                              borderRadius: "10px",
-                            }}
-                          >
-                            <div
-                              style={{
-                                color: "#4A7EC4",
-                                fontSize: "12px",
-                                fontWeight: 700,
-                              }}
-                            >
-                              Bank
-                            </div>
-                            <div
-                              style={{
-                                color: "var(--primary-color)",
-                                fontSize: "18px",
-                                fontWeight: 700,
-                              }}
-                            >
-                              ${dashboard?.card1?.["Total amount"]}
-                            </div>
-                          </Col>
-
-                          <Col
-                            className="p-3"
-                            style={{
-                              backgroundColor: "rgba(245, 247, 248, 1)",
-                              borderRadius: "10px",
-                            }}
-                          >
-                            <div
-                              style={{
-                                backgroundColor: "#F5F7F8",
-                                color: "rgba(92, 182, 249, 0.8)",
-                                fontSize: "12px",
-                                fontWeight: 700,
-                              }}
-                            >
-                              Net worth
-                            </div>
-                            <div
-                              style={{
-                                backgroundColor: "#F5F7F8",
-                                color: "#5CB6F9",
-                                fontSize: "18px",
-                                fontWeight: 700,
-                              }}
-                            >
-                              ${dashboard?.card1?.["Total amount"]}
-                            </div>
-                          </Col>
-                        </Row>
-
-                        <Row className="d-flex justify-content-between gap-3 mt-4 px-3">
-                          <div className="d-flex align-items-center justify-content-between">
-                            <div
-                              style={{
-                                fontWeight: 600,
-                                fontSize: "14px",
-                                color: "var(--primary-color)",
-                              }}
-                            >
-                              Cashflow
-                            </div>
-                            <div
-                              style={{
-                                cursor: "pointer",
-                                fontWeight: 600,
-                                fontSize: "14px",
-                                color: "rgba(92, 182, 249, 1)",
-                              }}
-                            >
-                              <Link to={"/user/cashflow"}>View</Link>
-                            </div>
-                          </div>
-
-                          <div
-                            style={{
-                              backgroundColor: "#F5F7F8",
-                              borderRadius: "10px",
-                            }}
-                            className="d-flex justify-content-around align-items-center p-2"
-                          >
-                            <div style={{ color: "#3AC3AC" }}>
-                              <div
-                                style={{ fontSize: "12px", fontWeight: 400 }}
-                              >
-                                Money in
-                              </div>
-                              <div
-                                style={{ fontSize: "14px", fontWeight: 600 }}
-                              >
-                                ${dashboard?.card1?.moneyInVsMoneyOut[0].uv}
-                              </div>
-                              <div
-                                style={{ fontSize: "12px", fontWeight: 400 }}
-                              >
-                                53.8%
-                              </div>
-                            </div>
-
-                            <div>
-                              <div
-                                style={{ fontSize: "12px", fontWeight: 400 }}
-                              >
-                                Money out
-                              </div>
-                              <div
-                                style={{ fontSize: "14px", fontWeight: 600 }}
-                              >
-                                ${dashboard?.card1?.moneyInVsMoneyOut[1].uv}
-                              </div>
-                              <div
-                                style={{ fontSize: "12px", fontWeight: 400 }}
-                              >
-                                53.8%
-                              </div>
-                            </div>
-
-                            <div
-                              style={{
-                                color: "var(--primary-color)",
-                              }}
-                            >
-                              <div
-                                style={{ fontSize: "12px", fontWeight: 400 }}
-                              >
-                                Over spent
-                              </div>
-                              <div
-                                style={{ fontSize: "14px", fontWeight: 600 }}
-                              >
-                                $1,386
-                              </div>
-                            </div>
-                          </div>
-                        </Row>
-                      </Carousel.Item> */}
+                     
                     </Carousel>
                   )}
                 </div>

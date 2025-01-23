@@ -124,7 +124,6 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
     }
   }, [budgetId]);
 
-
   // ======= Getting all categories =======
   const getAllCategories = async () => {
     try {
@@ -138,11 +137,11 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
   // ======= Getting all paydays =======
   const getAllPaydays = async () => {
     try {
-      const  data  = await getPaydays({
+      const data = await getPaydays({
         currentStart: dateRange?.currentStart,
         currentEnd: dateRange?.currentEnd,
       }).unwrap();
-      console.log("Payday API response:", data?.paydays);
+      // console.log("Payday API response:", data?.paydays);
       setPaydays(data?.paydays);
     } catch (error) {
       getError(error);
@@ -419,7 +418,7 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                                 }}
                               >
                                 {/* $20 spent of {data?.budget_amount} */}
-                                 {data?.budget_amount}
+                                {data?.budget_amount}
                               </div>
                             </div>
                           </div>
@@ -640,7 +639,11 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                                   borderRadius: "50%",
                                   objectFit: "cover",
                                 }}
-                                src={imgAddr + data?.image}
+                                src={
+                                  data?.image
+                                    ? imgAddr + data?.image
+                                    : "/images/Rectangle 116.png"
+                                }
                                 alt="..."
                               />
                               <div>

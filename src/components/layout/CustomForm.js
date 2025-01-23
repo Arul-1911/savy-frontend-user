@@ -54,7 +54,7 @@ const TextInput = (props) => {
     />
  */
 const CheckInput = (props) => {
-  console.log({ props })
+  // console.log({ props })
   return (
     <Form.Group className="mb-3">
       {props.checklabel && <Form.Label>{props.checklabel}</Form.Label>}
@@ -109,7 +109,7 @@ const RadioInput = (props) => {
     />
  */
 const SelectInput = (props) => {
-  console.log("select", { props })
+  // console.log("select", { props })
   const grpStyle = props.grpStyle || "mb-3";
   return (
     <Form.Group className={grpStyle}>
@@ -190,7 +190,7 @@ const SelectInput = (props) => {
   </AddForm>
  */
 const EditForm = (props) => {
-  console.log("edit", { props })
+  // console.log("edit", { props })
   const navigate = useNavigate();
 
   const {
@@ -240,7 +240,7 @@ const EditForm = (props) => {
           <Container className="small-container">
             <Row>
               {inputFieldProps.map(({ type, col = 6, props }) => {
-                console.log("edit", { type, col, props, key: props.name });
+                // console.log("edit", { type, col, props, key: props.name });
                 switch (type) {
                   case "check":
                     return (
@@ -289,7 +289,7 @@ const EditForm = (props) => {
 }
 
 const AddForm = (props) => {
-  console.log({ props });
+  // console.log({ props });
   const navigate = useNavigate();
 
   const {
@@ -315,7 +315,7 @@ const AddForm = (props) => {
 
   useEffect(() => {
     if (error) {
-      console.log({ error });
+      // console.log({ error });
       toast.error(error, toastOptions);
       // clearErrors(dispatch);
     }

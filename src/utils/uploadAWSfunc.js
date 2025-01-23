@@ -16,7 +16,7 @@ export const uploadAudio = async (file, token, percentHandler) => {
         if (progressEvent.lengthComputable) {
           const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
           percentHandler(percent);
-          console.log(`${progressEvent.loaded}B of ${progressEvent.total}B | ${percent}%`);
+          // console.log(`${progressEvent.loaded}B of ${progressEvent.total}B | ${percent}%`);
         }
       },
       headers: {
@@ -26,10 +26,10 @@ export const uploadAudio = async (file, token, percentHandler) => {
     };
 
     const { data } = await axiosInstance.post("/api/admin/audio", bodyFormData, options);
-    console.log("Audio data:",data);
+    // console.log("Audio data:",data);
 
     if (data) {
-      console.log("location", data.s3Response.Location);
+      // console.log("location", data.s3Response.Location);
       return data.s3Response.Location;
     }
   } catch (err) {
@@ -48,7 +48,7 @@ export const uploadImage = async (file, token, percentHandler) => {
         const { loaded, total } = progressEvent;
         let percent = Math.floor((loaded * 100) / total);
         percentHandler(percent);
-        console.log(`${loaded}kb of ${total}kb | ${percent}`);
+        // console.log(`${loaded}kb of ${total}kb | ${percent}`);
       },
       headers: {
         "Content-Type": "multipart/form-data",
@@ -60,9 +60,9 @@ export const uploadImage = async (file, token, percentHandler) => {
       bodyFormData,
       options
     );
-    console.log("Image data:",data);
+    // console.log("Image data:",data);
     if (data) {      
-      console.log("location", data.s3Response.Location);
+      // console.log("location", data.s3Response.Location);
       return data.s3Response.Location;
     }
   } catch (err) {

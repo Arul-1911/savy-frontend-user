@@ -20,14 +20,14 @@ function OtpPage() {
     e.preventDefault();
 
     if (otp.length !== 4) {
-      getError("Please enter a valid 4-digit OTP.");
+      toast.error("Please enter a  4-digit OTP", { theme: "colored" });
       return;
     }
 
     try {
       const email = localStorage.getItem("email");
       if (!email) {
-        getError("Session expired. Please log");
+        toast.error("Session expired. Please log", { theme: "colored" });
         navigate("/user/login");
         return;
       }
@@ -42,9 +42,7 @@ function OtpPage() {
       setOtp("");
       localStorage.removeItem("email");
     } catch (error) {
-      const errorMessage =
-        error?.data?.message || "Failed to verify OTP. Please try again.";
-      getError(errorMessage);
+      getError(error);
     }
   };
 

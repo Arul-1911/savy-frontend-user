@@ -11,6 +11,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
 import { getDateRanges } from "../../../components/DateRange/DateRange";
 import { useSelector } from "react-redux";
+import { selectAccountId } from "../../../features/authSlice";
 
 const TopCategory = () => {
   const navigate = useNavigate();
@@ -22,11 +23,13 @@ const TopCategory = () => {
   const [topCategory, setTopCategory] = useState([]);
   const skeletonArray = [1, 2, 3, 4, 5, 6, 7];
 
+   const accountID = useSelector(selectAccountId);
+
   const dateRange = getDateRanges(period);
 
   useEffect(() => {
     getAllTopCategory();
-  }, [period]);
+  }, [period, accountID]);
 
   const getAllTopCategory = async () => {
     try {
@@ -34,6 +37,7 @@ const TopCategory = () => {
         currentStart: dateRange?.currentStart,
         currentEnd: dateRange?.currentEnd,
         from: q,
+        account_id: accountID,
       }).unwrap();
       setTopCategory(data);
     } catch (error) {

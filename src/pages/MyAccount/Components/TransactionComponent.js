@@ -36,7 +36,10 @@ const Transactions = () => {
   
 
   useEffect(() => {
-    getAllTransactions();
+     if (accountID) {
+       
+       getAllTransactions();
+     }
   }, [date, debounceQuery, period, accountID]);
 
   const getAllTransactions = async () => {

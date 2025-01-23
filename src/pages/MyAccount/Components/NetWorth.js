@@ -13,6 +13,7 @@ import Skeleton from "react-loading-skeleton";
 import Liabilities from "./NetworthComponent/Liabilities";
 import { useSelector } from "react-redux";
 import { getDateRanges } from "../../../components/DateRange/DateRange";
+import { selectAccountId } from "../../../features/authSlice";
 
 const NetWorth = () => {
   const [getAssetsLiabilities, { isLoading }] =
@@ -35,7 +36,7 @@ const NetWorth = () => {
 
   const disabled = useSelector((state) => state?.dashBoard?.disabled) || [];
 
-  // console.log(disabled, "disabled from my account");
+  const accountID = useSelector(selectAccountId);
 
   const isCardDisabled = (cardname) => {
     return disabled?.includes(cardname);
@@ -44,7 +45,7 @@ const NetWorth = () => {
   useEffect(() => {
     getAllAssetsLibilities();
     getTotalAmount();
-  }, []);
+  }, [accountID]);
 
   const getAllAssetsLibilities = async () => {
     try {
@@ -64,6 +65,7 @@ const NetWorth = () => {
       const { dashboardData } = await getGraphData({
         currentStart: dateRange?.currentStart,
         currentEnd: dateRange?.currentEnd,
+        account_id: accountID,
       }).unwrap();
       const totalAmount = dashboardData?.card1?.["Total amount"] || 0;
       setTotalNetWorth(totalAmount);
@@ -83,11 +85,17 @@ const NetWorth = () => {
           <p style={{ fontWeight: 600, color: "rgba(0, 39, 91, 1)" }}>
             Net worth
           </p>
-          <h3 style={{ fontWeight: 600, color: "var(--primary-color)" }}>
-            {`$${currNetWorth}`}
-          </h3>
+          {!getGraphDataLoading ? (
+            <h3 style={{ fontWeight: 600, color: "var(--primary-color)" }}>
+              {`$${currNetWorth}`}
+            </h3>
+          ) : (
+            <div>
+              <Skeleton className="rounded-2" height={"30px"} width={"100%"} />
+            </div>
+          )}
         </div>
-        {/* Conditionally render the "Financial passport" container */}
+        
         {!isCardDisabled("Financial passport") && (
           <div
             className="d-flex align-items-center"

@@ -16,7 +16,7 @@ const Editor = ({ description, setDescription, name, setForm, form }) => {
         editor={ClassicEditor}
         data={description}
         onReady={(editor) => {
-          console.log("Editor is ready to use!", editor);
+          // console.log("Editor is ready to use!", editor);
         }}
         config={{
           // plugins: [Underline], // Add the Underline plugin here
@@ -39,15 +39,15 @@ const Editor = ({ description, setDescription, name, setForm, form }) => {
         }}
         onChange={(event, editor) => {
           const data = editor.getData();
-          console.log({ event, editor, data });
+          // console.log({ event, editor, data });
           setDescription && setDescription(data);
           setForm && setForm({ ...form, [name]: data });
         }}
         onBlur={(event, editor) => {
-          console.log("Blur.", editor);
+          // console.log("Blur.", editor);
         }}
         onFocus={(event, editor) => {
-          console.log("Focus.", editor);
+          // console.log("Focus.", editor);
         }}
       />
     </div>

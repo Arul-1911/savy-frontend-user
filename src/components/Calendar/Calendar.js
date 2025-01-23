@@ -140,7 +140,7 @@ function ServerDay(props) {
     !props.outsideCurrentMonth &&
     highlightedDays.indexOf(props.day.date()) >= 0;
 
-  console.log(props);
+  // console.log(props);
 
   const subDate = "2024-10-17";
 

@@ -34,7 +34,6 @@ import { useSelector } from "react-redux";
 import { getDateRanges } from "../../components/DateRange/DateRange";
 
 const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
-  
   const [getCategories, { isLoading }] = useGetCategoriesMutation();
   const [getBudgets, { isLoading: budgetLoading }] = useGetBudgetsMutation();
   const [createBill, { isLoading: billLoading }] = useCreateBillMutation();
@@ -421,7 +420,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                                 }}
                               >
                                 {/* $20 spent of {data?.budget_amount} */}
-                               {data?.budget_amount}
+                                {data?.budget_amount}
                               </div>
                             </div>
                           </div>
@@ -670,7 +669,11 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                                   height: "35px",
                                   borderRadius: "50%",
                                 }}
-                                src={imgAddr + data?.image}
+                                src={
+                                  data?.image
+                                    ? imgAddr + data?.image
+                                    : "/images/Rectangle 116.png"
+                                }
                                 alt="..."
                               />
                               <div>
@@ -1337,7 +1340,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                           fontSize: "12px",
                         }}
                       >
-                        $20 spent of 50
+                        {/* $20 spent of 50 */}
                       </div>
                     </div>
                   </div>
@@ -1396,7 +1399,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                           fontSize: "12px",
                         }}
                       >
-                        $20 spent of 50
+                        {/* $20 spent of 50 */}
                       </div>
                     </div>
                   </div>
@@ -1455,7 +1458,7 @@ const UpcomingBillComponents = ({ show, hide, active, activeLink }) => {
                           fontSize: "12px",
                         }}
                       >
-                        $20 spent of 50
+                        {/* $20 spent of 50 */}
                       </div>
                     </div>
                   </div>

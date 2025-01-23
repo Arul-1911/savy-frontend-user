@@ -11,6 +11,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
 import { useSelector } from "react-redux";
 import { getDateRanges } from "../../../components/DateRange/DateRange";
+import { selectAccountId } from "../../../features/authSlice";
 
 const TopTransaction = () => {
   const navigate = useNavigate();
@@ -23,11 +24,13 @@ const TopTransaction = () => {
   const [topTransactions, setTopTransactions] = useState([]);
   const skeletonArray = [1, 2, 3, 4, 5, 6, 7];
 
+   const accountID = useSelector(selectAccountId);
+
   const dateRange = getDateRanges(period);
 
   useEffect(() => {
     getAllTopCategory();
-  }, [period]);
+  }, [period, accountID]);
 
   const getAllTopCategory = async () => {
     try {
@@ -35,6 +38,7 @@ const TopTransaction = () => {
         currentStart: dateRange?.currentStart,
         currentEnd: dateRange?.currentEnd,
         from: q,
+        account_id: accountID,
       }).unwrap();
       setTopTransactions(data);
     } catch (error) {
@@ -69,7 +73,7 @@ const TopTransaction = () => {
           </h3>
         </div>
 
-        <Card style={{ border: "none", borderRadius: "10px" }}>
+        <Card style={{ border: "none", borderRadius: "10px", width:'auto' }}>
           <Card.Body>
             <ul className="market mt-2">
               {topTransactions?.length > 0 ? (
@@ -102,6 +106,7 @@ const TopTransaction = () => {
                               {data?.description}
                             </div>
                             <div
+                            className="text-truncate"
                               style={{
                                 fontSize: "rgba(55, 73, 87, 0.7)",
                                 fontSize: "12px",
@@ -115,7 +120,7 @@ const TopTransaction = () => {
 
                         <div>
                           <div
-                            className="text-end"
+                            // className="text-end"
                             style={{
                               color: "var(--primary-color)",
                               fontSize: "20px",

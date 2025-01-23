@@ -15,7 +15,7 @@ function PlanCard({
   featureTitle,
   features,
 }) {
-  console.log(features);
+  // console.log(features);
   const totalMonthlyCost = monthlyPrice * 12;
   const totalAnnualCost = annualPrice * 12;
 

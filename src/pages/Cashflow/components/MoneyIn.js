@@ -17,6 +17,7 @@ import { getError } from "../../../utils/error";
 import Skeleton from "react-loading-skeleton";
 import { useSelector } from "react-redux";
 import { getDateRanges } from "../../../components/DateRange/DateRange";
+import { selectAccountId } from "../../../features/authSlice";
 
 const COLORS = [
   { start: "rgba(36, 204, 167, 1)", end: "rgba(74, 86, 226, 1)" },
@@ -35,11 +36,13 @@ const MoneyIn = ({ accountPortfolioActive }) => {
   const [moneyIn, setMoneyIn] = useState({});
   const [excludeTransactionModal, setExcludeTransactionModal] = useState(false);
 
+    const accountID = useSelector(selectAccountId);
+
   useEffect(() => {
     if (accountPortfolioActive === 2) {
       getMoneyInData();
     }
-  }, [accountPortfolioActive, selectBucketName, period]);
+  }, [accountPortfolioActive, selectBucketName, period, accountID]);
 
   const dateRange = getDateRanges(period);
 
@@ -51,6 +54,7 @@ const MoneyIn = ({ accountPortfolioActive }) => {
         previousStart: dateRange?.previousStart,
         previousEnd: dateRange?.previousEnd,
         filter: selectBucketName.toLowerCase(),
+        account_id: accountID,
       }).unwrap();
       setMoneyIn(moneyIn);
     } catch (error) {

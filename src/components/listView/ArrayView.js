@@ -34,7 +34,7 @@ const getColumn = (obj) => {
  * />
 **/
 export default function ArrayView(props) {
-  console.log(props);
+  // console.log(props);
   const { title, arr } = props;
   let columns;
   if (arr.length > 0) columns = Object.entries(props.column);

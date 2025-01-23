@@ -109,23 +109,6 @@ export default function Header({ sidebarHandler }) {
               </Col>
 
               <Col>
-                <div
-                  className="p-1 d-flex align-items-center"
-                  // style={{
-                  //   backgroundColor: "rgba(235, 241, 248, 1)",
-                  //   borderRadius: "22px",
-                  //   fontSize: "12px",
-                  //   color: "var(--primary-color)",
-                  //   fontWeight: 400,
-                  //   cursor: "pointer",
-                  //   width:'65%'
-                  // }}
-                >
-                  <MultipleAccounts />
-                </div>
-              </Col>
-
-              <Col>
                 <div className="gap-4 mobile-responsive">
                   <GiHamburgerMenu
                     className="hamburger"
@@ -137,6 +120,23 @@ export default function Header({ sidebarHandler }) {
                     }}
                     onClick={() => sidebarHandler()}
                   />
+
+                  <Col>
+                    <div
+                      className="p-1 d-flex align-items-center"
+                      // style={{
+                      //   backgroundColor: "rgba(235, 241, 248, 1)",
+                      //   borderRadius: "22px",
+                      //   fontSize: "12px",
+                      //   color: "var(--primary-color)",
+                      //   fontWeight: 400,
+                      //   cursor: "pointer",
+                      //   width:'65%'
+                      // }}
+                    >
+                      <MultipleAccounts />
+                    </div>
+                  </Col>
 
                   {!isCardDisabled("Goals") && (
                     <div

@@ -400,7 +400,7 @@ const OverView = ({ data, loading }) => {
       <Row className="mt-2 g-2">
         {!loading ? (
           <>
-            <Col sm={6}>
+            <Col sm={12} lg={6}>
               <DashboardCard>
                 <div className="d-flex align-items-center justify-content-between">
                   <div
@@ -450,7 +450,7 @@ const OverView = ({ data, loading }) => {
                           />
                           <div>
                             <div
-                              className="w-75 text-truncate"
+                              className="w-75"
                               style={{
                                 fontSize: "rgba(55, 73, 87, 1)",
                                 fontSize: "16px",

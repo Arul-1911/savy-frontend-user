@@ -5,8 +5,6 @@ import { Image } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { selectAuth } from "../../../features/authSlice";
 
-
-
 const AccountComponent = () => {
   const { user } = useSelector(selectAuth);
 
@@ -37,7 +35,7 @@ const AccountComponent = () => {
                   width: "30px",
                   height: "30px",
                 }}
-                src={account?.bank_logo || '/images/bank-acc-logo.jpg'}
+                src={account?.bank_logo || "/images/bank-acc-logo.jpg"}
                 alt={account?.account_name}
               />
               <div>
@@ -48,7 +46,8 @@ const AccountComponent = () => {
                     fontSize: "12px",
                   }}
                 >
-                  {account?.account_name}
+                  {account?.bank_name} {"->"} {account?.account_name} -{" "}
+                  {account?.user_name}
                 </div>
                 <div
                   style={{
@@ -69,7 +68,8 @@ const AccountComponent = () => {
                 fontWeight: 600,
               }}
             >
-              {formatCurrency(account?.balance)} <IoIosArrowForward size={16} />
+              {/* {formatCurrency(account?.balance)} <IoIosArrowForward size={16} /> */}
+              {formatCurrency(account?.balance)}
             </div>
           </div>
         ))}

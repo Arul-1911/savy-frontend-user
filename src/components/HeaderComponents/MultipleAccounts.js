@@ -1,4 +1,3 @@
-// src/components/MultipleAccounts.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -6,7 +5,7 @@ import {
   selectAuth,
   setUser,
 } from "../../features/authSlice";
-import { Dropdown } from "react-bootstrap";
+import { Dropdown, Image } from "react-bootstrap";
 import { Col } from "react-bootstrap";
 import { useGetUserProfileMutation } from "../../features/apiSlice";
 import { getError } from "../../utils/error";
@@ -26,7 +25,7 @@ const MultipleAccounts = () => {
     try {
       const { user } = await getUserProfile().unwrap();
       if (user && user?.accounts && user?.accounts?.length > 0) {
-        setUser(user);
+        dispatch(setUser(user))
         setAccounts(user?.accounts);
         if (isFirstRender.current && !selectAccountId) {
           const defaultAccount = user?.accounts[0].account_id;
@@ -77,20 +76,33 @@ const MultipleAccounts = () => {
             {accounts?.find((acc) => acc.account_id === selectAccountId)
               ?.account_name || "Select Account"}
           </Dropdown.Toggle>
-          <Dropdown.Menu style={{ fontSize: "14px", marginTop:'6px' }}>
+          <Dropdown.Menu style={{ fontSize: "14px", marginTop: "6px" }}>
             {accounts?.map((acc) => (
               <Dropdown.Item
                 key={acc._id}
                 onClick={() => handleAccountChange(acc.account_id)}
                 style={{
                   color: "var(--primary-color)",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
                 }}
               >
+                <Image
+                  style={{
+                    borderRadius: "50%",
+                    width: "30px",
+                    height: "30px",
+                    objectFit: "cover",
+                  }}
+                  src={acc?.bank_logo || "/images/bank-acc-logo.jpg"}
+                  alt={acc?.account_name}
+                />{" "}
                 {acc.account_name}
               </Dropdown.Item>
             ))}
             <div
-              className="mt-3 p-2"
+              className="mt-4 p-2"
               onClick={() => setAddAccountModal(true)}
               style={{
                 backgroundColor: "var(--primary-color)",
@@ -99,19 +111,18 @@ const MultipleAccounts = () => {
                 color: "white",
                 fontWeight: 400,
                 cursor: "pointer",
-                marginLeft:'70px',
-                width:'fit-content'
+                marginLeft: "110px",
+                width: "fit-content",
               }}
             >
               <GoPlus size={12} /> Add account
-            </div>{" "}
+            </div>
             <AddAccount
               show={addAccountModal}
               hide={setAddAccountModal}
               active={addAccountLink}
               activeLink={setAddAccountLink}
             />
-            
           </Dropdown.Menu>
         </Dropdown>
       </div>

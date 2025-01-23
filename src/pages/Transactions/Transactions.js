@@ -44,7 +44,9 @@ const Transactions = () => {
   const accountID = useSelector(selectAccountId);
 
   useEffect(() => {
-    getAllTransactions();
+    if (accountID) {
+      getAllTransactions();
+    }
   }, [date, debounceQuery, period, accountID]);
 
   const dateRange = getDateRanges(period);
@@ -84,48 +86,48 @@ const Transactions = () => {
   };
 
   // Export transactions
-    const getExportTransaction = async () => {
-      try {
-        const response = await exportTransaction({
-          currentStart: startDate,
-          currentEnd: endDate,
-          date,
-          account_id: accountID,
-        }).unwrap();
+  const getExportTransaction = async () => {
+    try {
+      const response = await exportTransaction({
+        currentStart: startDate,
+        currentEnd: endDate,
+        date,
+        account_id: accountID,
+      }).unwrap();
 
-        if (!response) {
-          toast.error("No data");
+      if (!response) {
+        toast.error("No data");
+        return;
+      }
+      const blob = response instanceof Blob ? response : new Blob([response]);
+
+      try {
+        const responseText = await blob.text();
+        const rows = responseText.split("\n");
+
+        // If no rows found
+        if (rows.length <= 1) {
+          toast.error("No transaction to export", { theme: "colored" });
           return;
         }
-        const blob = response instanceof Blob ? response : new Blob([response]);
 
-        try {
-          const responseText = await blob.text();
-          const rows = responseText.split("\n");
-
-          // If no rows found
-          if (rows.length <= 1) {
-            toast.error("No transaction to export");
-            return;
-          }
-
-          const filename = "Transactions";
-          const modifiedBlob = new Blob([responseText], { type: "text/csv" });
-          const link = document.createElement("a");
-          const url = window.URL.createObjectURL(modifiedBlob);
-          link.href = url;
-          link.setAttribute("download", filename);
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          window.URL.revokeObjectURL(url);
-        } catch (error) {
-          toast.error("Error processing CSV data.");
-        }
+        const filename = "Transactions";
+        const modifiedBlob = new Blob([responseText], { type: "text/csv" });
+        const link = document.createElement("a");
+        const url = window.URL.createObjectURL(modifiedBlob);
+        link.href = url;
+        link.setAttribute("download", filename);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
       } catch (error) {
-        getError(error);
+        toast.error("Error processing CSV data.", { theme: "colored" });
       }
-    };
+    } catch (error) {
+      getError(error);
+    }
+  };
 
   const handleTransaction = (tranId) => {
     setTransactionModal(true);

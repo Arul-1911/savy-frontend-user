@@ -11,7 +11,7 @@ import CreateBtn from "./CreateBtn";
 
 export default function CustomTable(props) {
   const navigate = useNavigate();
-  console.log(props);
+  // console.log(props);
   const {
     loading,
     column,

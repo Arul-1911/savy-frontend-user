@@ -11,6 +11,7 @@ import { useGetCashflowMutation } from "../../features/apiSlice";
 import { getError } from "../../utils/error";
 import { useSelector } from "react-redux";
 import { getDateRanges } from "../../components/DateRange/DateRange";
+import { selectAccountId } from "../../features/authSlice";
 
 const CashFlow = () => {
   const { period } = useSelector((state) => state.period);
@@ -19,9 +20,11 @@ const CashFlow = () => {
   const [settingModal, setSettingModal] = useState(false);
   const [overView, setOverview] = useState({});
 
+  const accountID = useSelector(selectAccountId);
+
   useEffect(() => {
     getCashflowData();
-  }, [period]);
+  }, [period, accountID]);
 
   const dateRange = getDateRanges(period);
 
@@ -32,8 +35,9 @@ const CashFlow = () => {
         currentEnd: dateRange?.currentEnd,
         previousStart: dateRange?.previousStart,
         previousEnd: dateRange?.previousEnd,
+        account_id: accountID,
       }).unwrap();
-      console.log(data,'overflow data');
+      // console.log(data,'overflow data');
       setOverview(data?.overview);
     } catch (error) {
       getError(error);

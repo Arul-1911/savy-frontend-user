@@ -239,7 +239,13 @@ export const apiSlice = createApi({
 
     getCashflow: builder.mutation({
       query: (args) => {
-        const { currentStart, currentEnd, previousStart, previousEnd } = args;
+        const {
+          currentStart,
+          currentEnd,
+          previousStart,
+          previousEnd,
+          account_id,
+        } = args;
 
         function getMonthStartEnd(date) {
           const year = date.getFullYear();
@@ -255,14 +261,13 @@ export const apiSlice = createApi({
         let _previousStart = previousStart;
         let _previousEnd = previousEnd;
 
-      
         if (!currentStart && !currentEnd) {
           const currentDate = new Date();
           const { start, end } = getMonthStartEnd(currentDate);
           _currentStart = start;
           _currentEnd = end;
         }
-    
+
         if (!previousStart && !previousEnd) {
           const previousDate = new Date();
           previousDate.setMonth(previousDate.getMonth() - 1);
@@ -272,12 +277,11 @@ export const apiSlice = createApi({
         }
 
         return {
-          url: `/user/get-cashflow-data-overview?currentStart=${_currentStart}&currentEnd=${_currentEnd}&previousStart=${_previousStart}&previousEnd=${_previousEnd}`,
+          url: `/user/get-cashflow-data-overview?currentStart=${_currentStart}&currentEnd=${_currentEnd}&previousStart=${_previousStart}&previousEnd=${_previousEnd}&account_id=${account_id}`,
           method: "GET",
         };
       },
     }),
-
 
     getCashflowMoneyIn: builder.mutation({
       query: ({
@@ -286,16 +290,39 @@ export const apiSlice = createApi({
         previousStart,
         previousEnd,
         filter,
+        account_id,
       }) => {
         const params = new URLSearchParams();
-        if (currentStart) params.append("currentStart", currentStart);
-        if (currentEnd) params.append("currentEnd", currentEnd);
-        if (previousStart) params.append("previousStart", previousStart);
-        if (previousEnd) params.append("previousEnd", previousEnd);
+        const today = new Date();
+        const currentYear = today.getFullYear();
+        const previousYear = currentYear - 1;
+
+        //formatting date
+        const formatDate = (date) => {
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, "0");
+          const day = String(date.getDate()).padStart(2, "0");
+          return `${year}-${month}-${day}`;
+        };
+        const defaultCurrentStart =
+          currentStart || formatDate(new Date(currentYear, 0, 1));
+        const defaultCurrentEnd = currentEnd || formatDate(today);
+        const defaultPreviousStart =
+          previousStart || formatDate(new Date(previousYear, 0, 1));
+        const defaultPreviousEnd =
+          previousEnd || formatDate(new Date(previousYear, 11, 31));
+
+        if (defaultCurrentStart)
+          params.append("currentStart", defaultCurrentStart);
+        if (defaultCurrentEnd) params.append("currentEnd", defaultCurrentEnd);
+        if (defaultPreviousStart)
+          params.append("previousStart", defaultPreviousStart);
+        if (defaultPreviousEnd)
+          params.append("previousEnd", defaultPreviousEnd);
         if (filter) params.append("filter", filter);
 
         return {
-          url: `/user/get-cashflow-data-in?${params.toString()}`,
+          url: `/user/get-cashflow-data-in?${params.toString()}&account_id=${account_id}`,
           method: "GET",
         };
       },
@@ -308,15 +335,38 @@ export const apiSlice = createApi({
         previousStart,
         previousEnd,
         filter,
+        account_id,
       }) => {
         const params = new URLSearchParams();
-        if (currentStart) params.append("currentStart", currentStart);
-        if (currentEnd) params.append("currentEnd", currentEnd);
-        if (previousStart) params.append("previousStart", previousStart);
-        if (previousEnd) params.append("previousEnd", previousEnd);
+        const today = new Date();
+        const currentYear = today.getFullYear();
+        const previousYear = currentYear - 1;
+
+        //formatting date
+        const formatDate = (date) => {
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, "0");
+          const day = String(date.getDate()).padStart(2, "0");
+          return `${year}-${month}-${day}`;
+        };
+        const defaultCurrentStart =
+          currentStart || formatDate(new Date(currentYear, 0, 1));
+        const defaultCurrentEnd = currentEnd || formatDate(today);
+        const defaultPreviousStart =
+          previousStart || formatDate(new Date(previousYear, 0, 1));
+        const defaultPreviousEnd =
+          previousEnd || formatDate(new Date(previousYear, 11, 31));
+
+        if (defaultCurrentStart)
+          params.append("currentStart", defaultCurrentStart);
+        if (defaultCurrentEnd) params.append("currentEnd", defaultCurrentEnd);
+        if (defaultPreviousStart)
+          params.append("previousStart", defaultPreviousStart);
+        if (defaultPreviousEnd)
+          params.append("previousEnd", defaultPreviousEnd);
         if (filter) params.append("filter", filter);
         return {
-          url: `/user/get-cashflow-data-out?${params.toString()}`,
+          url: `/user/get-cashflow-data-out?${params.toString()}&account_id=${account_id}`,
           method: "GET",
         };
       },
@@ -329,23 +379,46 @@ export const apiSlice = createApi({
         previousStart,
         previousEnd,
         filter,
+        account_id,
       }) => {
         const params = new URLSearchParams();
-        if (currentStart) params.append("currentStart", currentStart);
-        if (currentEnd) params.append("currentEnd", currentEnd);
-        if (previousStart) params.append("previousStart", previousStart);
-        if (previousEnd) params.append("previousEnd", previousEnd);
+        const today = new Date();
+        const currentYear = today.getFullYear();
+        const previousYear = currentYear - 1;
+
+        //formatting date
+        const formatDate = (date) => {
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, "0");
+          const day = String(date.getDate()).padStart(2, "0");
+          return `${year}-${month}-${day}`;
+        };
+        const defaultCurrentStart =
+          currentStart || formatDate(new Date(currentYear, 0, 1));
+        const defaultCurrentEnd = currentEnd || formatDate(today);
+        const defaultPreviousStart =
+          previousStart || formatDate(new Date(previousYear, 0, 1));
+        const defaultPreviousEnd =
+          previousEnd || formatDate(new Date(previousYear, 11, 31));
+
+        if (defaultCurrentStart)
+          params.append("currentStart", defaultCurrentStart);
+        if (defaultCurrentEnd) params.append("currentEnd", defaultCurrentEnd);
+        if (defaultPreviousStart)
+          params.append("previousStart", defaultPreviousStart);
+        if (defaultPreviousEnd)
+          params.append("previousEnd", defaultPreviousEnd);
         if (filter) params.append("filter", filter);
         return {
-          url: `/user/get-cashflow-data-net?${params.toString()}`,
+          url: `/user/get-cashflow-data-net?${params.toString()}&account_id=${account_id}`,
           method: "GET",
         };
       },
     }),
 
     getCashflowListData: builder.mutation({
-      query: ({ currentStart, currentEnd, from }) => ({
-        url: `/user/get-all-list?currentStart=${currentStart}&currentEnd=${currentEnd}&from=${from}`,
+      query: ({ currentStart, currentEnd, from, account_id }) => ({
+        url: `/user/get-all-list?currentStart=${currentStart}&currentEnd=${currentEnd}&from=${from}&account_id=${account_id}`,
         method: "GET",
       }),
     }),
@@ -356,7 +429,7 @@ export const apiSlice = createApi({
         let url = `/user/get-transactions?keyword=${query}&date=${date}&account_id=${account_id}`;
 
         if (currentStart && currentEnd) {
-          url += `¤tStart=${currentStart}¤tEnd=${currentEnd}`;
+          url += `&currentStart=${currentStart}&currentEnd=${currentEnd}`;
         }
 
         return {

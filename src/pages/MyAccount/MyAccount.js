@@ -20,20 +20,7 @@ const MyAccount = () => {
           >
             My Account
           </h3>
-          <button
-            className="px-5 d-flex align-items-center"
-            style={{
-              backgroundColor: "rgba(242, 249, 255, 1)",
-              borderRadius: "20px",
-              fontSize: "12px",
-              color: "var(--primary-color)",
-              fontWeight: 600,
-              cursor: "pointer",
-              border: "1px solid rgba(224, 234, 255, 1)",
-            }}
-          >
-            All banks
-          </button>
+         
         </div>
 
         <ul className="my_account_portfolio mt-2">
