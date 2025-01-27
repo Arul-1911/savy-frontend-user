@@ -590,7 +590,11 @@ export default function Dashboard() {
                                     height: "40px",
                                     borderRadius: "50%",
                                   }}
-                                  src={imgAddr + paymt?.category?.image}
+                                  src={
+                                    paymt?.category?.image
+                                      ? imgAddr + paymt?.category?.image
+                                      : "/images/Rectangle 116.png"
+                                  }
                                   alt="..."
                                 />
                                 <div>

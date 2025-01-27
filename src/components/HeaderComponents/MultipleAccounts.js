@@ -25,7 +25,7 @@ const MultipleAccounts = () => {
     try {
       const { user } = await getUserProfile().unwrap();
       if (user && user?.accounts && user?.accounts?.length > 0) {
-        dispatch(setUser(user))
+        dispatch(setUser(user));
         setAccounts(user?.accounts);
         if (isFirstRender.current && !selectAccountId) {
           const defaultAccount = user?.accounts[0].account_id;
@@ -73,13 +73,29 @@ const MultipleAccounts = () => {
               color: "var(--primary-color)",
             }}
           >
+            <Image
+              style={{
+                borderRadius: "50%",
+                width: "30px",
+                height: "30px",
+                objectFit: "cover",
+              }}
+              src={
+                accounts?.find((acc) => acc.account_id === selectAccountId)
+                  ?.bank_logo || "/images/bank-acc-logo.jpg"
+              }
+              alt={
+                accounts?.find((acc) => acc.account_id === selectAccountId)
+                  ?.account_name || "Select Account"
+              }
+            />{" "}
             {accounts?.find((acc) => acc.account_id === selectAccountId)
               ?.account_name || "Select Account"}
           </Dropdown.Toggle>
           <Dropdown.Menu style={{ fontSize: "14px", marginTop: "6px" }}>
             {accounts?.map((acc) => (
               <Dropdown.Item
-                key={acc._id}
+                key={acc.account_id}
                 onClick={() => handleAccountChange(acc.account_id)}
                 style={{
                   color: "var(--primary-color)",
@@ -129,7 +145,5 @@ const MultipleAccounts = () => {
     </Col>
   );
 };
-
-
 
 export default MultipleAccounts;

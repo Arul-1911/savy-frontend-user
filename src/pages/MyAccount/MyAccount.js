@@ -5,6 +5,7 @@ import "./MyAccount.css";
 import NetWorth from "./Components/NetWorth";
 import TransactionsComponent from "./Components/TransactionComponent";
 import AccountComponent from "./Components/AccountComponent";
+import ConnectedBanks from "./Components/ConnectedBank";
 
 const MyAccount = () => {
   const [accountPortfolioActive, setAccountPortfolioActive] = useState(3);
@@ -20,7 +21,6 @@ const MyAccount = () => {
           >
             My Account
           </h3>
-         
         </div>
 
         <ul className="my_account_portfolio mt-2">
@@ -40,6 +40,23 @@ const MyAccount = () => {
             }}
           >
             Accounts
+          </li>
+          <li
+            onClick={() => setAccountPortfolioActive(4)}
+            style={{
+              borderBottom:
+                accountPortfolioActive === 4
+                  ? "2px solid rgba(0, 74, 173, 1)"
+                  : "none",
+              color:
+                accountPortfolioActive === 4
+                  ? "rgba(0, 74, 173, 1)"
+                  : "rgba(55, 73, 87, 0.7)",
+              cursor: "pointer",
+              fontWeight: 600,
+            }}
+          >
+            Connected Banks
           </li>
           <li
             onClick={() => setAccountPortfolioActive(2)}
@@ -79,6 +96,7 @@ const MyAccount = () => {
         {accountPortfolioActive === 1 && <AccountComponent />}
         {accountPortfolioActive === 2 && <TransactionsComponent />}
         {accountPortfolioActive === 3 && <NetWorth />}
+        {accountPortfolioActive === 4 && <ConnectedBanks />}
       </Container>
     </MotionDiv>
   );

@@ -397,7 +397,11 @@ const BudgetComponents = ({ show, hide, active, activeLink }) => {
                                 borderRadius: "50%",
                                 objectFit: "cover",
                               }}
-                              src={imgAddr + data?.category?.image}
+                              src={
+                                data?.category?.image
+                                  ? imgAddr + data?.category?.image
+                                  : "/images/Rectangle 116.png"
+                              }
                               alt="..."
                             />
                             <div>

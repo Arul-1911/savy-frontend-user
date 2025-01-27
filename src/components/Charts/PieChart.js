@@ -29,7 +29,7 @@ const renderActiveShape = (props) => {
   return (
     <g>
       <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill}>
-        {payload.name}
+        {/* {payload.name} */}
       </text>
       <Sector
         cx={cx}
@@ -55,12 +55,12 @@ const renderActiveShape = (props) => {
         fill="none"
       />
       <circle cx={ex} cy={ey} r={5} fill={fill} stroke="none" />
-      <text
+      {/* <text
         x={ex + (cos >= 0 ? 1 : -1) * 12}
         y={ey}
         textAnchor={textAnchor}
         fill="#333"
-      >{`${value}%`}</text>
+      >{`${value}%`}</text> */}
       {/* <text
         x={ex + (cos >= 0 ? 1 : -1) * 12}
         y={ey}
@@ -86,7 +86,7 @@ const PieCharts = ({ COLORS, data, cornerRadius, In, height, width }) => {
         ))}
       </defs>
       <Pie
-        activeShape={In ? "" : renderActiveShape}
+        activeShape={In ? null : renderActiveShape}
         data={data}
         dataKey="value"
         nameKey="name"

@@ -229,6 +229,22 @@ export const apiSlice = createApi({
       }),
     }),
 
+    // ===========Get Connected Bank Accounts ==========
+    getUserConnections: builder.mutation({
+      query: () => ({
+        url: "/user/get-user-connection",
+        method: "GET",
+      }),
+    }),
+
+    // ===========Delete Connected Bank Account ==========
+    deleteUserConnection: builder.mutation({
+      query: (bankId) => ({
+        url: `/user/delete-user-connection/${bankId}`,
+        method: "POST",
+      }),
+    }),
+
     // ======= Profile =======
     getUserProfile: builder.mutation({
       query: () => ({
@@ -646,4 +662,7 @@ export const {
   useGetBucketsQuery,
   useGetbucketCategoriesQuery,
   useGetTipTopicsQuery,
+
+  useGetUserConnectionsMutation,
+  useDeleteUserConnectionMutation,
 } = apiSlice;
