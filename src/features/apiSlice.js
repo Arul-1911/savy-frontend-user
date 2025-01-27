@@ -245,6 +245,14 @@ export const apiSlice = createApi({
       }),
     }),
 
+    // ========== Get User Consent ==============
+    getUserConsent: builder.mutation({
+      query: () => ({
+        url: "/user/get-user-consent",
+        method: "GET",
+      }),
+    }),
+
     // ======= Profile =======
     getUserProfile: builder.mutation({
       query: () => ({
@@ -665,4 +673,5 @@ export const {
 
   useGetUserConnectionsMutation,
   useDeleteUserConnectionMutation,
+  useGetUserConsentMutation,
 } = apiSlice;

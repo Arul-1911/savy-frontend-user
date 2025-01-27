@@ -7,14 +7,19 @@ import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { RxCrossCircled } from "react-icons/rx";
 import FormField from "../../components/layout/FormField";
 import { getError } from "../../utils/error";
+import { useGetAddNewBankAccountMutation } from "../../features/apiSlice";
 
 export default function InternetBanking({ goBack, next, containerDiv }) {
+  const [getUserConsent, {isLoading}] = useGetAddNewBankAccountMutation()
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      next ? next() : navigate("/user/one-time-password");
+      const response = await getUserConsent()
+      if(response?.data?.success){
+        window.location.href = response?.data?.consentUrl;
+      }
     } catch (error) {
       getError(error);
     }
@@ -33,20 +38,20 @@ export default function InternetBanking({ goBack, next, containerDiv }) {
 
   return (
     <LoginCard
-      height={"500px"}
+      height={"auto"}
       width={"450px"}
       containerDiv={containerDiv}
       bankDetails={true}
     >
       <div className="d-flex align-items-center justify-content-between">
-        <div>
+        {/* <div>
           <IoArrowBackCircleOutline
             color="rgba(92, 182, 249, 1)"
             cursor={"pointer"}
             size={23}
             onClick={() => (goBack ? goBack() : navigate("/user/choose-bank"))}
           />
-        </div>
+        </div> */}
 
         <div>
           <Image
@@ -90,7 +95,7 @@ export default function InternetBanking({ goBack, next, containerDiv }) {
           Consumer Data Right data.
         </div>
       </div>
-      <div
+      {/* <div
         className="my-2 mb-3"
         style={{
           color: "rgba(55, 73, 87, 1)",
@@ -108,12 +113,12 @@ export default function InternetBanking({ goBack, next, containerDiv }) {
           Consumer Data Right
         </span>{" "}
         for more information.
-      </div>
+      </div> */}
 
-      <Card>
-        <CardBody>
-          <div className="d-flex align-items-center flex-column mb-2">
-            <div
+      {/* <Card> */}
+      {/* <CardBody> */}
+      <div className="d-flex align-items-center flex-column mb-2">
+        {/* <div
               style={{
                 color: "var(--primary-color)",
                 fontWeight: 800,
@@ -132,9 +137,9 @@ export default function InternetBanking({ goBack, next, containerDiv }) {
             >
               You have requested to share your data with Basiq Pty Ltd. Please
               input your Internet Banking username to continue.
-            </div>
-          </div>
-          <Form className="px-5" onSubmit={handleSubmit}>
+            </div> */}
+      </div>
+      {/* <Form className="px-5" onSubmit={handleSubmit}>
             <FormField
               placeholder={"Internet banking username"}
               type={"text"}
@@ -161,24 +166,29 @@ export default function InternetBanking({ goBack, next, containerDiv }) {
               to retrieve it
             </p>
 
-            <Row>
-              <Col>
-                <Button
-                  type="submit"
-                  className="float-sm-end w-100 "
-                  style={{
-                    background: "var(--primary-color)",
-                    fontWeight: 700,
-                    fontSize: "12px",
-                    padding: "10px",
-                  }}
-                >
-                  Continue
-                </Button>
-              </Col>
-            </Row>
-          </Form>
-          <Row>
+            </Form> */}
+      <Row className=" w-100 mt-3">
+        <Col className="d-flex justify-content-center">
+          <Button
+            type="submit"
+            className="float-sm-end w-auto "
+            style={{
+              background: "var(--primary-color)",
+              fontWeight: 700,
+              fontSize: "12px",
+              padding: "10px",
+              opacity: isLoading ? 0.7 : 1,
+              border:'none',
+              marginLeft:'20px'
+            }}
+            disabled={isLoading}
+            onClick={handleSubmit}
+          >
+            {isLoading ? "Redirecting..." : "Continue"}
+          </Button>
+        </Col>
+      </Row>
+      {/* <Row>
             <Col>
               <Button
                 className="float-sm-end w-100 "
@@ -193,9 +203,9 @@ export default function InternetBanking({ goBack, next, containerDiv }) {
                 Cancel
               </Button>
             </Col>
-          </Row>
-        </CardBody>
-      </Card>
+          </Row> */}
+      {/* </CardBody> */}
+      {/* </Card> */}
       <ToastContainer />
     </LoginCard>
   );

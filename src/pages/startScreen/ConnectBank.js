@@ -142,9 +142,9 @@ export default function ConnectBank({
               fontWeight: 700,
               fontSize: "12px",
               padding: "10px",
-              opacity: loading ? 0.7 : 1, // Add opacity during loading
+              opacity: loading ? 0.7 : 1,
             }}
-            disabled={loading} // Disable button during loading
+            disabled={loading} 
             onClick={handleSubmit}
           >
             {loading ? <Spinner animation="border" size="sm" /> : "Continue"}

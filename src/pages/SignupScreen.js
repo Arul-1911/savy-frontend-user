@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Col, Form, Image, Row } from "react-bootstrap";
 import { getError } from "../utils/error";
@@ -6,6 +6,8 @@ import FormField from "../components/layout/FormField";
 import LoginCard from "../components/layout/LoginCard";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
+import { selectAuth } from "../features/authSlice";
+import { useSelector } from "react-redux";
 
 export default function SignupScreen() {
   const navigate = useNavigate();
@@ -14,6 +16,8 @@ export default function SignupScreen() {
   const [password, setPassword] = useState("");
   const [passwordError,setPasswordError] = useState('')
   const [confirmPassword, setConfirmPassword] = useState("");
+
+   const { accessToken } = useSelector(selectAuth);
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -64,6 +68,12 @@ export default function SignupScreen() {
     setPassword(value)
     validatePassword(value)
   }
+
+   useEffect(() => {
+     if (accessToken) {
+       navigate("/user/dashboard");
+     }
+   }, [accessToken]);
 
   return (
     <LoginCard width={"450px"}>

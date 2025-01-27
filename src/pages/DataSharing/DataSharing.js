@@ -21,7 +21,7 @@ const DataSharing = ({ show, hide, active, activeLink }) => {
         {active === 1 && (
          <InternetBanking containerDiv={false} goBack={()=>hide(false)} next={()=>activeLink(2)}/>
         )}
-
+{/* 
         {active === 2 && (
           <OneTimePassword containerDiv={false} goBack={()=>activeLink(1)} next={()=>activeLink(3)} />
         )}
@@ -43,7 +43,7 @@ const DataSharing = ({ show, hide, active, activeLink }) => {
         )}
          {active === 9 && (
          <AllMyAccount containerDiv={false} goBack={()=>activeLink(3)} />
-        )}
+        )} */}
 
         {/* {active === 4 && (
          
